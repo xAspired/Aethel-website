@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Termini di Servizio — Aethel</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --cream: #F7F4EF;
+    --cream-dark: #EDE9E1;
+    --warm-white: #FDFCFA;
+    --orange: #F07C3A;
+    --coral: #E8634A;
+    --lilac: #9B8EC4;
+    --sage: #7DAA8E;
+    --text-dark: #1C1814;
+    --text-mid: #4A4540;
+    --text-muted: #8C8580;
+    --border: rgba(70,60,50,0.10);
+  }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    color: var(--text-dark);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 48px;
+    background: rgba(247,244,239,0.9);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-logo { font-family: 'DM Serif Display', serif; font-size: 20px; color: var(--text-dark); text-decoration: none; }
+  .nav-back {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 14px; color: var(--text-muted); text-decoration: none; transition: color 0.2s;
+  }
+  .nav-back:hover { color: var(--text-dark); }
+  .nav-back svg { width: 16px; height: 16px; }
+
+  .hero {
+    background: var(--text-dark);
+    padding: 72px 48px 64px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    width: 400px; height: 400px;
+    background: var(--lilac);
+    border-radius: 50%;
+    filter: blur(100px);
+    opacity: 0.08;
+    top: -100px; right: -80px;
+    pointer-events: none;
+  }
+  .hero-inner { max-width: 760px; margin: 0 auto; }
+  .hero-tag {
+    display: inline-block;
+    font-size: 11px; font-weight: 500; letter-spacing: 1.8px; text-transform: uppercase;
+    color: var(--lilac);
+    background: rgba(155,142,196,0.12);
+    padding: 5px 14px; border-radius: 99px; margin-bottom: 24px;
+  }
+  .hero h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(36px, 5vw, 56px);
+    color: var(--cream); letter-spacing: -1.5px; line-height: 1.05; margin-bottom: 16px;
+  }
+  .hero p { font-size: 16px; color: rgba(247,244,239,0.5); font-weight: 300; line-height: 1.7; }
+
+  .content { max-width: 760px; margin: 0 auto; padding: 64px 24px 120px; }
+
+  .warning-box {
+    background: rgba(240,124,58,0.08);
+    border: 1px solid rgba(240,124,58,0.25);
+    border-radius: 16px;
+    padding: 20px 24px;
+    margin-bottom: 48px;
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+  }
+  .warning-icon { font-size: 20px; flex-shrink: 0; margin-top: 1px; }
+  .warning-box p { font-size: 14px; color: var(--text-mid); line-height: 1.7; font-weight: 300; }
+  .warning-box p strong { font-weight: 500; color: var(--text-dark); }
+
+  .toc {
+    background: var(--warm-white);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 24px 28px;
+    margin-bottom: 56px;
+  }
+  .toc h3 { font-size: 12px; font-weight: 500; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text-muted); margin-bottom: 16px; }
+  .toc ol { list-style: none; counter-reset: toc; display: flex; flex-direction: column; gap: 8px; }
+  .toc li { counter-increment: toc; }
+  .toc a {
+    display: flex; align-items: center; gap: 12px;
+    text-decoration: none; font-size: 14px; color: var(--text-mid); transition: color 0.2s;
+  }
+  .toc a:hover { color: var(--orange); }
+  .toc a::before { content: counter(toc, decimal-leading-zero); font-size: 11px; color: var(--text-muted); min-width: 22px; }
+
+  section.legal { margin-bottom: 52px; scroll-margin-top: 80px; }
+  .section-num { font-size: 11px; font-weight: 500; letter-spacing: 1.5px; text-transform: uppercase; color: var(--orange); margin-bottom: 8px; }
+  section.legal h2 { font-family: 'DM Serif Display', serif; font-size: 26px; letter-spacing: -0.5px; color: var(--text-dark); margin-bottom: 20px; line-height: 1.2; }
+  section.legal p, section.legal li { font-size: 15px; color: var(--text-mid); line-height: 1.8; font-weight: 300; }
+  section.legal p { margin-bottom: 14px; }
+  section.legal ul, section.legal ol { padding-left: 20px; margin-bottom: 14px; display: flex; flex-direction: column; gap: 6px; }
+  section.legal strong { font-weight: 500; color: var(--text-dark); }
+  section.legal a { color: var(--orange); text-decoration: none; }
+  section.legal a:hover { text-decoration: underline; }
+
+  .divider { height: 1px; background: var(--border); margin-bottom: 52px; }
+
+  footer {
+    padding: 32px 48px; display: flex; align-items: center; justify-content: space-between;
+    border-top: 1px solid var(--border); flex-wrap: wrap; gap: 12px;
+  }
+  .footer-logo { font-family: 'DM Serif Display', serif; font-size: 16px; color: var(--text-dark); }
+  .footer-links { display: flex; gap: 24px; list-style: none; }
+  .footer-links a { font-size: 13px; color: var(--text-muted); text-decoration: none; transition: color 0.2s; }
+  .footer-links a:hover { color: var(--text-dark); }
+  .footer-copy { font-size: 12px; color: var(--text-muted); font-weight: 300; }
+
+  @media (max-width: 640px) {
+    nav { padding: 16px 20px; }
+    .hero { padding: 56px 20px 48px; }
+    .content { padding: 48px 20px 80px; }
+    footer { padding: 28px 20px; flex-direction: column; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">Aethel</a>
+  <a href="index.html" class="nav-back">
+    <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M10 3L5 8L10 13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    Torna alla home
+  </a>
+</nav>
+
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-tag">Documento legale</div>
+    <h1>Termini di Servizio</h1>
+    <p>Ultimo aggiornamento: giugno 2025 &nbsp;·&nbsp; Applicabile all'app Aethel per iOS</p>
+  </div>
+</div>
+
+<div class="content">
+
+  <div class="warning-box">
+    <div class="warning-icon">⚠️</div>
+    <p><strong>Avviso importante:</strong> Aethel è un'applicazione per il supporto all'allenamento fisico. <strong>Non è un dispositivo medico e non fornisce consulenza medica.</strong> Prima di iniziare qualsiasi programma di allenamento, consulta un medico o un professionista della salute qualificato. L'uso dell'app avviene sotto la tua esclusiva responsabilità.</p>
+  </div>
+
+  <div class="toc">
+    <h3>Indice</h3>
+    <ol>
+      <li><a href="#accettazione">Accettazione dei termini</a></li>
+      <li><a href="#servizio">Descrizione del servizio</a></li>
+      <li><a href="#licenza">Licenza d'uso</a></li>
+      <li><a href="#acquisti">Acquisti in-app e freemium</a></li>
+      <li><a href="#medico">Disclaimer medico e responsabilità</a></li>
+      <li><a href="#condotta">Condotta dell'utente</a></li>
+      <li><a href="#proprieta">Proprietà intellettuale</a></li>
+      <li><a href="#privacy-ref">Privacy</a></li>
+      <li><a href="#apple">Termini Apple</a></li>
+      <li><a href="#disponibilita">Disponibilità del servizio</a></li>
+      <li><a href="#modifiche">Modifiche ai termini</a></li>
+      <li><a href="#legge">Legge applicabile e foro competente</a></li>
+      <li><a href="#contatti">Contatti</a></li>
+    </ol>
+  </div>
+
+  <section class="legal" id="accettazione">
+    <div class="section-num">01</div>
+    <h2>Accettazione dei termini</h2>
+    <p>Scaricando, installando o utilizzando l'applicazione Aethel ("l'App"), accetti integralmente i presenti Termini di Servizio ("Termini"). Se non accetti questi Termini, non puoi utilizzare l'App.</p>
+    <p>L'uso dell'App implica anche l'accettazione della nostra <a href="privacy.html">Privacy Policy</a>, che è parte integrante dei presenti Termini.</p>
+  </section>
+  <div class="divider"></div>
+
+  <section class="legal" id="servizio">
+    <div class="section-num">02</div>
+    <h2>Descrizione del servizio</h2>
+    <p>Aethel è un'applicazione iOS per il supporto all'allenamento fisico che offre:</p>
+    <ul>
+      <li>Creazione e gestione di schede di allenamento per bodybuilding, powerbuilding e calistenia</li>
+      <li>Tracciamento della fatica muscolare e stima dei tempi di recupero</li>
+      <li>Sistema di progressioni calisteniche (Skill Tree)</li>
+      <li>Visualizzazione dei progressi e storico degli allenamenti</li>
+      <li>Calendario delle sessioni</li>
+    </ul>
+    <p>Alcune funzionalità avanzate (Skill Tree, Muscle Intelligence, analytics avanzate) sono disponibili esclusivamente con l'acquisto del piano premium in-app.</p>
+  </section>
+  <div class="divider"></div>
+
+  <section class="legal" id="licenza">
+    <div class="section-num">03</div>
+    <h2>Licenza d'uso</h2>
+    <p>Ti concediamo una licenza personale, non esclusiva, non trasferibile e revocabile per utilizzare l'App sui tuoi dispositivi Apple personali, nel rispetto dei presenti Termini e delle regole dell'App Store Apple.</p>
+    <p>Non è consentito:</p>
+    <ul>
+      <li>Copiare, modificare, distribuire o vendere l'App o qualsiasi suo componente</li>
+      <li>Effettuare reverse engineering, decompilare o disassemblare l'App</li>
+      <li>Rimuovere avvisi di copyright o altri diritti di proprietà</li>
+      <li>Utilizzare l'App per scopi commerciali senza autorizzazione scritta</li>
+    </ul>
+  </section>
+  <div class="divider"></div>
+
+  <section class="legal" id="acquisti">
+    <div class="section-num">04</div>
+    <h2>Acquisti in-app e freemium</h2>
+    <p>Aethel adotta un modello freemium: le funzionalità di base sono gratuite, le funzionalità avanzate richiedono un abbonamento o acquisto una tantum tramite <strong>Apple In-App Purchase (StoreKit)</strong>.</p>
+    <p><strong>Politica di rimborso:</strong> I rimborsi per gli acquisti in-app sono gestiti interamente da Apple secondo le sue politiche. Puoi richiedere un rimborso direttamente tramite Apple su <a href="https://reportaproblem.apple.com" target="_blank" rel="noopener">reportaproblem.apple.com</a>.</p>
+    <p><strong>Rinnovo abbonamenti:</strong> Gli abbonamenti si rinnovano automaticamente alla fine del periodo, salvo cancellazione almeno 24 ore prima della scadenza tramite le impostazioni del tuo account Apple ID.</p>
+    <p><strong>Nessun addebito nascosto:</strong> Tutti i prezzi sono chiaramente indicati nell'App prima di qualsiasi acquisto.</p>
+  </section>
+  <div class="divider"></div>
+
+  <section class="legal" id="medico">
+    <div class="section-num">05</div>
+    <h2>Disclaimer medico e responsabilità</h2>
+    <p>⚠️ <strong>Aethel non è un dispositivo medico e non fornisce diagnosi, trattamenti o consulenze mediche o fisioterapiche.</strong></p>
+    <p>Le informazioni e i suggerimenti forniti dall'App (inclusi i dati sulla fatica muscolare, i tempi di recupero e le progressioni) hanno <strong>esclusivo scopo informativo e di supporto all'allenamento</strong>. Non devono essere interpretati come prescrizioni mediche o sostitutivi del parere di un professionista sanitario qualificato.</p>
+    <p>Prima di iniziare qualsiasi programma di allenamento, in particolare se hai condizioni mediche preesistenti, sei incinta, sei stato operato di recente o non sei fisicamente attivo da tempo, <strong>consulta il tuo medico o uno specialista</strong>.</p>
+    <p>Lo sviluppatore declina ogni responsabilità per:</p>
+    <ul>
+      <li>Infortuni, danni fisici o alla salute derivanti dall'uso dell'App o dall'esecuzione degli esercizi</li>
+      <li>Imprecisioni nei calcoli di fatica o recupero che non tengono conto delle condizioni individuali</li>
+      <li>Qualsiasi decisione di allenamento presa sulla base delle indicazioni dell'App</li>
+    </ul>
+  </section>
+  <div class="divider"></div>
+
+  <section class="legal" id="condotta">
+    <div class="section-num">06</div>
+    <h2>Condotta dell'utente</h2>
+    <p>L'App è destinata a uso personale. Ti impegni a non utilizzarla per:</p>
+    <ul>
+      <li>Scopi illegali o in violazione di normative applicabili</li>
+      <li>Interferire con il funzionamento dell'App o dei sistemi connessi</li>
+      <li>Tentare di accedere non autorizzato a componenti dell'infrastruttura dell'App</li>
+    </ul>
+    <p>Nella versione attuale, l'App non prevede funzionalità social o contenuti generati dagli utenti condivisi con altri.</p>
+  </section>
+  <div class="divider"></div>
+
+  <section class="legal" id="proprieta">
+    <div class="section-num">07</div>
+    <h2>Proprietà intellettuale</h2>
+    <p>L'App, il nome "Aethel", il logo, il design, il codice sorgente, i contenuti grafici e le funzionalità sono di proprietà esclusiva dello sviluppatore e protetti dalle leggi sul diritto d'autore, sui marchi e da altri diritti di proprietà intellettuale.</p>
+    <p>I dati di allenamento che inserisci nell'App restano di tua proprietà. Non rivendichiamo alcun diritto sui contenuti personali che crei.</p>
+  </section>
+  <div class="divider"></div>
+
+  <section class="legal" id="privacy-ref">
+    <div class="section-num">08</div>
+    <h2>Privacy</h2>
+    <p>Il trattamento dei tuoi dati è disciplinato dalla nostra <a href="privacy.html">Privacy Policy</a>, parte integrante dei presenti Termini. Ti invitiamo a leggerla attentamente prima di utilizzare l'App.</p>
+  </section>
+  <div class="divider"></div>
+
+  <section class="legal" id="apple">
+    <div class="section-num">09</div>
+    <h2>Termini Apple</h2>
+    <p>L'App è distribuita tramite l'Apple App Store. L'uso è soggetto anche ai <a href="https://www.apple.com/legal/internet-services/itunes/it/terms.html" target="_blank" rel="noopener">Termini e Condizioni dell'App Store Apple</a>. In caso di conflitto tra i presenti Termini e quelli di Apple, prevarranno questi ultimi nella misura in cui si applicano.</p>
+    <p>Apple non è responsabile dell'App, dei suoi contenuti o della presente licenza, e non fornisce alcuna garanzia in relazione ad essa.</p>
+  </section>
+  <div class="divider"></div>
+
+  <section class="legal" id="disponibilita">
+    <div class="section-num">10</div>
+    <h2>Disponibilità del servizio</h2>
+    <p>Poiché Aethel funziona prevalentemente offline, la disponibilità del servizio non dipende da connessioni server esterne. Tuttavia, lo sviluppatore si riserva il diritto di:</p>
+    <ul>
+      <li>Aggiornare, modificare o interrompere funzionalità dell'App con ragionevole preavviso</li>
+      <li>Sospendere temporaneamente funzionalità che richiedano connettività (es. sincronizzazione cloud futura) per manutenzione</li>
+    </ul>
+    <p>In nessun caso la sospensione temporanea di funzionalità gratuite costituirà motivo di rimborso o risarcimento.</p>
+  </section>
+  <div class="divider"></div>
+
+  <section class="legal" id="modifiche">
+    <div class="section-num">11</div>
+    <h2>Modifiche ai termini</h2>
+    <p>Lo sviluppatore si riserva il diritto di modificare i presenti Termini in qualsiasi momento. Le modifiche verranno comunicate tramite aggiornamento di questa pagina e, per le modifiche sostanziali, tramite un avviso in-app. L'uso continuato dell'App dopo la notifica costituisce accettazione dei nuovi Termini.</p>
+  </section>
+  <div class="divider"></div>
+
+  <section class="legal" id="legge">
+    <div class="section-num">12</div>
+    <h2>Legge applicabile e foro competente</h2>
+    <p>I presenti Termini sono regolati dalla <strong>legge italiana</strong>. Per qualsiasi controversia sarà competente il foro di <strong>Udine, Italia</strong>, salvo diversa disposizione di legge a tutela del consumatore.</p>
+    <p>Se sei un consumatore residente nell'Unione Europea, puoi ricorrere alla piattaforma europea di risoluzione delle controversie online: <a href="https://ec.europa.eu/consumers/odr" target="_blank" rel="noopener">ec.europa.eu/consumers/odr</a>.</p>
+  </section>
+  <div class="divider"></div>
+
+  <section class="legal" id="contatti">
+    <div class="section-num">13</div>
+    <h2>Contatti</h2>
+    <p>Per domande, segnalazioni o richieste relative ai presenti Termini:</p>
+    <p><strong>E-mail:</strong> <a href="mailto:legal@aethel.app">legal@aethel.app</a></p>
+    <p>Risponderemo entro 30 giorni lavorativi dalla ricezione.</p>
+  </section>
+
+</div>
+
+<footer>
+  <span class="footer-logo">Aethel</span>
+  <ul class="footer-links">
+    <li><a href="privacy.html">Privacy</a></li>
+    <li><a href="terms.html">Termini</a></li>
+    <li><a href="index.html">Home</a></li>
+  </ul>
+  <span class="footer-copy">© 2025 Aethel. Tutti i diritti riservati.</span>
+</footer>
+
+</body>
+</html>

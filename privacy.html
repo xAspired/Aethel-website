@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Privacy Policy — Aethel</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --cream: #F7F4EF;
+    --cream-dark: #EDE9E1;
+    --warm-white: #FDFCFA;
+    --orange: #F07C3A;
+    --coral: #E8634A;
+    --lilac: #9B8EC4;
+    --sage: #7DAA8E;
+    --text-dark: #1C1814;
+    --text-mid: #4A4540;
+    --text-muted: #8C8580;
+    --border: rgba(70,60,50,0.10);
+  }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    color: var(--text-dark);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 48px;
+    background: rgba(247,244,239,0.9);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-logo {
+    font-family: 'DM Serif Display', serif;
+    font-size: 20px;
+    color: var(--text-dark);
+    text-decoration: none;
+  }
+  .nav-back {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    color: var(--text-muted);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .nav-back:hover { color: var(--text-dark); }
+  .nav-back svg { width: 16px; height: 16px; }
+
+  .hero {
+    background: var(--text-dark);
+    padding: 72px 48px 64px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    width: 400px; height: 400px;
+    background: var(--orange);
+    border-radius: 50%;
+    filter: blur(100px);
+    opacity: 0.08;
+    top: -100px; right: -80px;
+    pointer-events: none;
+  }
+  .hero-inner { max-width: 760px; margin: 0 auto; }
+  .hero-tag {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 1.8px;
+    text-transform: uppercase;
+    color: var(--sage);
+    background: rgba(125,170,142,0.12);
+    padding: 5px 14px;
+    border-radius: 99px;
+    margin-bottom: 24px;
+  }
+  .hero h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(36px, 5vw, 56px);
+    color: var(--cream);
+    letter-spacing: -1.5px;
+    line-height: 1.05;
+    margin-bottom: 16px;
+  }
+  .hero p {
+    font-size: 16px;
+    color: rgba(247,244,239,0.5);
+    font-weight: 300;
+    line-height: 1.7;
+  }
+
+  .content {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 64px 24px 120px;
+  }
+
+  .notice-box {
+    background: rgba(125,170,142,0.10);
+    border: 1px solid rgba(125,170,142,0.25);
+    border-radius: 16px;
+    padding: 20px 24px;
+    margin-bottom: 48px;
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+  }
+  .notice-icon { font-size: 20px; flex-shrink: 0; margin-top: 1px; }
+  .notice-box p { font-size: 14px; color: var(--text-mid); line-height: 1.7; font-weight: 300; }
+  .notice-box p strong { font-weight: 500; color: var(--text-dark); }
+
+  .toc {
+    background: var(--warm-white);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 24px 28px;
+    margin-bottom: 56px;
+  }
+  .toc h3 {
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 16px;
+  }
+  .toc ol {
+    list-style: none;
+    counter-reset: toc;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .toc li { counter-increment: toc; }
+  .toc a {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-decoration: none;
+    font-size: 14px;
+    color: var(--text-mid);
+    transition: color 0.2s;
+  }
+  .toc a:hover { color: var(--orange); }
+  .toc a::before {
+    content: counter(toc, decimal-leading-zero);
+    font-size: 11px;
+    color: var(--text-muted);
+    min-width: 22px;
+  }
+
+  section.legal {
+    margin-bottom: 52px;
+    scroll-margin-top: 80px;
+  }
+  .section-num {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--orange);
+    margin-bottom: 8px;
+  }
+  section.legal h2 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 26px;
+    letter-spacing: -0.5px;
+    color: var(--text-dark);
+    margin-bottom: 20px;
+    line-height: 1.2;
+  }
+  section.legal p, section.legal li {
+    font-size: 15px;
+    color: var(--text-mid);
+    line-height: 1.8;
+    font-weight: 300;
+  }
+  section.legal p { margin-bottom: 14px; }
+  section.legal ul, section.legal ol {
+    padding-left: 20px;
+    margin-bottom: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  section.legal strong { font-weight: 500; color: var(--text-dark); }
+  section.legal a { color: var(--orange); text-decoration: none; }
+  section.legal a:hover { text-decoration: underline; }
+
+  .divider {
+    height: 1px;
+    background: var(--border);
+    margin-bottom: 52px;
+  }
+
+  footer {
+    padding: 32px 48px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-top: 1px solid var(--border);
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .footer-logo { font-family: 'DM Serif Display', serif; font-size: 16px; color: var(--text-dark); }
+  .footer-links { display: flex; gap: 24px; list-style: none; }
+  .footer-links a { font-size: 13px; color: var(--text-muted); text-decoration: none; transition: color 0.2s; }
+  .footer-links a:hover { color: var(--text-dark); }
+  .footer-copy { font-size: 12px; color: var(--text-muted); font-weight: 300; }
+
+  @media (max-width: 640px) {
+    nav { padding: 16px 20px; }
+    .hero { padding: 56px 20px 48px; }
+    .content { padding: 48px 20px 80px; }
+    footer { padding: 28px 20px; flex-direction: column; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">Aethel</a>
+  <a href="index.html" class="nav-back">
+    <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M10 3L5 8L10 13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    Torna alla home
+  </a>
+</nav>
+
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-tag">Documento legale</div>
+    <h1>Privacy Policy</h1>
+    <p>Ultimo aggiornamento: giugno 2025 &nbsp;·&nbsp; Applicabile all'app Aethel per iOS</p>
+  </div>
+</div>
+
+<div class="content">
+
+  <div class="notice-box">
+    <div class="notice-icon">🔒</div>
+    <p><strong>Principio fondamentale:</strong> Aethel è progettata con una filosofia <strong>privacy-first</strong>. Tutti i tuoi dati di allenamento vengono salvati esclusivamente sul tuo dispositivo. Non raccogliamo, non vendiamo e non condividiamo i tuoi dati con terze parti per scopi pubblicitari. L'app è completamente priva di pubblicità.</p>
+  </div>
+
+  <div class="toc">
+    <h3>Indice</h3>
+    <ol>
+      <li><a href="#titolare">Titolare del trattamento</a></li>
+      <li><a href="#dati">Dati raccolti</a></li>
+      <li><a href="#finalita">Finalità del trattamento</a></li>
+      <li><a href="#storage">Dove vengono conservati i dati</a></li>
+      <li><a href="#health">Apple Health</a></li>
+      <li><a href="#terzi">Servizi di terze parti</a></li>
+      <li><a href="#minori">Minori</a></li>
+      <li><a href="#diritti">I tuoi diritti</a></li>
+      <li><a href="#modifiche">Modifiche alla policy</a></li>
+      <li><a href="#contatti">Contatti</a></li>
+    </ol>
+  </div>
+
+  <section class="legal" id="titolare">
+    <div class="section-num">01</div>
+    <h2>Titolare del trattamento</h2>
+    <p>Il titolare del trattamento dei dati personali è lo sviluppatore individuale dell'applicazione Aethel, raggiungibile all'indirizzo e-mail indicato nella sezione <a href="#contatti">Contatti</a>.</p>
+  </section>
+  <div class="divider"></div>
+
+  <section class="legal" id="dati">
+    <div class="section-num">02</div>
+    <h2>Dati raccolti</h2>
+    <p>Aethel raccoglie esclusivamente i dati che tu inserisci volontariamente nell'app:</p>
+    <ul>
+      <li>Dati antropometrici opzionali (peso corporeo, unità di misura preferita)</li>
+      <li>Schede e sessioni di allenamento (esercizi, serie, ripetizioni, carichi)</li>
+      <li>Progressioni nelle skill calisteniche</li>
+      <li>Preferenze di visualizzazione e lingua</li>
+    </ul>
+    <p><strong>Non raccogliamo:</strong> nome, cognome, e-mail, numero di telefono, dati di pagamento, posizione geografica, identificatori pubblicitari (IDFA), dati comportamentali o di navigazione.</p>
+    <p>Il modello freemium di Aethel si basa sul gating di funzionalità avanzate tramite acquisto in-app (IAP gestito da Apple), non sulla profilazione degli utenti.</p>
+  </section>
+  <div class="divider"></div>
+
+  <section class="legal" id="finalita">
+    <div class="section-num">03</div>
+    <h2>Finalità del trattamento</h2>
+    <p>I dati inseriti sono trattati per le seguenti finalità, tutte necessarie al funzionamento dell'app:</p>
+    <ul>
+      <li><strong>Erogazione del servizio:</strong> calcolo della fatica muscolare, suggerimenti di recupero, progressione skill tree.</li>
+      <li><strong>Personalizzazione:</strong> adattare l'esperienza dell'app alle tue impostazioni e preferenze.</li>
+      <li><strong>Miglioramento dell'app:</strong> in forma anonima e aggregata, solo se avrai esplicitamente acconsentito in futuro tramite un'apposita richiesta in-app.</li>
+    </ul>
+    <p>Non esiste profilazione automatizzata né decisione automatica che produca effetti giuridici sulla tua persona.</p>
+  </section>
+  <div class="divider"></div>
+
+  <section class="legal" id="storage">
+    <div class="section-num">04</div>
+    <h2>Dove vengono conservati i dati</h2>
+    <p>Tutti i tuoi dati sono salvati <strong>localmente sul tuo dispositivo</strong> tramite AsyncStorage di React Native. Nessun dato viene trasmesso a server esterni nella versione attuale dell'app.</p>
+    <p>In una versione futura, sarà disponibile una sincronizzazione cloud opzionale basata su <strong>Supabase</strong> (server nell'Unione Europea, Frankfurt). Questa funzionalità sarà sempre opt-in: non verrà attivata senza il tuo esplicito consenso. In quel caso, la presente policy verrà aggiornata con i dettagli specifici del trattamento.</p>
+    <p>Il backup automatico di iOS (iCloud Backup) potrebbe includere i dati locali dell'app secondo le impostazioni del tuo dispositivo; questo processo è interamente gestito da Apple e soggetto alla loro privacy policy.</p>
+  </section>
+  <div class="divider"></div>
+
+  <section class="legal" id="health">
+    <div class="section-num">05</div>
+    <h2>Apple Health</h2>
+    <p>Aethel può richiedere l'accesso a <strong>Apple HealthKit</strong> per la lettura delle calorie attive e del peso corporeo. Tale accesso è:</p>
+    <ul>
+      <li><strong>Opzionale:</strong> l'app funziona completamente anche senza accesso a HealthKit.</li>
+      <li><strong>Read-only:</strong> Aethel legge dati da Health, ma non vi scrive in questa versione.</li>
+      <li><strong>Locale:</strong> i dati letti da HealthKit non vengono mai trasmessi a server esterni.</li>
+      <li><strong>Revocabile:</strong> puoi revocare l'accesso in qualsiasi momento da Impostazioni → Privacy e sicurezza → Salute → Aethel.</li>
+    </ul>
+    <p>I dati di HealthKit non vengono condivisi con terze parti né utilizzati per pubblicità.</p>
+  </section>
+  <div class="divider"></div>
+
+  <section class="legal" id="terzi">
+    <div class="section-num">06</div>
+    <h2>Servizi di terze parti</h2>
+    <p>Nella versione attuale, Aethel non integra SDK di terze parti per analytics, pubblicità o tracciamento. I soli servizi Apple utilizzati sono:</p>
+    <ul>
+      <li><strong>App Store / StoreKit:</strong> per la gestione degli acquisti in-app. I dati di pagamento sono gestiti interamente da Apple e non sono accessibili allo sviluppatore.</li>
+      <li><strong>HealthKit:</strong> descritto nella sezione precedente.</li>
+    </ul>
+    <p>Eventuali future integrazioni di servizi terzi saranno comunicate con aggiornamento della presente policy e, dove richiesto, con richiesta di consenso.</p>
+  </section>
+  <div class="divider"></div>
+
+  <section class="legal" id="minori">
+    <div class="section-num">07</div>
+    <h2>Minori</h2>
+    <p>Aethel è destinata a utenti di età pari o superiore a <strong>16 anni</strong>. Non raccogliamo consapevolmente dati personali di minori di 16 anni. Se sei un genitore o tutore e ritieni che tuo figlio abbia utilizzato l'app, contattaci all'indirizzo indicato nella sezione Contatti e provvederemo alla cancellazione immediata.</p>
+  </section>
+  <div class="divider"></div>
+
+  <section class="legal" id="diritti">
+    <div class="section-num">08</div>
+    <h2>I tuoi diritti</h2>
+    <p>In conformità al Regolamento UE 2016/679 (GDPR) e al D.Lgs. 196/2003, hai il diritto di:</p>
+    <ul>
+      <li><strong>Accesso:</strong> ottenere conferma del trattamento e copia dei dati che ti riguardano.</li>
+      <li><strong>Rettifica:</strong> correggere dati inesatti o incompleti.</li>
+      <li><strong>Cancellazione ("diritto all'oblio"):</strong> nella versione attuale, puoi cancellare tutti i tuoi dati direttamente dall'app (Profilo → Cancella dati) oppure disinstallando l'app dal dispositivo.</li>
+      <li><strong>Portabilità:</strong> ricevere i tuoi dati in formato strutturato e leggibile da macchina.</li>
+      <li><strong>Opposizione:</strong> opporti al trattamento per finalità di marketing diretto (non applicabile nella versione attuale).</li>
+      <li><strong>Reclamo:</strong> presentare reclamo al Garante per la Protezione dei Dati Personali (<a href="https://www.garanteprivacy.it" target="_blank" rel="noopener">garanteprivacy.it</a>).</li>
+    </ul>
+    <p>Poiché tutti i dati sono conservati localmente, l'esercizio della maggior parte dei diritti avviene direttamente tramite le funzioni dell'app o la disinstallazione.</p>
+  </section>
+  <div class="divider"></div>
+
+  <section class="legal" id="modifiche">
+    <div class="section-num">09</div>
+    <h2>Modifiche alla policy</h2>
+    <p>La presente policy può essere aggiornata in caso di nuove funzionalità, modifiche normative o variazioni nelle pratiche di trattamento. In caso di modifiche sostanziali, sarai informato tramite un avviso in-app all'apertura successiva all'aggiornamento. La data di "ultimo aggiornamento" in cima a questo documento rifletterà sempre la versione più recente.</p>
+  </section>
+  <div class="divider"></div>
+
+  <section class="legal" id="contatti">
+    <div class="section-num">10</div>
+    <h2>Contatti</h2>
+    <p>Per qualsiasi domanda relativa alla privacy o all'esercizio dei tuoi diritti, puoi contattarci a:</p>
+    <p><strong>E-mail:</strong> <a href="mailto:privacy@aethel.app">privacy@aethel.app</a></p>
+    <p>Risponderemo entro 30 giorni dalla ricezione della richiesta, come previsto dal GDPR.</p>
+  </section>
+
+</div>
+
+<footer>
+  <span class="footer-logo">Aethel</span>
+  <ul class="footer-links">
+    <li><a href="privacy.html">Privacy</a></li>
+    <li><a href="terms.html">Termini</a></li>
+    <li><a href="index.html">Home</a></li>
+  </ul>
+  <span class="footer-copy">© 2025 Aethel. Tutti i diritti riservati.</span>
+</footer>
+
+</body>
+</html>
