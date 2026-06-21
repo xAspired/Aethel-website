@@ -550,6 +550,183 @@
     color: var(--lilac);
   }
 
+  /* PT TEMPLATE */
+  .pt-section {
+    padding: 80px 24px 100px;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .pt-card {
+    background: linear-gradient(135deg, rgba(155,142,196,0.08), rgba(240,124,58,0.06));
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 56px;
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    gap: 56px;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .pt-card-text .section-label { margin-bottom: 16px; }
+
+  .pt-card-text h2 {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(28px, 4vw, 40px);
+    letter-spacing: -1px;
+    color: var(--text-dark);
+    line-height: 1.15;
+    margin-bottom: 18px;
+  }
+
+  .pt-card-text h2 em {
+    font-style: italic;
+    color: var(--coral);
+  }
+
+  .pt-card-text p {
+    font-size: 16px;
+    color: var(--text-mid);
+    font-weight: 300;
+    line-height: 1.75;
+    margin-bottom: 28px;
+    max-width: 440px;
+  }
+
+  .pt-steps {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    margin-bottom: 32px;
+  }
+
+  .pt-step {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+  }
+
+  .pt-step-num {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--coral);
+    flex-shrink: 0;
+  }
+
+  .pt-step-text {
+    font-size: 14.5px;
+    color: var(--text-mid);
+    font-weight: 300;
+    line-height: 1.6;
+    padding-top: 3px;
+  }
+
+  .pt-step-text strong {
+    font-weight: 500;
+    color: var(--text-dark);
+  }
+
+  .btn-download {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--text-dark);
+    color: var(--cream);
+    padding: 15px 26px;
+    border-radius: var(--radius-sm);
+    font-size: 15px;
+    font-weight: 500;
+    text-decoration: none;
+    font-family: 'DM Sans', sans-serif;
+    transition: background 0.2s, transform 0.15s;
+  }
+  .btn-download:hover { background: #2D2820; transform: translateY(-1px); }
+  .btn-download svg { width: 18px; height: 18px; flex-shrink: 0; }
+
+  .pt-download-note {
+    margin-top: 12px;
+    font-size: 12.5px;
+    color: var(--text-muted);
+  }
+
+  .pt-preview {
+    background: var(--card-bg);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border);
+    overflow: hidden;
+    box-shadow: 0 24px 60px rgba(30,20,10,0.10);
+  }
+
+  .pt-preview-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--border);
+    background: var(--cream-dark);
+  }
+
+  .pt-preview-dots { display: flex; gap: 6px; }
+  .pt-preview-dots span {
+    width: 9px; height: 9px; border-radius: 50%;
+  }
+  .pt-preview-dots span:nth-child(1) { background: var(--coral); }
+  .pt-preview-dots span:nth-child(2) { background: var(--orange); opacity: 0.6; }
+  .pt-preview-dots span:nth-child(3) { background: var(--sage); opacity: 0.6; }
+
+  .pt-preview-filename {
+    font-size: 12px;
+    color: var(--text-muted);
+    font-weight: 400;
+  }
+
+  .pt-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 11.5px;
+  }
+
+  .pt-table th {
+    text-align: left;
+    padding: 9px 12px;
+    background: rgba(240,124,58,0.08);
+    color: var(--coral);
+    font-weight: 500;
+    font-size: 10px;
+    letter-spacing: 0.3px;
+    text-transform: uppercase;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .pt-table td {
+    padding: 9px 12px;
+    color: var(--text-mid);
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+  }
+
+  .pt-table tr.example td:first-child {
+    color: var(--lilac);
+    font-weight: 500;
+  }
+
+  .pt-table tr:last-child td { border-bottom: none; }
+
+  @media (max-width: 860px) {
+    .pt-card { grid-template-columns: 1fr; padding: 36px 28px; }
+    .pt-preview { order: -1; }
+  }
+
   /* CTA */
   .cta-section {
     padding: 100px 24px 120px;
@@ -657,6 +834,7 @@
     <li><a href="#features">Funzionalità</a></li>
     <li><a href="#skill">Skill Tree</a></li>
     <li><a href="#languages">Lingue</a></li>
+    <li><a href="#trainer">Personal trainer</a></li>
   </ul>
   <button class="nav-lang" aria-label="Cambia lingua" tabindex="0">
     <svg width="14" height="14" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
@@ -890,6 +1068,93 @@
         <p>In programma</p>
       </div>
       <span class="lang-badge badge-soon">Prossimamente</span>
+    </div>
+  </div>
+</section>
+
+<!-- PT TEMPLATE -->
+<section class="pt-section" id="trainer">
+  <div class="pt-card">
+    <div class="pt-card-text">
+      <div class="section-label">Per i personal trainer</div>
+      <h2>Crea le schede dei tuoi clienti <em>fuori dall'app</em></h2>
+      <p>Scarica il template Excel, compilalo con gli allenamenti che assegni ai tuoi clienti e condividilo con loro. Lo importeranno direttamente in Aethel in pochi secondi.</p>
+
+      <div class="pt-steps">
+        <div class="pt-step">
+          <div class="pt-step-num">1</div>
+          <div class="pt-step-text"><strong>Scarica</strong> il template e aprilo in Excel, Numbers o Google Sheets.</div>
+        </div>
+        <div class="pt-step">
+          <div class="pt-step-num">2</div>
+          <div class="pt-step-text"><strong>Compila</strong> una riga per esercizio: stesso nome allenamento su più righe per raggrupparli automaticamente.</div>
+        </div>
+        <div class="pt-step">
+          <div class="pt-step-num">3</div>
+          <div class="pt-step-text"><strong>Condividi</strong> il file con il cliente, che lo importa da Profilo → Importa allenamenti.</div>
+        </div>
+      </div>
+
+      <a href="assets/Aethel_Template_Allenamenti.xlsx" download class="btn-download">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 3v12m0 0l-4.5-4.5M12 15l4.5-4.5M5 19h14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        Scarica template Excel
+      </a>
+      <p class="pt-download-note">Formato .xlsx · Include foglio istruzioni · Compatibile con il limite del piano Free (3 allenamenti)</p>
+    </div>
+
+    <div class="pt-preview">
+      <div class="pt-preview-header">
+        <div class="pt-preview-dots"><span></span><span></span><span></span></div>
+        <span class="pt-preview-filename">Aethel_Template_Allenamenti.xlsx</span>
+      </div>
+      <table class="pt-table">
+        <thead>
+          <tr>
+            <th>Nome allenamento</th>
+            <th>Tipo</th>
+            <th>Esercizio</th>
+            <th>Serie</th>
+            <th>Rip.</th>
+            <th>Kg</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="example">
+            <td>Push Day</td>
+            <td>Palestra</td>
+            <td>Panca Piana</td>
+            <td>4</td>
+            <td>6-10</td>
+            <td>60</td>
+          </tr>
+          <tr class="example">
+            <td>Push Day</td>
+            <td>Palestra</td>
+            <td>Military Press</td>
+            <td>3</td>
+            <td>8-12</td>
+            <td>30</td>
+          </tr>
+          <tr class="example">
+            <td>Pull Day</td>
+            <td>Palestra</td>
+            <td>Trazioni</td>
+            <td>4</td>
+            <td>6-10</td>
+            <td>0</td>
+          </tr>
+          <tr class="example">
+            <td>Pull Day</td>
+            <td>Palestra</td>
+            <td>Rematore Bilanciere</td>
+            <td>3</td>
+            <td>8-12</td>
+            <td>40</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   </div>
 </section>
