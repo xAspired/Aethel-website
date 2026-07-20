@@ -107,8 +107,7 @@
     box-shadow: 0 8px 32px rgba(0,0,0,0.08);
     z-index: 200;
   }
-  .nav-lang:hover .lang-dropdown,
-  .nav-lang:focus-within .lang-dropdown { display: block; }
+  .lang-dropdown.open { display: block; }
 
   .lang-dropdown button {
     display: flex;
@@ -398,7 +397,7 @@
     <li><a href="#languages" data-i18n="nav_languages">Lingue</a></li>
     <li><a href="#trainer" data-i18n="nav_trainer">Personal trainer</a></li>
   </ul>
-  <button class="nav-lang" aria-label="Cambia lingua" tabindex="0">
+  <div class="nav-lang" id="lang-toggle" onclick="toggleDropdown(event)" aria-label="Cambia lingua">
     <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
       <circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.2"/>
       <path d="M8 1.5C8 1.5 6 4 6 8s2 6.5 2 6.5M8 1.5C8 1.5 10 4 10 8s-2 6.5-2 6.5M1.5 8h13" stroke="currentColor" stroke-width="1.2"/>
@@ -407,11 +406,11 @@
     <svg width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden="true">
       <path d="M2.5 4L5 6.5 7.5 4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
     </svg>
-    <div class="lang-dropdown">
-      <button onclick="setLang('it')" id="btn-it" class="active">🇮🇹 Italiano</button>
-      <button onclick="setLang('en')" id="btn-en">🇬🇧 English</button>
+    <div class="lang-dropdown" id="lang-dropdown">
+      <button onclick="pickLang(event,'it')" id="btn-it" class="active">🇮🇹 Italiano</button>
+      <button onclick="pickLang(event,'en')" id="btn-en">🇬🇧 English</button>
     </div>
-  </button>
+  </div>
 </nav>
 
 <!-- HERO -->
@@ -666,6 +665,20 @@
 </footer>
 
 <script>
+function toggleDropdown(e) {
+  e.stopPropagation();
+  document.getElementById('lang-dropdown').classList.toggle('open');
+}
+function pickLang(e, lang) {
+  e.stopPropagation();
+  document.getElementById('lang-dropdown').classList.remove('open');
+  setLang(lang);
+}
+document.addEventListener('click', function() {
+  var d = document.getElementById('lang-dropdown');
+  if (d) d.classList.remove('open');
+});
+
 const i18n = {
   it: {
     nav_features: "Funzionalità", nav_skill: "Skill Tree", nav_languages: "Lingue", nav_trainer: "Personal trainer",
