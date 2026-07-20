@@ -41,15 +41,13 @@
   /* NAV */
   nav {
     position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
+    top: 0; left: 0; right: 0;
     z-index: 100;
     display: flex;
     align-items: center;
     justify-content: space-between;
     padding: 18px 48px;
-    background: rgba(247, 244, 239, 0.85);
+    background: rgba(247,244,239,0.85);
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
     border-bottom: 1px solid var(--border);
@@ -76,9 +74,9 @@
     color: var(--text-mid);
     transition: color 0.2s;
   }
-
   .nav-links a:hover { color: var(--text-dark); }
 
+  /* LANG SWITCHER */
   .nav-lang {
     display: flex;
     align-items: center;
@@ -105,22 +103,32 @@
     border: 1px solid var(--border);
     border-radius: var(--radius-sm);
     overflow: hidden;
-    min-width: 120px;
+    min-width: 130px;
     box-shadow: 0 8px 32px rgba(0,0,0,0.08);
+    z-index: 200;
   }
   .nav-lang:hover .lang-dropdown,
   .nav-lang:focus-within .lang-dropdown { display: block; }
 
-  .lang-dropdown a {
-    display: block;
+  .lang-dropdown button {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
     padding: 10px 16px;
     font-size: 14px;
     color: var(--text-mid);
-    text-decoration: none;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
     transition: background 0.15s;
+    text-align: left;
   }
-  .lang-dropdown a:hover { background: var(--cream); color: var(--text-dark); }
-  .lang-dropdown a.active { color: var(--orange); font-weight: 500; }
+  .lang-dropdown button:hover { background: var(--cream); color: var(--text-dark); }
+  .lang-dropdown button.active { color: var(--orange); font-weight: 500; }
+
+  #lang-label { font-size: 14px; }
 
   /* HERO */
   .hero {
@@ -168,11 +176,7 @@
     max-width: 820px;
     margin-bottom: 24px;
   }
-
-  .hero h1 em {
-    font-style: italic;
-    color: var(--coral);
-  }
+  .hero h1 em { font-style: italic; color: var(--coral); }
 
   .hero-sub {
     font-size: 18px;
@@ -204,621 +208,179 @@
     text-decoration: none;
     font-family: 'DM Sans', sans-serif;
     transition: background 0.2s, transform 0.15s;
-    cursor: not-allowed;
-    opacity: 0.92;
   }
   .btn-primary:hover { background: #2D2820; transform: translateY(-1px); }
+  .btn-primary .apple-icon { width: 20px; height: 20px; fill: var(--cream); flex-shrink: 0; }
 
-  .btn-primary .apple-icon {
-    width: 20px;
-    height: 20px;
-    fill: var(--cream);
-    flex-shrink: 0;
-  }
-
-  .btn-soon {
-    font-size: 12px;
-    font-weight: 400;
-    color: var(--text-muted);
-    letter-spacing: 0.3px;
-  }
-
-  .hero-note {
-    margin-top: 16px;
-    font-size: 13px;
-    color: var(--text-muted);
-  }
+  .hero-note { margin-top: 16px; font-size: 13px; color: var(--text-muted); }
 
   /* PHONE MOCKUP */
-  .phone-section {
-    padding: 20px 24px 100px;
-    display: flex;
-    justify-content: center;
-  }
+  .phone-section { padding: 20px 24px 100px; display: flex; justify-content: center; }
 
   .phone-frame {
-    width: 280px;
-    height: 560px;
+    width: 280px; height: 560px;
     background: var(--card-bg);
     border-radius: 44px;
     border: 1.5px solid var(--border);
     box-shadow: 0 40px 80px rgba(30,20,10,0.12), 0 0 0 1px rgba(255,255,255,0.6) inset;
-    position: relative;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
+    position: relative; overflow: hidden;
+    display: flex; flex-direction: column;
   }
 
   .phone-notch {
-    position: absolute;
-    top: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 100px;
-    height: 28px;
+    position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+    width: 100px; height: 28px;
     background: var(--text-dark);
     border-radius: 0 0 18px 18px;
     z-index: 2;
   }
 
   .phone-screen {
-    flex: 1;
-    background: var(--cream);
+    flex: 1; background: var(--cream);
     padding: 52px 16px 16px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
+    display: flex; flex-direction: column; gap: 10px;
   }
 
-  .phone-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 4px;
-  }
+  .phone-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 4px; }
+  .phone-greeting { font-size: 11px; color: var(--text-muted); }
+  .phone-name { font-family: 'DM Serif Display', serif; font-size: 18px; color: var(--text-dark); line-height: 1.1; }
+  .phone-avatar { width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg, var(--orange), var(--coral)); }
 
-  .phone-greeting {
-    font-size: 11px;
-    color: var(--text-muted);
-  }
-  .phone-name {
-    font-family: 'DM Serif Display', serif;
-    font-size: 18px;
-    color: var(--text-dark);
-    line-height: 1.1;
-  }
+  .phone-card { background: var(--card-bg); border-radius: 16px; border: 1px solid var(--border); padding: 12px 14px; }
+  .phone-card-label { font-size: 9px; font-weight: 500; letter-spacing: 1.2px; text-transform: uppercase; color: var(--text-muted); margin-bottom: 6px; }
+  .phone-card-title { font-size: 13px; font-weight: 500; color: var(--text-dark); margin-bottom: 2px; }
+  .phone-card-sub { font-size: 11px; color: var(--text-muted); }
 
-  .phone-avatar {
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, var(--orange), var(--coral));
-  }
-
-  .phone-card {
-    background: var(--card-bg);
-    border-radius: 16px;
-    border: 1px solid var(--border);
-    padding: 12px 14px;
-  }
-
-  .phone-card-label {
-    font-size: 9px;
-    font-weight: 500;
-    letter-spacing: 1.2px;
-    text-transform: uppercase;
-    color: var(--text-muted);
-    margin-bottom: 6px;
-  }
-
-  .phone-card-title {
-    font-size: 13px;
-    font-weight: 500;
-    color: var(--text-dark);
-    margin-bottom: 2px;
-  }
-
-  .phone-card-sub {
-    font-size: 11px;
-    color: var(--text-muted);
-  }
-
-  .muscle-dots {
-    display: flex;
-    gap: 4px;
-    margin-top: 8px;
-    flex-wrap: wrap;
-  }
-
-  .muscle-dot {
-    height: 5px;
-    border-radius: 99px;
-    flex: 1;
-    min-width: 16px;
-  }
-
+  .muscle-dots { display: flex; gap: 4px; margin-top: 8px; flex-wrap: wrap; }
+  .muscle-dot { height: 5px; border-radius: 99px; flex: 1; min-width: 16px; }
   .muscle-dot.high { background: var(--coral); }
   .muscle-dot.mid  { background: var(--orange); opacity: 0.6; }
   .muscle-dot.low  { background: var(--sage); opacity: 0.5; }
   .muscle-dot.rest { background: var(--border); }
 
-  .phone-skill-row {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 8px 0;
-    border-bottom: 1px solid var(--border);
-  }
+  .phone-skill-row { display: flex; align-items: center; gap: 8px; padding: 8px 0; border-bottom: 1px solid var(--border); }
   .phone-skill-row:last-child { border-bottom: none; }
-
-  .skill-dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    flex-shrink: 0;
-  }
+  .skill-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
   .skill-dot.done { background: var(--sage); }
   .skill-dot.prog { background: var(--lilac); }
   .skill-dot.lock { background: var(--cream-dark); border: 1px solid var(--border); }
-
   .skill-name { font-size: 11px; color: var(--text-dark); flex: 1; }
   .skill-badge { font-size: 9px; color: var(--text-muted); }
 
   /* FEATURES */
-  .features {
-    padding: 80px 24px 100px;
-    max-width: 1100px;
-    margin: 0 auto;
-  }
+  .features { padding: 80px 24px 100px; max-width: 1100px; margin: 0 auto; }
 
-  .section-label {
-    font-size: 12px;
-    font-weight: 500;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    color: var(--text-muted);
-    margin-bottom: 16px;
-  }
+  .section-label { font-size: 12px; font-weight: 500; letter-spacing: 2px; text-transform: uppercase; color: var(--text-muted); margin-bottom: 16px; }
 
   .section-title {
     font-family: 'DM Serif Display', serif;
     font-size: clamp(32px, 5vw, 52px);
-    letter-spacing: -1px;
-    color: var(--text-dark);
-    line-height: 1.1;
-    max-width: 640px;
-    margin-bottom: 64px;
+    letter-spacing: -1px; color: var(--text-dark);
+    line-height: 1.1; max-width: 640px; margin-bottom: 64px;
   }
+  .section-title em { font-style: italic; color: var(--lilac); }
 
-  .section-title em {
-    font-style: italic;
-    color: var(--lilac);
-  }
-
-  .features-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 24px;
-  }
+  .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; }
 
   .feature-card {
-    background: var(--card-bg);
-    border-radius: var(--radius-md);
-    border: 1px solid var(--border);
-    padding: 32px;
+    background: var(--card-bg); border-radius: var(--radius-md);
+    border: 1px solid var(--border); padding: 32px;
     transition: transform 0.2s, box-shadow 0.2s;
   }
+  .feature-card:hover { transform: translateY(-3px); box-shadow: 0 16px 40px rgba(30,20,10,0.08); }
 
-  .feature-card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 16px 40px rgba(30,20,10,0.08);
-  }
-
-  .feature-icon {
-    width: 44px;
-    height: 44px;
-    border-radius: var(--radius-sm);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 20px;
-    margin-bottom: 20px;
-  }
-
+  .feature-icon { width: 44px; height: 44px; border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; font-size: 20px; margin-bottom: 20px; }
   .icon-orange { background: rgba(240,124,58,0.12); }
   .icon-lilac  { background: rgba(155,142,196,0.15); }
   .icon-sage   { background: rgba(125,170,142,0.15); }
   .icon-coral  { background: rgba(232,99,74,0.12); }
 
-  .feature-card h3 {
-    font-size: 18px;
-    font-weight: 500;
-    color: var(--text-dark);
-    margin-bottom: 10px;
-    letter-spacing: -0.3px;
-  }
+  .feature-card h3 { font-size: 18px; font-weight: 500; color: var(--text-dark); margin-bottom: 10px; letter-spacing: -0.3px; }
+  .feature-card p  { font-size: 15px; color: var(--text-muted); line-height: 1.7; font-weight: 300; }
 
-  .feature-card p {
-    font-size: 15px;
-    color: var(--text-muted);
-    line-height: 1.7;
-    font-weight: 300;
-  }
-
-  /* SKILL TREE SECTION */
-  .skill-section {
-    padding: 80px 24px 100px;
-    background: var(--text-dark);
-    position: relative;
-    overflow: hidden;
-  }
-
-  .skill-section-inner {
-    max-width: 1100px;
-    margin: 0 auto;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 80px;
-    align-items: center;
-  }
-
+  /* SKILL TREE */
+  .skill-section { padding: 80px 24px 100px; background: var(--text-dark); position: relative; overflow: hidden; }
+  .skill-section-inner { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
   .skill-section .section-label { color: var(--sage); }
   .skill-section .section-title { color: var(--cream); margin-bottom: 24px; }
   .skill-section .section-title em { color: var(--lilac); }
-
-  .skill-section p {
-    font-size: 16px;
-    color: rgba(247,244,239,0.6);
-    line-height: 1.8;
-    font-weight: 300;
-    max-width: 420px;
-  }
-
-  .skill-tree-visual {
-    position: relative;
-    height: 380px;
-  }
-
-  .skill-tree-visual svg {
-    width: 100%;
-    height: 100%;
-  }
+  .skill-section p { font-size: 16px; color: rgba(247,244,239,0.6); line-height: 1.8; font-weight: 300; max-width: 420px; }
+  .skill-tree-visual { position: relative; height: 380px; }
+  .skill-tree-visual svg { width: 100%; height: 100%; }
 
   /* LANGUAGES */
-  .languages {
-    padding: 80px 24px;
-    max-width: 1100px;
-    margin: 0 auto;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 80px;
-    align-items: center;
-  }
-
-  .lang-flags {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-  }
-
-  .lang-item {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    padding: 20px 24px;
-    background: var(--card-bg);
-    border-radius: var(--radius-sm);
-    border: 1px solid var(--border);
-    transition: border-color 0.2s;
-  }
-
+  .languages { padding: 80px 24px; max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
+  .lang-flags { display: flex; flex-direction: column; gap: 16px; }
+  .lang-item { display: flex; align-items: center; gap: 16px; padding: 20px 24px; background: var(--card-bg); border-radius: var(--radius-sm); border: 1px solid var(--border); transition: border-color 0.2s; }
   .lang-item:hover { border-color: rgba(240,124,58,0.3); }
-
-  .lang-flag {
-    font-size: 28px;
-    line-height: 1;
-  }
-
-  .lang-info h4 {
-    font-size: 15px;
-    font-weight: 500;
-    color: var(--text-dark);
-    margin-bottom: 2px;
-  }
-
-  .lang-info p {
-    font-size: 13px;
-    color: var(--text-muted);
-    font-weight: 300;
-  }
-
-  .lang-badge {
-    margin-left: auto;
-    font-size: 11px;
-    font-weight: 500;
-    padding: 4px 10px;
-    border-radius: 99px;
-  }
-
-  .badge-live {
-    background: rgba(125,170,142,0.15);
-    color: var(--sage);
-  }
-
-  .badge-soon {
-    background: rgba(155,142,196,0.12);
-    color: var(--lilac);
-  }
+  .lang-flag { font-size: 28px; line-height: 1; }
+  .lang-info h4 { font-size: 15px; font-weight: 500; color: var(--text-dark); margin-bottom: 2px; }
+  .lang-info p  { font-size: 13px; color: var(--text-muted); font-weight: 300; }
+  .lang-badge { margin-left: auto; font-size: 11px; font-weight: 500; padding: 4px 10px; border-radius: 99px; }
+  .badge-live { background: rgba(125,170,142,0.15); color: var(--sage); }
+  .badge-soon { background: rgba(155,142,196,0.12); color: var(--lilac); }
 
   /* PT TEMPLATE */
-  .pt-section {
-    padding: 80px 24px 100px;
-    max-width: 1100px;
-    margin: 0 auto;
-  }
-
+  .pt-section { padding: 80px 24px 100px; max-width: 1100px; margin: 0 auto; }
   .pt-card {
     background: linear-gradient(135deg, rgba(155,142,196,0.08), rgba(240,124,58,0.06));
-    border: 1px solid var(--border);
-    border-radius: var(--radius-lg);
-    padding: 56px;
-    display: grid;
-    grid-template-columns: 1.1fr 0.9fr;
-    gap: 56px;
-    align-items: center;
-    position: relative;
-    overflow: hidden;
+    border: 1px solid var(--border); border-radius: var(--radius-lg);
+    padding: 56px; display: grid; grid-template-columns: 1.1fr 0.9fr;
+    gap: 56px; align-items: center; position: relative; overflow: hidden;
   }
-
   .pt-card-text .section-label { margin-bottom: 16px; }
-
-  .pt-card-text h2 {
-    font-family: 'DM Serif Display', serif;
-    font-size: clamp(28px, 4vw, 40px);
-    letter-spacing: -1px;
-    color: var(--text-dark);
-    line-height: 1.15;
-    margin-bottom: 18px;
-  }
-
-  .pt-card-text h2 em {
-    font-style: italic;
-    color: var(--coral);
-  }
-
-  .pt-card-text p {
-    font-size: 16px;
-    color: var(--text-mid);
-    font-weight: 300;
-    line-height: 1.75;
-    margin-bottom: 28px;
-    max-width: 440px;
-  }
-
-  .pt-steps {
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
-    margin-bottom: 32px;
-  }
-
-  .pt-step {
-    display: flex;
-    align-items: flex-start;
-    gap: 14px;
-  }
-
-  .pt-step-num {
-    width: 26px;
-    height: 26px;
-    border-radius: 50%;
-    background: var(--card-bg);
-    border: 1px solid var(--border);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 12px;
-    font-weight: 500;
-    color: var(--coral);
-    flex-shrink: 0;
-  }
-
-  .pt-step-text {
-    font-size: 14.5px;
-    color: var(--text-mid);
-    font-weight: 300;
-    line-height: 1.6;
-    padding-top: 3px;
-  }
-
-  .pt-step-text strong {
-    font-weight: 500;
-    color: var(--text-dark);
-  }
-
-  .btn-download {
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-    background: var(--text-dark);
-    color: var(--cream);
-    padding: 15px 26px;
-    border-radius: var(--radius-sm);
-    font-size: 15px;
-    font-weight: 500;
-    text-decoration: none;
-    font-family: 'DM Sans', sans-serif;
-    transition: background 0.2s, transform 0.15s;
-  }
+  .pt-card-text h2 { font-family: 'DM Serif Display', serif; font-size: clamp(28px, 4vw, 40px); letter-spacing: -1px; color: var(--text-dark); line-height: 1.15; margin-bottom: 18px; }
+  .pt-card-text h2 em { font-style: italic; color: var(--coral); }
+  .pt-card-text p { font-size: 16px; color: var(--text-mid); font-weight: 300; line-height: 1.75; margin-bottom: 28px; max-width: 440px; }
+  .pt-steps { display: flex; flex-direction: column; gap: 14px; margin-bottom: 32px; }
+  .pt-step { display: flex; align-items: flex-start; gap: 14px; }
+  .pt-step-num { width: 26px; height: 26px; border-radius: 50%; background: var(--card-bg); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 500; color: var(--coral); flex-shrink: 0; }
+  .pt-step-text { font-size: 14.5px; color: var(--text-mid); font-weight: 300; line-height: 1.6; padding-top: 3px; }
+  .pt-step-text strong { font-weight: 500; color: var(--text-dark); }
+  .btn-download { display: inline-flex; align-items: center; gap: 10px; background: var(--text-dark); color: var(--cream); padding: 15px 26px; border-radius: var(--radius-sm); font-size: 15px; font-weight: 500; text-decoration: none; font-family: 'DM Sans', sans-serif; transition: background 0.2s, transform 0.15s; }
   .btn-download:hover { background: #2D2820; transform: translateY(-1px); }
   .btn-download svg { width: 18px; height: 18px; flex-shrink: 0; }
-
-  .pt-download-note {
-    margin-top: 12px;
-    font-size: 12.5px;
-    color: var(--text-muted);
-  }
-
-  .pt-preview {
-    background: var(--card-bg);
-    border-radius: var(--radius-md);
-    border: 1px solid var(--border);
-    overflow: hidden;
-    box-shadow: 0 24px 60px rgba(30,20,10,0.10);
-  }
-
-  .pt-preview-header {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 14px 18px;
-    border-bottom: 1px solid var(--border);
-    background: var(--cream-dark);
-  }
-
+  .pt-download-note { margin-top: 12px; font-size: 12.5px; color: var(--text-muted); }
+  .pt-preview { background: var(--card-bg); border-radius: var(--radius-md); border: 1px solid var(--border); overflow: hidden; box-shadow: 0 24px 60px rgba(30,20,10,0.10); }
+  .pt-preview-header { display: flex; align-items: center; gap: 10px; padding: 14px 18px; border-bottom: 1px solid var(--border); background: var(--cream-dark); }
   .pt-preview-dots { display: flex; gap: 6px; }
-  .pt-preview-dots span {
-    width: 9px; height: 9px; border-radius: 50%;
-  }
+  .pt-preview-dots span { width: 9px; height: 9px; border-radius: 50%; }
   .pt-preview-dots span:nth-child(1) { background: var(--coral); }
   .pt-preview-dots span:nth-child(2) { background: var(--orange); opacity: 0.6; }
   .pt-preview-dots span:nth-child(3) { background: var(--sage); opacity: 0.6; }
-
-  .pt-preview-filename {
-    font-size: 12px;
-    color: var(--text-muted);
-    font-weight: 400;
-  }
-
-  .pt-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 11.5px;
-  }
-
-  .pt-table th {
-    text-align: left;
-    padding: 9px 12px;
-    background: rgba(240,124,58,0.08);
-    color: var(--coral);
-    font-weight: 500;
-    font-size: 10px;
-    letter-spacing: 0.3px;
-    text-transform: uppercase;
-    border-bottom: 1px solid var(--border);
-  }
-
-  .pt-table td {
-    padding: 9px 12px;
-    color: var(--text-mid);
-    border-bottom: 1px solid var(--border);
-    white-space: nowrap;
-  }
-
-  .pt-table tr.example td:first-child {
-    color: var(--lilac);
-    font-weight: 500;
-  }
-
+  .pt-preview-filename { font-size: 12px; color: var(--text-muted); font-weight: 400; }
+  .pt-table { width: 100%; border-collapse: collapse; font-size: 11.5px; }
+  .pt-table th { text-align: left; padding: 9px 12px; background: rgba(240,124,58,0.08); color: var(--coral); font-weight: 500; font-size: 10px; letter-spacing: 0.3px; text-transform: uppercase; border-bottom: 1px solid var(--border); }
+  .pt-table td { padding: 9px 12px; color: var(--text-mid); border-bottom: 1px solid var(--border); white-space: nowrap; }
+  .pt-table tr.example td:first-child { color: var(--lilac); font-weight: 500; }
   .pt-table tr:last-child td { border-bottom: none; }
-
-  @media (max-width: 860px) {
-    .pt-card { grid-template-columns: 1fr; padding: 36px 28px; }
-    .pt-preview { order: -1; }
-  }
+  @media (max-width: 860px) { .pt-card { grid-template-columns: 1fr; padding: 36px 28px; } .pt-preview { order: -1; } }
 
   /* CTA */
-  .cta-section {
-    padding: 100px 24px 120px;
-    text-align: center;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .cta-bg {
-    position: absolute;
-    inset: 0;
-    background: radial-gradient(ellipse 60% 60% at 50% 50%, rgba(240,124,58,0.08) 0%, transparent 70%);
-    pointer-events: none;
-  }
-
-  .cta-section h2 {
-    font-family: 'DM Serif Display', serif;
-    font-size: clamp(36px, 6vw, 72px);
-    letter-spacing: -2px;
-    color: var(--text-dark);
-    line-height: 1.05;
-    max-width: 700px;
-    margin: 0 auto 24px;
-  }
-
-  .cta-section h2 em {
-    font-style: italic;
-    color: var(--coral);
-  }
-
-  .cta-section p {
-    font-size: 17px;
-    color: var(--text-muted);
-    font-weight: 300;
-    margin-bottom: 48px;
-    max-width: 400px;
-    margin-left: auto;
-    margin-right: auto;
-    line-height: 1.7;
-  }
+  .cta-section { padding: 100px 24px 120px; text-align: center; position: relative; overflow: hidden; }
+  .cta-bg { position: absolute; inset: 0; background: radial-gradient(ellipse 60% 60% at 50% 50%, rgba(240,124,58,0.08) 0%, transparent 70%); pointer-events: none; }
+  .cta-section h2 { font-family: 'DM Serif Display', serif; font-size: clamp(36px, 6vw, 72px); letter-spacing: -2px; color: var(--text-dark); line-height: 1.05; max-width: 700px; margin: 0 auto 24px; }
+  .cta-section h2 em { font-style: italic; color: var(--coral); }
+  .cta-section p { font-size: 17px; color: var(--text-muted); font-weight: 300; margin-bottom: 48px; max-width: 400px; margin-left: auto; margin-right: auto; line-height: 1.7; }
 
   /* FOOTER */
-  footer {
-    padding: 40px 48px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    border-top: 1px solid var(--border);
-    flex-wrap: wrap;
-    gap: 16px;
-  }
-
-  .footer-logo {
-    font-family: 'DM Serif Display', serif;
-    font-size: 18px;
-    color: var(--text-dark);
-  }
-
-  .footer-links {
-    display: flex;
-    gap: 28px;
-    list-style: none;
-  }
-
-  .footer-links a {
-    font-size: 14px;
-    color: var(--text-muted);
-    text-decoration: none;
-    transition: color 0.2s;
-  }
+  footer { padding: 40px 48px; display: flex; align-items: center; justify-content: space-between; border-top: 1px solid var(--border); flex-wrap: wrap; gap: 16px; }
+  .footer-logo { font-family: 'DM Serif Display', serif; font-size: 18px; color: var(--text-dark); }
+  .footer-links { display: flex; gap: 28px; list-style: none; }
+  .footer-links a { font-size: 14px; color: var(--text-muted); text-decoration: none; transition: color 0.2s; }
   .footer-links a:hover { color: var(--text-dark); }
-
-  .footer-copy {
-    font-size: 13px;
-    color: var(--text-muted);
-    font-weight: 300;
-  }
+  .footer-copy { font-size: 13px; color: var(--text-muted); font-weight: 300; }
 
   /* RESPONSIVE */
   @media (max-width: 768px) {
     nav { padding: 16px 20px; }
     .nav-links { display: none; }
-
     .skill-section-inner { grid-template-columns: 1fr; gap: 48px; }
     .skill-tree-visual { height: 260px; }
-
     .languages { grid-template-columns: 1fr; gap: 48px; }
-
     footer { flex-direction: column; align-items: flex-start; padding: 32px 20px; }
     .footer-links { flex-wrap: wrap; gap: 16px; }
   }
-
   @media (max-width: 480px) {
     .hero h1 { letter-spacing: -1px; }
     .btn-primary { width: 100%; justify-content: center; }
@@ -831,23 +393,23 @@
 <nav>
   <span class="nav-logo">Aethel</span>
   <ul class="nav-links">
-    <li><a href="#features">Funzionalità</a></li>
-    <li><a href="#skill">Skill Tree</a></li>
-    <li><a href="#languages">Lingue</a></li>
-    <li><a href="#trainer">Personal trainer</a></li>
+    <li><a href="#features" data-i18n="nav_features">Funzionalità</a></li>
+    <li><a href="#skill" data-i18n="nav_skill">Skill Tree</a></li>
+    <li><a href="#languages" data-i18n="nav_languages">Lingue</a></li>
+    <li><a href="#trainer" data-i18n="nav_trainer">Personal trainer</a></li>
   </ul>
   <button class="nav-lang" aria-label="Cambia lingua" tabindex="0">
-    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
       <circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.2"/>
       <path d="M8 1.5C8 1.5 6 4 6 8s2 6.5 2 6.5M8 1.5C8 1.5 10 4 10 8s-2 6.5-2 6.5M1.5 8h13" stroke="currentColor" stroke-width="1.2"/>
     </svg>
-    IT
+    <span id="lang-label">IT</span>
     <svg width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden="true">
       <path d="M2.5 4L5 6.5 7.5 4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
     </svg>
     <div class="lang-dropdown">
-      <a href="#" class="active">🇮🇹 Italiano</a>
-      <a href="#">🇬🇧 English</a>
+      <button onclick="setLang('it')" id="btn-it" class="active">🇮🇹 Italiano</button>
+      <button onclick="setLang('en')" id="btn-en">🇬🇧 English</button>
     </div>
   </button>
 </nav>
@@ -858,21 +420,21 @@
   <div class="hero-bg-orb orb2"></div>
   <div class="hero-bg-orb orb3"></div>
 
-  <div class="hero-eyebrow">Disponibile presto su App Store</div>
+  <div class="hero-eyebrow" data-i18n="hero_eyebrow">Disponibile su App Store</div>
 
-  <h1>Allenati.<br><em>Conosci il tuo corpo.</em><br>Progredisci.</h1>
+  <h1 data-i18n-html="hero_h1">Allenati.<br><em>Conosci il tuo corpo.</em><br>Progredisci.</h1>
 
-  <p class="hero-sub">L'app che unisce pesi, powerbuilding e calistenia in un unico sistema intelligente. Con tracciamento della fatica muscolare in tempo reale.</p>
+  <p class="hero-sub" data-i18n="hero_sub">L'app che unisce pesi, powerbuilding e calistenia in un unico sistema intelligente. Con tracciamento della fatica muscolare in tempo reale.</p>
 
   <div class="hero-actions">
-    <a href="#" class="btn-primary" onclick="return false;" title="Prossimamente disponibile">
+    <a href="https://apps.apple.com/it/app/aethel/id6780602824" class="btn-primary" target="_blank" rel="noopener">
       <svg class="apple-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
         <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
       </svg>
-      Scarica su App Store
+      <span data-i18n="btn_appstore">Scarica su App Store</span>
     </a>
   </div>
-  <p class="hero-note">Prossimamente. Per iOS 16 e versioni successive.</p>
+  <p class="hero-note" data-i18n="hero_note">Per iOS 16 e versioni successive.</p>
 </section>
 
 <!-- PHONE MOCKUP -->
@@ -882,16 +444,15 @@
     <div class="phone-screen">
       <div class="phone-header">
         <div>
-          <div class="phone-greeting">Buongiorno</div>
+          <div class="phone-greeting" data-i18n="phone_greeting">Buongiorno</div>
           <div class="phone-name">Marco</div>
         </div>
         <div class="phone-avatar"></div>
       </div>
-
       <div class="phone-card">
-        <div class="phone-card-label">Fatica muscolare</div>
-        <div class="phone-card-title">Petto · Tricipiti</div>
-        <div class="phone-card-sub">Recupero: ~48 ore</div>
+        <div class="phone-card-label" data-i18n="phone_fatigue_label">Fatica muscolare</div>
+        <div class="phone-card-title" data-i18n="phone_fatigue_title">Petto · Tricipiti</div>
+        <div class="phone-card-sub" data-i18n="phone_fatigue_sub">Recupero: ~48 ore</div>
         <div class="muscle-dots">
           <div class="muscle-dot high"></div>
           <div class="muscle-dot high"></div>
@@ -900,19 +461,17 @@
           <div class="muscle-dot rest"></div>
         </div>
       </div>
-
       <div class="phone-card">
-        <div class="phone-card-label">Prossimo allenamento</div>
+        <div class="phone-card-label" data-i18n="phone_next_label">Prossimo allenamento</div>
         <div class="phone-card-title">Push · A</div>
-        <div class="phone-card-sub">6 esercizi · ~55 min</div>
+        <div class="phone-card-sub" data-i18n="phone_next_sub">6 esercizi · ~55 min</div>
       </div>
-
       <div class="phone-card" style="flex:1">
         <div class="phone-card-label">Skill tree</div>
         <div class="phone-skill-row">
           <div class="skill-dot done"></div>
           <span class="skill-name">Muscle-up</span>
-          <span class="skill-badge">✓ Sbloccata</span>
+          <span class="skill-badge" data-i18n="skill_done">✓ Sbloccata</span>
         </div>
         <div class="phone-skill-row">
           <div class="skill-dot prog"></div>
@@ -922,7 +481,7 @@
         <div class="phone-skill-row">
           <div class="skill-dot lock"></div>
           <span class="skill-name">Planche</span>
-          <span class="skill-badge">Bloccata</span>
+          <span class="skill-badge" data-i18n="skill_locked">Bloccata</span>
         </div>
       </div>
     </div>
@@ -931,32 +490,28 @@
 
 <!-- FEATURES -->
 <section class="features" id="features">
-  <div class="section-label">Funzionalità</div>
-  <h2 class="section-title">Tutto quello che ti serve, <em>in un posto solo</em></h2>
-
+  <div class="section-label" data-i18n="feat_label">Funzionalità</div>
+  <h2 class="section-title" data-i18n-html="feat_title">Tutto quello che ti serve, <em>in un posto solo</em></h2>
   <div class="features-grid">
     <div class="feature-card">
       <div class="feature-icon icon-orange">🔥</div>
-      <h3>Fatica muscolare intelligente</h3>
-      <p>Ogni serie viene registrata e mappata sui muscoli coinvolti. Aethel calcola il recupero stimato così sai sempre quando e come puoi allenarti al massimo.</p>
+      <h3 data-i18n="feat1_h">Fatica muscolare intelligente</h3>
+      <p data-i18n="feat1_p">Ogni serie viene registrata e mappata sui muscoli coinvolti. Aethel calcola il recupero stimato così sai sempre quando e come puoi allenarti al massimo.</p>
     </div>
-
     <div class="feature-card">
       <div class="feature-icon icon-lilac">✦</div>
-      <h3>Skill tree dei movimenti</h3>
-      <p>Dai trazioni base alla planche, un albero delle progressioni ti guida passo passo. Sblocca nuove skill con la costanza, non con la fortuna.</p>
+      <h3 data-i18n="feat2_h">Skill tree dei movimenti</h3>
+      <p data-i18n="feat2_p">Dai trazioni base alla planche, un albero delle progressioni ti guida passo passo. Sblocca nuove skill con la costanza, non con la fortuna.</p>
     </div>
-
     <div class="feature-card">
       <div class="feature-icon icon-sage">📅</div>
-      <h3>Programmazione e calendario</h3>
-      <p>Pianifica la settimana, visualizza i giorni di recupero e tieni traccia della progressione dei carichi in ogni sessione.</p>
+      <h3 data-i18n="feat3_h">Programmazione e calendario</h3>
+      <p data-i18n="feat3_p">Pianifica la settimana, visualizza i giorni di recupero e tieni traccia della progressione dei carichi in ogni sessione.</p>
     </div>
-
     <div class="feature-card">
       <div class="feature-icon icon-coral">⚡</div>
-      <h3>Pesi e calistenia insieme</h3>
-      <p>Non scegliere tra palestra e calistenia. Aethel gestisce entrambi in un unico piano di allenamento coerente, adattando la fatica su tutti i gruppi muscolari.</p>
+      <h3 data-i18n="feat4_h">Pesi e calistenia insieme</h3>
+      <p data-i18n="feat4_p">Non scegliere tra palestra e calistenia. Aethel gestisce entrambi in un unico piano di allenamento coerente, adattando la fatica su tutti i gruppi muscolari.</p>
     </div>
   </div>
 </section>
@@ -965,15 +520,12 @@
 <section class="skill-section" id="skill">
   <div class="skill-section-inner">
     <div>
-      <div class="section-label">Skill Tree</div>
-      <h2 class="section-title">Sblocca le tue <em>abilità</em> come in un gioco</h2>
-      <p>Un sistema di progressioni ispirato ai RPG. Ogni movimento ha prerequisiti, varianti, e una storia da scrivere col tuo corpo. Quando completi un set chiave, senti il click di qualcosa che si apre.</p>
+      <div class="section-label" data-i18n="skill_label">Skill Tree</div>
+      <h2 class="section-title" data-i18n-html="skill_title">Sblocca le tue <em>abilità</em> come in un gioco</h2>
+      <p data-i18n="skill_body">Un sistema di progressioni ispirato ai RPG. Ogni movimento ha prerequisiti, varianti, e una storia da scrivere col tuo corpo. Quando completi un set chiave, senti il click di qualcosa che si apre.</p>
     </div>
-
     <div class="skill-tree-visual">
-      <svg viewBox="0 0 380 360" xmlns="http://www.w3.org/2000/svg" aria-label="Diagramma skill tree calistenia">
-
-        <!-- connectors -->
+      <svg viewBox="0 0 380 360" xmlns="http://www.w3.org/2000/svg">
         <line x1="190" y1="50" x2="100" y2="130" stroke="rgba(155,142,196,0.25)" stroke-width="1.5" stroke-dasharray="4,4"/>
         <line x1="190" y1="50" x2="280" y2="130" stroke="rgba(155,142,196,0.25)" stroke-width="1.5" stroke-dasharray="4,4"/>
         <line x1="100" y1="130" x2="60" y2="220" stroke="rgba(155,142,196,0.2)" stroke-width="1.5" stroke-dasharray="4,4"/>
@@ -981,45 +533,31 @@
         <line x1="280" y1="130" x2="230" y2="220" stroke="rgba(155,142,196,0.2)" stroke-width="1.5" stroke-dasharray="4,4"/>
         <line x1="280" y1="130" x2="320" y2="220" stroke="rgba(155,142,196,0.2)" stroke-width="1.5" stroke-dasharray="4,4"/>
         <line x1="230" y1="220" x2="190" y2="305" stroke="rgba(155,142,196,0.15)" stroke-width="1.5" stroke-dasharray="4,4"/>
-
-        <!-- ROOT: Trazione -->
         <circle cx="190" cy="50" r="30" fill="#7DAA8E"/>
         <text x="190" y="45" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="9" font-weight="500" fill="rgba(247,244,239,0.9)">TRAZIONE</text>
         <text x="190" y="57" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="8" fill="rgba(247,244,239,0.65)">✓</text>
-
-        <!-- LEVEL 2 -->
         <circle cx="100" cy="130" r="26" fill="#9B8EC4"/>
         <text x="100" y="126" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="8" font-weight="500" fill="rgba(247,244,239,0.9)">MUSCLE</text>
         <text x="100" y="136" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="8" font-weight="500" fill="rgba(247,244,239,0.9)">UP</text>
-
         <circle cx="280" cy="130" r="26" fill="#7DAA8E"/>
         <text x="280" y="126" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="8" font-weight="500" fill="rgba(247,244,239,0.9)">L-SIT</text>
         <text x="280" y="136" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="8" fill="rgba(247,244,239,0.65)">✓</text>
-
-        <!-- LEVEL 3 -->
         <circle cx="60" cy="220" r="22" fill="rgba(155,142,196,0.35)" stroke="rgba(155,142,196,0.5)" stroke-width="1.5"/>
         <text x="60" y="224" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="8" fill="rgba(247,244,239,0.5)">FRONT<tspan x="60" dy="9">LEVER</tspan></text>
-
         <circle cx="150" cy="220" r="22" fill="rgba(125,170,142,0.25)" stroke="rgba(125,170,142,0.4)" stroke-width="1.5"/>
         <text x="150" y="224" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="8" fill="rgba(247,244,239,0.4)">BACK<tspan x="150" dy="9">LEVER</tspan></text>
-
         <circle cx="230" cy="220" r="22" fill="rgba(155,142,196,0.3)" stroke="rgba(155,142,196,0.45)" stroke-width="1.5"/>
         <text x="230" y="224" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="8" fill="rgba(247,244,239,0.45)">V-SIT</text>
-
         <circle cx="320" cy="220" r="22" fill="rgba(80,70,60,0.6)" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
         <text x="320" y="224" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="8" fill="rgba(247,244,239,0.25)">HUMAN<tspan x="320" dy="9">FLAG</tspan></text>
-
-        <!-- LEVEL 4 -->
         <circle cx="190" cy="305" r="20" fill="rgba(50,42,35,0.8)" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
         <text x="190" y="309" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="8" fill="rgba(247,244,239,0.2)">PLANCHE</text>
-
-        <!-- legend -->
         <circle cx="20" cy="330" r="5" fill="#7DAA8E"/>
-        <text x="30" y="334" font-family="DM Sans,sans-serif" font-size="9" fill="rgba(247,244,239,0.5)">Completata</text>
+        <text x="30" y="334" font-family="DM Sans,sans-serif" font-size="9" fill="rgba(247,244,239,0.5)" data-i18n-svg="svg_completed">Completata</text>
         <circle cx="100" cy="330" r="5" fill="#9B8EC4"/>
-        <text x="110" y="334" font-family="DM Sans,sans-serif" font-size="9" fill="rgba(247,244,239,0.5)">In corso</text>
+        <text x="110" y="334" font-family="DM Sans,sans-serif" font-size="9" fill="rgba(247,244,239,0.5)" data-i18n-svg="svg_inprogress">In corso</text>
         <circle cx="175" cy="330" r="5" fill="rgba(80,70,60,0.8)" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
-        <text x="185" y="334" font-family="DM Sans,sans-serif" font-size="9" fill="rgba(247,244,239,0.5)">Bloccata</text>
+        <text x="185" y="334" font-family="DM Sans,sans-serif" font-size="9" fill="rgba(247,244,239,0.5)" data-i18n-svg="svg_locked">Bloccata</text>
       </svg>
     </div>
   </div>
@@ -1028,46 +566,30 @@
 <!-- LANGUAGES -->
 <section class="languages" id="languages">
   <div>
-    <div class="section-label">Lingue disponibili</div>
-    <h2 class="section-title">Aethel parla <em>la tua lingua</em></h2>
-    <p style="font-size:16px; color:var(--text-muted); line-height:1.8; font-weight:300; margin-top:0;">L'app è disponibile in italiano e inglese. Ulteriori lingue sono in programma in base alla crescita della community.</p>
+    <div class="section-label" data-i18n="lang_label">Lingue disponibili</div>
+    <h2 class="section-title" data-i18n-html="lang_title">Aethel parla <em>la tua lingua</em></h2>
+    <p style="font-size:16px;color:var(--text-muted);line-height:1.8;font-weight:300;margin-top:0;" data-i18n="lang_body">L'app è disponibile in italiano e inglese. Ulteriori lingue sono in programma in base alla crescita della community.</p>
   </div>
-
   <div class="lang-flags">
     <div class="lang-item">
       <div class="lang-flag">🇮🇹</div>
-      <div class="lang-info">
-        <h4>Italiano</h4>
-        <p>Lingua principale dell'app</p>
-      </div>
-      <span class="lang-badge badge-live">Disponibile</span>
+      <div class="lang-info"><h4>Italiano</h4><p data-i18n="lang_it_sub">Lingua principale dell'app</p></div>
+      <span class="lang-badge badge-live" data-i18n="badge_available">Disponibile</span>
     </div>
-
     <div class="lang-item">
       <div class="lang-flag">🇬🇧</div>
-      <div class="lang-info">
-        <h4>English</h4>
-        <p>Full app translation</p>
-      </div>
-      <span class="lang-badge badge-live">Available</span>
+      <div class="lang-info"><h4>English</h4><p data-i18n="lang_en_sub">Full app translation</p></div>
+      <span class="lang-badge badge-live" data-i18n="badge_available">Disponibile</span>
     </div>
-
     <div class="lang-item" style="opacity:0.6;">
       <div class="lang-flag">🇩🇪</div>
-      <div class="lang-info">
-        <h4>Deutsch</h4>
-        <p>In programma</p>
-      </div>
-      <span class="lang-badge badge-soon">Prossimamente</span>
+      <div class="lang-info"><h4>Deutsch</h4><p data-i18n="lang_soon_sub">In programma</p></div>
+      <span class="lang-badge badge-soon" data-i18n="badge_soon">Prossimamente</span>
     </div>
-
     <div class="lang-item" style="opacity:0.6;">
       <div class="lang-flag">🇪🇸</div>
-      <div class="lang-info">
-        <h4>Español</h4>
-        <p>In programma</p>
-      </div>
-      <span class="lang-badge badge-soon">Prossimamente</span>
+      <div class="lang-info"><h4>Español</h4><p data-i18n="lang_soon_sub">In programma</p></div>
+      <span class="lang-badge badge-soon" data-i18n="badge_soon">Prossimamente</span>
     </div>
   </div>
 </section>
@@ -1076,34 +598,20 @@
 <section class="pt-section" id="trainer">
   <div class="pt-card">
     <div class="pt-card-text">
-      <div class="section-label">Per i personal trainer</div>
-      <h2>Crea le schede dei tuoi clienti <em>fuori dall'app</em></h2>
-      <p>Scarica il template Excel, compilalo con gli allenamenti che assegni ai tuoi clienti e condividilo con loro. Lo importeranno direttamente in Aethel in pochi secondi.</p>
-
+      <div class="section-label" data-i18n="pt_label">Per i personal trainer</div>
+      <h2 data-i18n-html="pt_title">Crea le schede dei tuoi clienti <em>fuori dall'app</em></h2>
+      <p data-i18n="pt_body">Scarica il template Excel, compilalo con gli allenamenti che assegni ai tuoi clienti e condividilo con loro. Lo importeranno direttamente in Aethel in pochi secondi.</p>
       <div class="pt-steps">
-        <div class="pt-step">
-          <div class="pt-step-num">1</div>
-          <div class="pt-step-text"><strong>Scarica</strong> il template e aprilo in Excel, Numbers o Google Sheets.</div>
-        </div>
-        <div class="pt-step">
-          <div class="pt-step-num">2</div>
-          <div class="pt-step-text"><strong>Compila</strong> una riga per esercizio: stesso nome allenamento su più righe per raggrupparli automaticamente.</div>
-        </div>
-        <div class="pt-step">
-          <div class="pt-step-num">3</div>
-          <div class="pt-step-text"><strong>Condividi</strong> il file con il cliente, che lo importa da Profilo → Importa allenamenti.</div>
-        </div>
+        <div class="pt-step"><div class="pt-step-num">1</div><div class="pt-step-text" data-i18n-html="pt_step1"><strong>Scarica</strong> il template e aprilo in Excel, Numbers o Google Sheets.</div></div>
+        <div class="pt-step"><div class="pt-step-num">2</div><div class="pt-step-text" data-i18n-html="pt_step2"><strong>Compila</strong> una riga per esercizio: stesso nome allenamento su più righe per raggrupparli automaticamente.</div></div>
+        <div class="pt-step"><div class="pt-step-num">3</div><div class="pt-step-text" data-i18n-html="pt_step3"><strong>Condividi</strong> il file con il cliente, che lo importa da Profilo → Importa allenamenti.</div></div>
       </div>
-
       <a href="assets/Aethel_Template_Allenamenti.xlsx" download class="btn-download">
-        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M12 3v12m0 0l-4.5-4.5M12 15l4.5-4.5M5 19h14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-        Scarica template Excel
+        <svg viewBox="0 0 24 24" fill="none"><path d="M12 3v12m0 0l-4.5-4.5M12 15l4.5-4.5M5 19h14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span data-i18n="pt_btn">Scarica template Excel</span>
       </a>
-      <p class="pt-download-note">Formato .xlsx · Include foglio istruzioni · Compatibile con il limite del piano Free (3 allenamenti)</p>
+      <p class="pt-download-note" data-i18n="pt_note">Formato .xlsx · Include foglio istruzioni · Compatibile con il limite del piano Free (3 allenamenti)</p>
     </div>
-
     <div class="pt-preview">
       <div class="pt-preview-header">
         <div class="pt-preview-dots"><span></span><span></span><span></span></div>
@@ -1112,47 +620,19 @@
       <table class="pt-table">
         <thead>
           <tr>
-            <th>Nome allenamento</th>
-            <th>Tipo</th>
-            <th>Esercizio</th>
-            <th>Serie</th>
-            <th>Rip.</th>
+            <th data-i18n="th_name">Nome allenamento</th>
+            <th data-i18n="th_type">Tipo</th>
+            <th data-i18n="th_exercise">Esercizio</th>
+            <th data-i18n="th_sets">Serie</th>
+            <th data-i18n="th_reps">Rip.</th>
             <th>Kg</th>
           </tr>
         </thead>
         <tbody>
-          <tr class="example">
-            <td>Push Day</td>
-            <td>Palestra</td>
-            <td>Panca Piana</td>
-            <td>4</td>
-            <td>6-10</td>
-            <td>60</td>
-          </tr>
-          <tr class="example">
-            <td>Push Day</td>
-            <td>Palestra</td>
-            <td>Military Press</td>
-            <td>3</td>
-            <td>8-12</td>
-            <td>30</td>
-          </tr>
-          <tr class="example">
-            <td>Pull Day</td>
-            <td>Palestra</td>
-            <td>Trazioni</td>
-            <td>4</td>
-            <td>6-10</td>
-            <td>0</td>
-          </tr>
-          <tr class="example">
-            <td>Pull Day</td>
-            <td>Palestra</td>
-            <td>Rematore Bilanciere</td>
-            <td>3</td>
-            <td>8-12</td>
-            <td>40</td>
-          </tr>
+          <tr class="example"><td>Push Day</td><td data-i18n="type_gym">Palestra</td><td data-i18n="ex_bench">Panca Piana</td><td>4</td><td>6-10</td><td>60</td></tr>
+          <tr class="example"><td>Push Day</td><td data-i18n="type_gym">Palestra</td><td data-i18n="ex_press">Military Press</td><td>3</td><td>8-12</td><td>30</td></tr>
+          <tr class="example"><td>Pull Day</td><td data-i18n="type_gym">Palestra</td><td data-i18n="ex_pullup">Trazioni</td><td>4</td><td>6-10</td><td>0</td></tr>
+          <tr class="example"><td>Pull Day</td><td data-i18n="type_gym">Palestra</td><td data-i18n="ex_row">Rematore Bilanciere</td><td>3</td><td>8-12</td><td>40</td></tr>
         </tbody>
       </table>
     </div>
@@ -1162,31 +642,131 @@
 <!-- CTA -->
 <section class="cta-section">
   <div class="cta-bg"></div>
-  <h2>Pronto a iniziare il tuo <em>viaggio</em>?</h2>
-  <p>Unisciti ai primi a scoprire Aethel quando sarà disponibile su App Store.</p>
-
+  <h2 data-i18n-html="cta_title">Pronto a iniziare il tuo <em>viaggio</em>?</h2>
+  <p data-i18n="cta_sub">Unisciti alla community di Aethel su App Store.</p>
   <div class="hero-actions">
-    <a href="#" class="btn-primary" onclick="return false;" title="Prossimamente disponibile">
-      <svg class="apple-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-        <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
-      </svg>
-      Scarica su App Store
+    <a href="https://apps.apple.com/it/app/aethel/id6780602824" class="btn-primary" target="_blank" rel="noopener">
+      <svg class="apple-icon" viewBox="0 0 24 24"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+      <span data-i18n="btn_appstore">Scarica su App Store</span>
     </a>
   </div>
-  <p style="margin-top:16px; font-size:13px; color:var(--text-muted); margin-bottom:0;">Prossimamente. iOS 16+.</p>
+  <p style="margin-top:16px;font-size:13px;color:var(--text-muted);margin-bottom:0;" data-i18n="hero_note">Per iOS 16 e versioni successive.</p>
 </section>
 
 <!-- FOOTER -->
 <footer>
   <span class="footer-logo">Aethel</span>
   <ul class="footer-links">
-    <li><a href="privacy.html">Privacy</a></li>
-    <li><a href="terms.html">Termini</a></li>
-    <li><a href="support.html">Supporto</a></li>
-    <li><a href="mailto:info@aethel.app">Contatti</a></li>
+    <li><a href="privacy.html" data-i18n="footer_privacy">Privacy</a></li>
+    <li><a href="terms.html" data-i18n="footer_terms">Termini</a></li>
+    <li><a href="support.html" data-i18n="footer_support">Supporto</a></li>
+    <li><a href="mailto:info@aethel.app" data-i18n="footer_contact">Contatti</a></li>
   </ul>
-  <span class="footer-copy">© 2025 Aethel. Tutti i diritti riservati.</span>
+  <span class="footer-copy">© 2025 Aethel.</span>
 </footer>
+
+<script>
+const i18n = {
+  it: {
+    nav_features: "Funzionalità", nav_skill: "Skill Tree", nav_languages: "Lingue", nav_trainer: "Personal trainer",
+    hero_eyebrow: "Disponibile su App Store",
+    hero_h1: "Allenati.<br><em>Conosci il tuo corpo.</em><br>Progredisci.",
+    hero_sub: "L'app che unisce pesi, powerbuilding e calistenia in un unico sistema intelligente. Con tracciamento della fatica muscolare in tempo reale.",
+    btn_appstore: "Scarica su App Store",
+    hero_note: "Per iOS 16 e versioni successive.",
+    phone_greeting: "Buongiorno", phone_fatigue_label: "Fatica muscolare", phone_fatigue_title: "Petto · Tricipiti",
+    phone_fatigue_sub: "Recupero: ~48 ore", phone_next_label: "Prossimo allenamento", phone_next_sub: "6 esercizi · ~55 min",
+    skill_done: "✓ Sbloccata", skill_locked: "Bloccata",
+    feat_label: "Funzionalità", feat_title: "Tutto quello che ti serve, <em>in un posto solo</em>",
+    feat1_h: "Fatica muscolare intelligente", feat1_p: "Ogni serie viene registrata e mappata sui muscoli coinvolti. Aethel calcola il recupero stimato così sai sempre quando e come puoi allenarti al massimo.",
+    feat2_h: "Skill tree dei movimenti", feat2_p: "Dai trazioni base alla planche, un albero delle progressioni ti guida passo passo. Sblocca nuove skill con la costanza, non con la fortuna.",
+    feat3_h: "Programmazione e calendario", feat3_p: "Pianifica la settimana, visualizza i giorni di recupero e tieni traccia della progressione dei carichi in ogni sessione.",
+    feat4_h: "Pesi e calistenia insieme", feat4_p: "Non scegliere tra palestra e calistenia. Aethel gestisce entrambi in un unico piano di allenamento coerente, adattando la fatica su tutti i gruppi muscolari.",
+    skill_label: "Skill Tree", skill_title: "Sblocca le tue <em>abilità</em> come in un gioco",
+    skill_body: "Un sistema di progressioni ispirato ai RPG. Ogni movimento ha prerequisiti, varianti, e una storia da scrivere col tuo corpo. Quando completi un set chiave, senti il click di qualcosa che si apre.",
+    svg_completed: "Completata", svg_inprogress: "In corso", svg_locked: "Bloccata",
+    lang_label: "Lingue disponibili", lang_title: "Aethel parla <em>la tua lingua</em>",
+    lang_body: "L'app è disponibile in italiano e inglese. Ulteriori lingue sono in programma in base alla crescita della community.",
+    lang_it_sub: "Lingua principale dell'app", lang_en_sub: "Traduzione completa", lang_soon_sub: "In programma",
+    badge_available: "Disponibile", badge_soon: "Prossimamente",
+    pt_label: "Per i personal trainer", pt_title: "Crea le schede dei tuoi clienti <em>fuori dall'app</em>",
+    pt_body: "Scarica il template Excel, compilalo con gli allenamenti che assegni ai tuoi clienti e condividilo con loro. Lo importeranno direttamente in Aethel in pochi secondi.",
+    pt_step1: "<strong>Scarica</strong> il template e aprilo in Excel, Numbers o Google Sheets.",
+    pt_step2: "<strong>Compila</strong> una riga per esercizio: stesso nome allenamento su più righe per raggrupparli automaticamente.",
+    pt_step3: "<strong>Condividi</strong> il file con il cliente, che lo importa da Profilo → Importa allenamenti.",
+    pt_btn: "Scarica template Excel",
+    pt_note: "Formato .xlsx · Include foglio istruzioni · Compatibile con il limite del piano Free (3 allenamenti)",
+    th_name: "Nome allenamento", th_type: "Tipo", th_exercise: "Esercizio", th_sets: "Serie", th_reps: "Rip.",
+    type_gym: "Palestra", ex_bench: "Panca Piana", ex_press: "Military Press", ex_pullup: "Trazioni", ex_row: "Rematore Bilanciere",
+    cta_title: "Pronto a iniziare il tuo <em>viaggio</em>?", cta_sub: "Unisciti alla community di Aethel su App Store.",
+    footer_privacy: "Privacy", footer_terms: "Termini", footer_support: "Supporto", footer_contact: "Contatti"
+  },
+  en: {
+    nav_features: "Features", nav_skill: "Skill Tree", nav_languages: "Languages", nav_trainer: "Personal trainers",
+    hero_eyebrow: "Now on the App Store",
+    hero_h1: "Train.<br><em>Know your body.</em><br>Progress.",
+    hero_sub: "The app that unites weights, powerbuilding and calisthenics in one intelligent system. With real-time muscle fatigue tracking.",
+    btn_appstore: "Download on the App Store",
+    hero_note: "For iOS 16 and later.",
+    phone_greeting: "Good morning", phone_fatigue_label: "Muscle fatigue", phone_fatigue_title: "Chest · Triceps",
+    phone_fatigue_sub: "Recovery: ~48 hrs", phone_next_label: "Next workout", phone_next_sub: "6 exercises · ~55 min",
+    skill_done: "✓ Unlocked", skill_locked: "Locked",
+    feat_label: "Features", feat_title: "Everything you need, <em>in one place</em>",
+    feat1_h: "Intelligent muscle fatigue", feat1_p: "Every set is logged and mapped to the muscles it targets. Aethel estimates recovery time so you always know when and how to train at your best.",
+    feat2_h: "Movement skill tree", feat2_p: "From basic pull-ups to the planche, a progression tree guides you step by step. Unlock new skills through consistency, not luck.",
+    feat3_h: "Programming & calendar", feat3_p: "Plan your week, see recovery days, and track load progression across every session.",
+    feat4_h: "Weights & calisthenics together", feat4_p: "You don't have to choose. Aethel manages both in one coherent training plan, tracking fatigue across all muscle groups.",
+    skill_label: "Skill Tree", skill_title: "Unlock your <em>skills</em> like a game",
+    skill_body: "A progression system inspired by RPGs. Every movement has prerequisites, variants, and a story to write with your body. When you nail a key move, you feel something click.",
+    svg_completed: "Completed", svg_inprogress: "In progress", svg_locked: "Locked",
+    lang_label: "Available languages", lang_title: "Aethel speaks <em>your language</em>",
+    lang_body: "The app is available in Italian and English. More languages are planned based on community growth.",
+    lang_it_sub: "App's primary language", lang_en_sub: "Full translation", lang_soon_sub: "Coming soon",
+    badge_available: "Available", badge_soon: "Coming soon",
+    pt_label: "For personal trainers", pt_title: "Create your clients' plans <em>outside the app</em>",
+    pt_body: "Download the Excel template, fill it with your clients' workouts and share it with them. They'll import it directly into Aethel in seconds.",
+    pt_step1: "<strong>Download</strong> the template and open it in Excel, Numbers or Google Sheets.",
+    pt_step2: "<strong>Fill in</strong> one row per exercise. Use the same workout name on multiple rows to group them automatically.",
+    pt_step3: "<strong>Share</strong> the file with your client, who imports it via Profile → Import workouts.",
+    pt_btn: "Download Excel template",
+    pt_note: ".xlsx format · Includes instructions sheet · Compatible with the Free plan limit (3 workouts)",
+    th_name: "Workout name", th_type: "Type", th_exercise: "Exercise", th_sets: "Sets", th_reps: "Reps",
+    type_gym: "Gym", ex_bench: "Bench Press", ex_press: "Military Press", ex_pullup: "Pull-ups", ex_row: "Barbell Row",
+    cta_title: "Ready to start your <em>journey</em>?", cta_sub: "Join the Aethel community on the App Store.",
+    footer_privacy: "Privacy", footer_terms: "Terms", footer_support: "Support", footer_contact: "Contact"
+  }
+};
+
+let currentLang = 'it';
+
+function setLang(lang) {
+  currentLang = lang;
+  const t = i18n[lang];
+
+  // Text nodes
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    if (t[el.dataset.i18n] !== undefined) el.textContent = t[el.dataset.i18n];
+  });
+
+  // HTML nodes (contain <em> etc.)
+  document.querySelectorAll('[data-i18n-html]').forEach(el => {
+    if (t[el.dataset.i18nHtml] !== undefined) el.innerHTML = t[el.dataset.i18nHtml];
+  });
+
+  // SVG text nodes
+  document.querySelectorAll('[data-i18n-svg]').forEach(el => {
+    if (t[el.dataset.i18nSvg] !== undefined) el.textContent = t[el.dataset.i18nSvg];
+  });
+
+  // Update label & active state
+  document.getElementById('lang-label').textContent = lang.toUpperCase();
+  document.getElementById('btn-it').classList.toggle('active', lang === 'it');
+  document.getElementById('btn-en').classList.toggle('active', lang === 'en');
+
+  // Update html lang attribute
+  document.documentElement.lang = lang;
+}
+</script>
 
 </body>
 </html>
