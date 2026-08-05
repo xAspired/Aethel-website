@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aethel — Elimina il tuo account</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --cream: #F7F4EF;
+    --cream-dark: #EDE9E1;
+    --warm-white: #FDFCFA;
+    --orange: #F07C3A;
+    --coral: #E8634A;
+    --lilac: #9B8EC4;
+    --sage: #7DAA8E;
+    --text-dark: #1C1814;
+    --text-mid: #4A4540;
+    --text-muted: #8C8580;
+    --card-bg: #FDFCFA;
+    --border: rgba(70,60,50,0.10);
+    --radius-sm: 12px;
+    --radius-md: 20px;
+    --radius-lg: 32px;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    color: var(--text-dark);
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 48px;
+    background: rgba(247,244,239,0.85);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .nav-logo {
+    font-family: 'DM Serif Display', serif;
+    font-size: 22px;
+    color: var(--text-dark);
+    letter-spacing: -0.3px;
+    text-decoration: none;
+  }
+
+  .nav-back {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    color: var(--text-mid);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .nav-back:hover { color: var(--text-dark); }
+
+  .nav-right { display: flex; align-items: center; gap: 20px; }
+
+  /* LANG SWITCHER */
+  .nav-lang {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 14px;
+    color: var(--text-muted);
+    cursor: pointer;
+    padding: 6px 12px;
+    border-radius: 99px;
+    border: 1px solid var(--border);
+    background: transparent;
+    font-family: 'DM Sans', sans-serif;
+    transition: background 0.2s, color 0.2s;
+    position: relative;
+  }
+  .nav-lang:hover { background: var(--cream-dark); color: var(--text-mid); }
+
+  .lang-dropdown {
+    display: none;
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    min-width: 130px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.08);
+    z-index: 200;
+  }
+  .lang-dropdown.open { display: block; }
+
+  .lang-dropdown button {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    padding: 10px 16px;
+    font-size: 14px;
+    color: var(--text-mid);
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    transition: background 0.15s;
+    text-align: left;
+  }
+  .lang-dropdown button:hover { background: var(--cream); color: var(--text-dark); }
+  .lang-dropdown button.active { color: var(--orange); font-weight: 500; }
+
+  #lang-label { font-size: 14px; }
+
+  /* PAGE HEADER */
+  .page-hero {
+    padding: 150px 24px 60px;
+    max-width: 760px;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .hero-eyebrow {
+    display: inline-block;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--orange);
+    background: rgba(240,124,58,0.10);
+    padding: 6px 16px;
+    border-radius: 99px;
+    margin-bottom: 24px;
+  }
+
+  .page-hero h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(36px, 6vw, 56px);
+    line-height: 1.08;
+    letter-spacing: -1.5px;
+    color: var(--text-dark);
+    margin-bottom: 20px;
+  }
+  .page-hero h1 em { font-style: italic; color: var(--coral); }
+
+  .page-hero p {
+    font-size: 17px;
+    font-weight: 300;
+    color: var(--text-mid);
+    line-height: 1.75;
+    max-width: 560px;
+    margin: 0 auto;
+  }
+
+  /* CONTENT */
+  .content { max-width: 760px; margin: 0 auto; padding: 20px 24px 100px; }
+
+  .section-label {
+    font-size: 12px; font-weight: 500; letter-spacing: 2px; text-transform: uppercase;
+    color: var(--text-muted); margin-bottom: 16px;
+  }
+
+  .path-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 56px; }
+
+  .path-card {
+    background: var(--card-bg); border-radius: var(--radius-md);
+    border: 1px solid var(--border); padding: 28px;
+  }
+  .path-card.recommended { border-color: rgba(240,124,58,0.35); background: linear-gradient(135deg, rgba(240,124,58,0.05), rgba(232,99,74,0.03)); }
+
+  .path-badge {
+    display: inline-block; font-size: 11px; font-weight: 500; letter-spacing: 0.5px;
+    color: var(--orange); background: rgba(240,124,58,0.12);
+    padding: 4px 10px; border-radius: 99px; margin-bottom: 14px;
+  }
+
+  .path-card h3 { font-size: 18px; font-weight: 500; color: var(--text-dark); margin-bottom: 14px; letter-spacing: -0.3px; }
+
+  .steps { display: flex; flex-direction: column; gap: 12px; margin-bottom: 6px; }
+  .step { display: flex; align-items: flex-start; gap: 12px; }
+  .step-num {
+    width: 24px; height: 24px; border-radius: 50%; background: var(--warm-white);
+    border: 1px solid var(--border); display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 500; color: var(--coral); flex-shrink: 0;
+  }
+  .step-text { font-size: 14px; color: var(--text-mid); font-weight: 300; line-height: 1.6; padding-top: 2px; }
+  .step-text strong { font-weight: 500; color: var(--text-dark); }
+
+  .path-note { font-size: 13px; color: var(--text-muted); margin-top: 16px; line-height: 1.6; }
+  .path-note a { color: var(--orange); text-decoration: none; font-weight: 500; }
+  .path-note a:hover { text-decoration: underline; }
+
+  .section-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 26px; letter-spacing: -0.5px; color: var(--text-dark);
+    margin-bottom: 20px;
+  }
+
+  .data-list { list-style: none; margin-bottom: 48px; }
+  .data-list li {
+    display: flex; align-items: flex-start; gap: 12px;
+    padding: 14px 0; border-bottom: 1px solid var(--border);
+    font-size: 15px; color: var(--text-mid); font-weight: 300; line-height: 1.6;
+  }
+  .data-list li:last-child { border-bottom: none; }
+  .data-list .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--sage); margin-top: 8px; flex-shrink: 0; }
+  .data-list strong { font-weight: 500; color: var(--text-dark); }
+
+  .info-box {
+    background: var(--cream-dark); border-radius: var(--radius-sm);
+    border: 1px solid var(--border); padding: 20px 24px; margin-bottom: 48px;
+  }
+  .info-box p { font-size: 14px; color: var(--text-mid); font-weight: 300; line-height: 1.7; }
+  .info-box p + p { margin-top: 10px; }
+  .info-box strong { font-weight: 500; color: var(--text-dark); }
+
+  .contact-card {
+    text-align: center; padding: 40px 24px;
+    background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius-md);
+  }
+  .contact-card p { font-size: 14px; color: var(--text-muted); font-weight: 300; margin-bottom: 18px; }
+  .btn-email {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--text-dark); color: var(--cream);
+    padding: 14px 26px; border-radius: var(--radius-sm);
+    font-size: 15px; font-weight: 500; text-decoration: none;
+    transition: background 0.2s, transform 0.15s;
+  }
+  .btn-email:hover { background: #2D2820; transform: translateY(-1px); }
+
+  /* FOOTER */
+  footer {
+    padding: 40px 48px; display: flex; align-items: center; justify-content: space-between;
+    border-top: 1px solid var(--border); flex-wrap: wrap; gap: 16px;
+  }
+  .footer-logo { font-family: 'DM Serif Display', serif; font-size: 18px; color: var(--text-dark); text-decoration: none; }
+  .footer-links { display: flex; gap: 28px; list-style: none; }
+  .footer-links a { font-size: 14px; color: var(--text-muted); text-decoration: none; transition: color 0.2s; }
+  .footer-links a:hover { color: var(--text-dark); }
+  .footer-copy { font-size: 13px; color: var(--text-muted); font-weight: 300; }
+
+  @media (max-width: 700px) {
+    nav { padding: 16px 20px; }
+    .path-grid { grid-template-columns: 1fr; }
+    footer { flex-direction: column; align-items: flex-start; padding: 32px 20px; }
+    .footer-links { flex-wrap: wrap; gap: 16px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="index.html" class="nav-back">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+      <path d="M10 3.5L5 8l5 4.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    <span data-i18n="nav_back">Aethel</span>
+  </a>
+  <div class="nav-right">
+    <div class="nav-lang" id="lang-toggle" onclick="toggleDropdown(event)" aria-label="Cambia lingua">
+      <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+        <circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.2"/>
+        <path d="M8 1.5C8 1.5 6 4 6 8s2 6.5 2 6.5M8 1.5C8 1.5 10 4 10 8s-2 6.5-2 6.5M1.5 8h13" stroke="currentColor" stroke-width="1.2"/>
+      </svg>
+      <span id="lang-label">IT</span>
+      <svg width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden="true">
+        <path d="M2.5 4L5 6.5 7.5 4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+      </svg>
+      <div class="lang-dropdown" id="lang-dropdown">
+        <button onclick="pickLang(event,'it')" id="btn-it" class="active">🇮🇹 Italiano</button>
+        <button onclick="pickLang(event,'en')" id="btn-en">🇬🇧 English</button>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- HEADER -->
+<section class="page-hero">
+  <div class="hero-eyebrow" data-i18n="eyebrow">Privacy &amp; Dati</div>
+  <h1 data-i18n-html="title">Elimina il tuo <em>account</em></h1>
+  <p data-i18n="subtitle">Puoi eliminare in modo permanente il tuo account Aethel e tutti i dati associati in qualsiasi momento. Ecco come.</p>
+</section>
+
+<!-- CONTENT -->
+<div class="content">
+
+  <div class="path-grid">
+    <div class="path-card recommended">
+      <div class="path-badge" data-i18n="path_app_badge">Consigliato · Immediato</div>
+      <h3 data-i18n="path_app_title">Dall'app</h3>
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-text" data-i18n-html="path_app_step1">Apri <strong>Aethel</strong> e vai su <strong>Profilo</strong>.</div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-text" data-i18n-html="path_app_step2">Scorri fino a <strong>Impostazioni account</strong>.</div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-text" data-i18n-html="path_app_step3">Tocca <strong>Elimina account</strong> e conferma.</div>
+        </div>
+      </div>
+      <p class="path-note" data-i18n="path_app_note">L'eliminazione avviene subito: al termine non potrai più accedere e i tuoi dati saranno rimossi definitivamente.</p>
+    </div>
+
+    <div class="path-card">
+      <div class="path-badge" style="color:var(--lilac);background:rgba(155,142,196,0.12);" data-i18n="path_email_badge">Senza l'app installata</div>
+      <h3 data-i18n="path_email_title">Via email</h3>
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-text" data-i18n-html="path_email_step1">Scrivi a <strong>studiokrevn@gmail.com</strong> dall'indirizzo email collegato al tuo account.</div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-text" data-i18n-html="path_email_step2">Scrivi in oggetto <strong>"Richiesta eliminazione account"</strong>.</div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-text" data-i18n-html="path_email_step3">Ricevi conferma quando l'eliminazione è completata.</div>
+        </div>
+      </div>
+      <p class="path-note" data-i18n="path_email_note">Elaboriamo le richieste via email entro 7 giorni lavorativi.</p>
+    </div>
+  </div>
+
+  <div class="section-label" data-i18n="what_label">Cosa viene eliminato</div>
+  <h2 class="section-title" data-i18n="what_title">Tutto ciò che ti riguarda</h2>
+  <ul class="data-list">
+    <li><span class="dot"></span><span><strong data-i18n="what1_h">Il tuo account</strong> <span data-i18n="what1_p">— email e collegamento con Apple o Google Sign-In, definitivamente scollegati.</span></span></li>
+    <li><span class="dot"></span><span><strong data-i18n="what2_h">Le tue schede e il tuo storico</strong> <span data-i18n="what2_p">— allenamenti salvati, sessioni completate, record personali.</span></span></li>
+    <li><span class="dot"></span><span><strong data-i18n="what3_h">I tuoi progressi</strong> <span data-i18n="what3_p">— streak, volume settimanale, calendario e programmazione.</span></span></li>
+    <li><span class="dot"></span><span><strong data-i18n="what4_h">Le impostazioni del profilo</strong> <span data-i18n="what4_p">— nome, piano, preferenze, eventuale palestra partner collegata.</span></span></li>
+  </ul>
+
+  <div class="info-box">
+    <p data-i18n-html="note1"><strong>Schede condivise con un codice:</strong> se hai generato codici di condivisione per i tuoi allenamenti, restano utilizzabili da chi li ha già ricevuti, ma non risulteranno più collegati al tuo account.</p>
+    <p data-i18n-html="note2"><strong>Acquisti App Store / Google Play:</strong> lo storico degli acquisti in-app resta gestito da Apple o Google secondo le loro policy — Aethel non lo controlla e non può eliminarlo.</p>
+  </div>
+
+  <div class="contact-card">
+    <p data-i18n="contact_p">Domande sull'eliminazione dei tuoi dati?</p>
+    <a href="mailto:support@aethel.app" class="btn-email">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M4 6h16v12H4z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M4 7l8 6 8-6" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
+      <span data-i18n="contact_btn">Scrivi a support@aethel.app</span>
+    </a>
+  </div>
+
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <a href="index.html" class="footer-logo">Aethel</a>
+  <ul class="footer-links">
+    <li><a href="privacy.html" data-i18n="footer_privacy">Privacy</a></li>
+    <li><a href="terms.html" data-i18n="footer_terms">Termini</a></li>
+    <li><a href="support.html" data-i18n="footer_support">Supporto</a></li>
+    <li><a href="mailto:support@aethel.app" data-i18n="footer_contact">Contatti</a></li>
+  </ul>
+  <span class="footer-copy">© 2025 Aethel.</span>
+</footer>
+
+<script>
+function toggleDropdown(e) {
+  e.stopPropagation();
+  document.getElementById('lang-dropdown').classList.toggle('open');
+}
+function pickLang(e, lang) {
+  e.stopPropagation();
+  document.getElementById('lang-dropdown').classList.remove('open');
+  setLang(lang);
+}
+document.addEventListener('click', function() {
+  var d = document.getElementById('lang-dropdown');
+  if (d) d.classList.remove('open');
+});
+
+const i18n = {
+  it: {
+    nav_back: "Aethel",
+    eyebrow: "Privacy & Dati",
+    title: "Elimina il tuo <em>account</em>",
+    subtitle: "Puoi eliminare in modo permanente il tuo account Aethel e tutti i dati associati in qualsiasi momento. Ecco come.",
+    path_app_badge: "Consigliato · Immediato",
+    path_app_title: "Dall'app",
+    path_app_step1: "Apri <strong>Aethel</strong> e vai su <strong>Profilo</strong>.",
+    path_app_step2: "Scorri fino a <strong>Impostazioni account</strong>.",
+    path_app_step3: "Tocca <strong>Elimina account</strong> e conferma.",
+    path_app_note: "L'eliminazione avviene subito: al termine non potrai più accedere e i tuoi dati saranno rimossi definitivamente.",
+    path_email_badge: "Senza l'app installata",
+    path_email_title: "Via email",
+    path_email_step1: "Scrivi a <strong>support@aethel.app</strong> dall'indirizzo email collegato al tuo account.",
+    path_email_step2: "Scrivi in oggetto <strong>\"Richiesta eliminazione account\"</strong>.",
+    path_email_step3: "Ricevi conferma quando l'eliminazione è completata.",
+    path_email_note: "Elaboriamo le richieste via email entro 7 giorni lavorativi.",
+    what_label: "Cosa viene eliminato",
+    what_title: "Tutto ciò che ti riguarda",
+    what1_h: "Il tuo account", what1_p: "— email e collegamento con Apple o Google Sign-In, definitivamente scollegati.",
+    what2_h: "Le tue schede e il tuo storico", what2_p: "— allenamenti salvati, sessioni completate, record personali.",
+    what3_h: "I tuoi progressi", what3_p: "— streak, volume settimanale, calendario e programmazione.",
+    what4_h: "Le impostazioni del profilo", what4_p: "— nome, piano, preferenze, eventuale palestra partner collegata.",
+    note1: "<strong>Schede condivise con un codice:</strong> se hai generato codici di condivisione per i tuoi allenamenti, restano utilizzabili da chi li ha già ricevuti, ma non risulteranno più collegati al tuo account.",
+    note2: "<strong>Acquisti App Store / Google Play:</strong> lo storico degli acquisti in-app resta gestito da Apple o Google secondo le loro policy — Aethel non lo controlla e non può eliminarlo.",
+    contact_p: "Domande sull'eliminazione dei tuoi dati?",
+    contact_btn: "Scrivi a support@aethel.app",
+    footer_privacy: "Privacy", footer_terms: "Termini", footer_support: "Supporto", footer_contact: "Contatti"
+  },
+  en: {
+    nav_back: "Aethel",
+    eyebrow: "Privacy & Data",
+    title: "Delete your <em>account</em>",
+    subtitle: "You can permanently delete your Aethel account and all associated data at any time. Here's how.",
+    path_app_badge: "Recommended · Instant",
+    path_app_title: "From the app",
+    path_app_step1: "Open <strong>Aethel</strong> and go to <strong>Profile</strong>.",
+    path_app_step2: "Scroll down to <strong>Account settings</strong>.",
+    path_app_step3: "Tap <strong>Delete account</strong> and confirm.",
+    path_app_note: "Deletion happens immediately: once done, you won't be able to sign in again and your data will be permanently removed.",
+    path_email_badge: "Without the app installed",
+    path_email_title: "By email",
+    path_email_step1: "Email <strong>support@aethel.app</strong> from the address linked to your account.",
+    path_email_step2: "Use the subject line <strong>\"Account deletion request\"</strong>.",
+    path_email_step3: "You'll get a confirmation once the deletion is complete.",
+    path_email_note: "We process email requests within 7 business days.",
+    what_label: "What gets deleted",
+    what_title: "Everything about you",
+    what1_h: "Your account", what1_p: "— email and Apple/Google Sign-In link, permanently disconnected.",
+    what2_h: "Your workouts and history", what2_p: "— saved routines, completed sessions, personal records.",
+    what3_h: "Your progress", what3_p: "— streaks, weekly volume, calendar and programming.",
+    what4_h: "Profile settings", what4_p: "— name, plan, preferences, and any linked partner gym.",
+    note1: "<strong>Workouts shared via code:</strong> if you've generated share codes for your workouts, they remain usable by people who already have them, but will no longer be linked to your account.",
+    note2: "<strong>App Store / Google Play purchases:</strong> your in-app purchase history remains managed by Apple or Google under their own policies — Aethel doesn't control it and can't delete it.",
+    contact_p: "Questions about deleting your data?",
+    contact_btn: "Email support@aethel.app",
+    footer_privacy: "Privacy", footer_terms: "Terms", footer_support: "Support", footer_contact: "Contact"
+  }
+};
+
+function setLang(lang) {
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    if (i18n[lang][el.dataset.i18n] !== undefined) el.textContent = i18n[lang][el.dataset.i18n];
+  });
+  document.querySelectorAll('[data-i18n-html]').forEach(el => {
+    if (i18n[lang][el.dataset.i18nHtml] !== undefined) el.innerHTML = i18n[lang][el.dataset.i18nHtml];
+  });
+  document.getElementById('lang-label').textContent = lang.toUpperCase();
+  document.getElementById('btn-it').classList.toggle('active', lang === 'it');
+  document.getElementById('btn-en').classList.toggle('active', lang === 'en');
+  document.documentElement.lang = lang;
+}
+</script>
+
+</body>
+</html>
