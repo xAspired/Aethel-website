@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Aethel — Scarica l'app</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --cream: #F7F4EF;
+    --cream-dark: #EDE9E1;
+    --warm-white: #FDFCFA;
+    --orange: #F07C3A;
+    --coral: #E8634A;
+    --lilac: #9B8EC4;
+    --sage: #7DAA8E;
+    --text-dark: #1C1814;
+    --text-mid: #4A4540;
+    --text-muted: #8C8580;
+    --card-bg: #FDFCFA;
+    --border: rgba(70,60,50,0.10);
+    --radius-sm: 12px;
+    --radius-md: 20px;
+    --radius-lg: 32px;
+  }
+
+  html, body { height: 100%; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    color: var(--text-dark);
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .bg-orb {
+    position: fixed;
+    border-radius: 50%;
+    filter: blur(70px);
+    opacity: 0.32;
+    pointer-events: none;
+    z-index: 0;
+  }
+  .orb1 { width: 340px; height: 340px; background: var(--orange); top: -8%; left: -18%; }
+  .orb2 { width: 300px; height: 300px; background: var(--lilac); bottom: -10%; right: -18%; }
+  .orb3 { width: 200px; height: 200px; background: var(--sage); top: 40%; right: -12%; opacity: 0.22; }
+
+  main {
+    position: relative;
+    z-index: 1;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 48px 24px 40px;
+    max-width: 480px;
+    margin: 0 auto;
+    width: 100%;
+  }
+
+  .logo {
+    font-family: 'DM Serif Display', serif;
+    font-size: 26px;
+    letter-spacing: -0.3px;
+    color: var(--text-dark);
+    margin-bottom: 28px;
+  }
+
+  .eyebrow {
+    display: inline-block;
+    font-size: 11.5px;
+    font-weight: 500;
+    letter-spacing: 1.8px;
+    text-transform: uppercase;
+    color: var(--orange);
+    background: rgba(240,124,58,0.10);
+    padding: 6px 16px;
+    border-radius: 99px;
+    margin-bottom: 20px;
+  }
+
+  h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(30px, 8vw, 40px);
+    line-height: 1.08;
+    letter-spacing: -1px;
+    color: var(--text-dark);
+    margin-bottom: 14px;
+  }
+  h1 em { font-style: italic; color: var(--coral); }
+
+  .desc {
+    font-size: 15.5px;
+    font-weight: 300;
+    color: var(--text-mid);
+    line-height: 1.65;
+    max-width: 340px;
+    margin-bottom: 36px;
+  }
+
+  /* STORE BUTTONS */
+  .store-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: 100%;
+    max-width: 300px;
+    margin-top: 8px;
+  }
+
+  .store-btn {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: var(--text-dark);
+    color: var(--cream);
+    padding: 13px 20px;
+    border-radius: var(--radius-sm);
+    text-decoration: none;
+    font-family: 'DM Sans', sans-serif;
+    transition: background 0.2s, transform 0.15s;
+  }
+  .store-btn:active { transform: scale(0.98); }
+  .store-btn:hover { background: #2D2820; }
+  .store-btn svg { width: 24px; height: 24px; flex-shrink: 0; fill: var(--cream); }
+  .store-btn .store-text { text-align: left; }
+  .store-btn .store-text .small { display: block; font-size: 10.5px; color: rgba(247,244,239,0.65); font-weight: 300; }
+  .store-btn .store-text .big { display: block; font-size: 15.5px; font-weight: 500; margin-top: 1px; }
+
+  .store-btn.disabled {
+    background: var(--cream-dark);
+    color: var(--text-muted);
+    pointer-events: none;
+    position: relative;
+  }
+  .store-btn.disabled svg { fill: var(--text-muted); }
+  .store-btn.disabled .store-text .small { color: var(--text-muted); opacity: 0.8; }
+  .store-btn.disabled .store-text .big { color: var(--text-mid); }
+  .soon-badge {
+    margin-left: auto;
+    font-size: 10px;
+    font-weight: 500;
+    color: var(--lilac);
+    background: rgba(155,142,196,0.15);
+    padding: 4px 9px;
+    border-radius: 99px;
+    white-space: nowrap;
+  }
+
+  footer {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    padding: 20px 24px 28px;
+    font-size: 12px;
+    color: var(--text-muted);
+    font-weight: 300;
+  }
+</style>
+</head>
+<body>
+
+<div class="bg-orb orb1"></div>
+<div class="bg-orb orb2"></div>
+<div class="bg-orb orb3"></div>
+
+<main>
+  <div class="logo">Aethel</div>
+
+  <div class="eyebrow">Scarica l'app</div>
+
+  <h1>Allenati con <em>intelligenza</em></h1>
+
+  <p class="desc">Pesi, powerbuilding e calistenia in un unico sistema. Aethel traccia la fatica muscolare in tempo reale e ti guida con uno skill tree delle progressioni.</p>
+
+  <div class="store-buttons">
+    <a href="https://apps.apple.com/it/app/aethel/id6780602824" class="store-btn" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
+      </svg>
+      <span class="store-text">
+        <span class="small">Scarica su</span>
+        <span class="big">App Store</span>
+      </span>
+    </a>
+    <a href="#" class="store-btn disabled" aria-disabled="true">
+      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path d="M3.6 2.4c-.4.3-.6.8-.6 1.4v16.4c0 .6.2 1.1.6 1.4l.1.1L13 12.1v-.2L3.7 2.3l-.1.1z"/>
+        <path d="M16.1 15.2l-3.1-3.1v-.2l3.1-3.1 3.5 2c1 .6 1 1.5 0 2.1z"/>
+        <path d="M16.1 8.8L12.9 12l3.2 3.2 3.5-2c.5-.3.8-.7.8-1.1 0-.4-.3-.8-.8-1.1z"/>
+        <path d="M12.9 12L3.7 21.7c.3.3.9.4 1.5.1l10.9-6.2z"/>
+        <path d="M12.9 12L3.7 2.3c-.6-.3-1.2-.2-1.5.1z"/>
+      </svg>
+      <span class="store-text">
+        <span class="small">Scarica su</span>
+        <span class="big">Google Play</span>
+      </span>
+      <span class="soon-badge">Presto</span>
+    </a>
+  </div>
+</main>
+
+<footer>© 2026 Aethel.</footer>
+
+</body>
+</html>
