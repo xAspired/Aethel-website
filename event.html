@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aethel — Fatica sotto controllo</title>
+<meta name="description" content="Evento in app: due settimane per imparare a leggere la fatica muscolare e allenarti sapendo quando spingere.">
+<meta property="og:title" content="Fatica sotto controllo — Aethel">
+<meta property="og:description" content="Il recupero, muscolo per muscolo. Evento in app su App Store.">
+<meta property="og:url" content="https://aethel-workout.pages.dev/event.html">
+<link rel="canonical" href="https://aethel-workout.pages.dev/event.html">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --cream: #F7F4EF;
+    --cream-dark: #EDE9E1;
+    --warm-white: #FDFCFA;
+    --orange: #F07C3A;
+    --coral: #E8634A;
+    --amber: #E8A33D;
+    --lilac: #9B8EC4;
+    --sage: #7DAA8E;
+    --text-dark: #1C1814;
+    --text-mid: #4A4540;
+    --text-muted: #8C8580;
+    --card-bg: #FDFCFA;
+    --border: rgba(70,60,50,0.10);
+    --radius-sm: 12px;
+    --radius-md: 20px;
+    --radius-lg: 32px;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    color: var(--text-dark);
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 18px 48px;
+    background: rgba(247,244,239,0.85);
+    backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-logo { font-family: 'DM Serif Display', serif; font-size: 22px; color: var(--text-dark); letter-spacing: -0.3px; text-decoration: none; }
+  .nav-links { display: flex; align-items: center; gap: 36px; list-style: none; }
+  .nav-links a { text-decoration: none; font-size: 15px; font-weight: 400; color: var(--text-mid); transition: color 0.2s; }
+  .nav-links a:hover { color: var(--text-dark); }
+
+  .nav-lang {
+    display: flex; align-items: center; gap: 4px; font-size: 14px; color: var(--text-muted);
+    cursor: pointer; padding: 6px 12px; border-radius: 99px; border: 1px solid var(--border);
+    background: transparent; font-family: 'DM Sans', sans-serif;
+    transition: background 0.2s, color 0.2s; position: relative;
+  }
+  .nav-lang:hover { background: var(--cream-dark); color: var(--text-mid); }
+  .lang-dropdown {
+    display: none; position: absolute; top: calc(100% + 8px); right: 0;
+    background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius-sm);
+    overflow: hidden; min-width: 130px; box-shadow: 0 8px 32px rgba(0,0,0,0.08); z-index: 200;
+  }
+  .lang-dropdown.open { display: block; }
+  .lang-dropdown button {
+    display: flex; align-items: center; gap: 8px; width: 100%; padding: 10px 16px;
+    font-size: 14px; color: var(--text-mid); background: none; border: none; cursor: pointer;
+    font-family: 'DM Sans', sans-serif; transition: background 0.15s; text-align: left;
+  }
+  .lang-dropdown button:hover { background: var(--cream); color: var(--text-dark); }
+  .lang-dropdown button.active { color: var(--orange); font-weight: 500; }
+  #lang-label { font-size: 14px; }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh; display: grid; grid-template-columns: 1.1fr 0.9fr;
+    align-items: center; gap: 64px;
+    max-width: 1140px; margin: 0 auto;
+    padding: 140px 24px 60px; position: relative;
+  }
+  .hero-bg-orb { position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.35; pointer-events: none; }
+  .orb1 { width: 460px; height: 460px; background: #F07C3A; top: 10%; left: -14%; }
+  .orb2 { width: 380px; height: 380px; background: #E8634A; bottom: 2%; right: -10%; }
+  .orb3 { width: 260px; height: 260px; background: #9B8EC4; top: 26%; right: 30%; }
+
+  .hero-text { position: relative; z-index: 1; }
+  .hero-eyebrow {
+    display: inline-block; font-size: 12px; font-weight: 500; letter-spacing: 2px;
+    text-transform: uppercase; color: var(--coral); background: rgba(232,99,74,0.10);
+    padding: 6px 16px; border-radius: 99px; margin-bottom: 28px;
+  }
+  .hero h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(44px, 6vw, 76px); line-height: 1.02; letter-spacing: -2px;
+    color: var(--text-dark); margin-bottom: 22px;
+  }
+  .hero h1 em { font-style: italic; color: var(--coral); }
+  .hero-sub { font-size: 18px; font-weight: 300; color: var(--text-mid); max-width: 470px; line-height: 1.7; margin-bottom: 36px; }
+
+  .hero-actions { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+  .btn-primary {
+    display: inline-flex; align-items: center; gap: 10px;
+    background: var(--text-dark); color: var(--cream);
+    padding: 16px 28px; border-radius: var(--radius-sm);
+    font-size: 16px; font-weight: 500; text-decoration: none;
+    font-family: 'DM Sans', sans-serif; transition: background 0.2s, transform 0.15s;
+  }
+  .btn-primary:hover { background: #2D2820; transform: translateY(-1px); }
+  .btn-primary .apple-icon { width: 20px; height: 20px; fill: var(--cream); flex-shrink: 0; }
+  .btn-ghost {
+    display: inline-flex; align-items: center; gap: 8px; padding: 16px 24px;
+    border-radius: var(--radius-sm); border: 1px solid var(--border);
+    font-size: 16px; font-weight: 400; color: var(--text-mid); text-decoration: none;
+    transition: background 0.2s, color 0.2s;
+  }
+  .btn-ghost:hover { background: var(--cream-dark); color: var(--text-dark); }
+  .hero-note { margin-top: 18px; font-size: 13px; color: var(--text-muted); }
+
+  /* BODY FIGURE */
+  .body-panel { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; }
+  .body-stage {
+    width: 100%; min-height: 420px; display: flex; align-items: center; justify-content: center;
+    position: relative;
+  }
+  .body-stage svg { max-height: 62vh; height: auto; width: auto; display: block; filter: drop-shadow(0 24px 48px rgba(30,20,10,0.10)); }
+  .body-stage .mp { transition: fill 0.55s ease; }
+  .body-loading { font-size: 13px; color: var(--text-muted); font-weight: 300; }
+  .body-tip {
+    position: absolute; pointer-events: none; opacity: 0;
+    background: var(--text-dark); color: var(--cream);
+    font-size: 12px; padding: 7px 11px; border-radius: 8px; white-space: nowrap;
+    transform: translate(-50%, -130%); transition: opacity 0.15s; z-index: 5;
+  }
+  .body-tip.on { opacity: 1; }
+  .body-tip b { font-weight: 500; }
+
+  .body-controls { width: 100%; max-width: 400px; margin-top: 18px; }
+  .ctrl-top { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 10px; gap: 10px; }
+  .ctrl-label { font-size: 11px; font-weight: 500; letter-spacing: 1.6px; text-transform: uppercase; color: var(--text-muted); }
+  .ctrl-value { font-family: 'DM Serif Display', serif; font-size: 24px; color: var(--coral); }
+  input[type=range] { width: 100%; accent-color: var(--orange); }
+  .legend { display: flex; gap: 18px; margin-top: 14px; flex-wrap: wrap; font-size: 12.5px; color: var(--text-muted); font-weight: 300; }
+  .dot { display: inline-block; width: 9px; height: 9px; border-radius: 3px; margin-right: 7px; vertical-align: middle; }
+  .session-pick { display: flex; gap: 8px; margin-top: 16px; flex-wrap: wrap; justify-content: center; }
+  .session-pick button {
+    font-family: 'DM Sans', sans-serif; font-size: 13px; padding: 7px 15px;
+    border-radius: 99px; border: 1px solid var(--border); background: transparent;
+    color: var(--text-muted); cursor: pointer; transition: background 0.2s, color 0.2s, border-color 0.2s;
+  }
+  .session-pick button:hover { background: var(--cream-dark); color: var(--text-mid); }
+  .session-pick button.active { background: var(--text-dark); border-color: var(--text-dark); color: var(--cream); }
+
+  /* SECTIONS */
+  .section { padding: 80px 24px 100px; max-width: 1100px; margin: 0 auto; }
+  .section-label { font-size: 12px; font-weight: 500; letter-spacing: 2px; text-transform: uppercase; color: var(--text-muted); margin-bottom: 16px; }
+  .section-title { font-family: 'DM Serif Display', serif; font-size: clamp(32px, 5vw, 52px); letter-spacing: -1px; color: var(--text-dark); line-height: 1.1; max-width: 640px; margin-bottom: 20px; }
+  .section-title em { font-style: italic; color: var(--lilac); }
+  .section-body { font-size: 16px; color: var(--text-muted); line-height: 1.8; font-weight: 300; max-width: 620px; margin-bottom: 56px; }
+  .cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; }
+  .card {
+    background: var(--card-bg); border-radius: var(--radius-md); border: 1px solid var(--border);
+    padding: 32px; transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .card:hover { transform: translateY(-3px); box-shadow: 0 16px 40px rgba(30,20,10,0.08); }
+  .card-icon { width: 44px; height: 44px; border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; font-size: 20px; margin-bottom: 20px; }
+  .icon-orange { background: rgba(240,124,58,0.12); }
+  .icon-lilac  { background: rgba(155,142,196,0.15); }
+  .icon-sage   { background: rgba(125,170,142,0.15); }
+  .card h3 { font-size: 18px; font-weight: 500; color: var(--text-dark); margin-bottom: 10px; letter-spacing: -0.3px; }
+  .card p  { font-size: 15px; color: var(--text-muted); line-height: 1.7; font-weight: 300; }
+
+  /* ACCESS */
+  .access { background: var(--text-dark); padding: 80px 24px; }
+  .access-inner { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 72px; align-items: center; }
+  .access .section-label { color: var(--sage); }
+  .access .section-title { color: var(--cream); margin-bottom: 20px; }
+  .access .section-title em { color: var(--orange); }
+  .access .access-body { font-size: 16px; color: rgba(247,244,239,0.6); line-height: 1.8; font-weight: 300; max-width: 440px; margin: 0; }
+  .tiers { display: flex; flex-direction: column; gap: 14px; }
+  .tier { display: flex; align-items: flex-start; gap: 16px; padding: 22px 24px; border-radius: var(--radius-sm); border: 1px solid rgba(255,255,255,0.09); background: rgba(255,255,255,0.03); }
+  .tier-mark { width: 28px; height: 28px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 13px; flex-shrink: 0; }
+  .mark-free { background: rgba(125,170,142,0.18); color: var(--sage); }
+  .mark-prem { background: rgba(240,124,58,0.18); color: var(--orange); }
+  .tier h4 { font-size: 15px; font-weight: 500; color: var(--cream); margin-bottom: 4px; }
+  .tier p { font-size: 13.5px; color: rgba(247,244,239,0.5); font-weight: 300; line-height: 1.65; }
+
+  /* CTA */
+  .cta-section { padding: 100px 24px 120px; text-align: center; position: relative; overflow: hidden; }
+  .cta-bg { position: absolute; inset: 0; background: radial-gradient(ellipse 60% 60% at 50% 50%, rgba(240,124,58,0.08) 0%, transparent 70%); pointer-events: none; }
+  .cta-section h2 { font-family: 'DM Serif Display', serif; font-size: clamp(36px, 6vw, 68px); letter-spacing: -2px; color: var(--text-dark); line-height: 1.05; max-width: 720px; margin: 0 auto 24px; }
+  .cta-section h2 em { font-style: italic; color: var(--coral); }
+  .cta-section p { font-size: 17px; color: var(--text-muted); font-weight: 300; margin: 0 auto 48px; max-width: 420px; line-height: 1.7; }
+  .cta-actions { display: flex; justify-content: center; gap: 16px; flex-wrap: wrap; }
+
+  /* FOOTER */
+  footer { padding: 40px 48px; display: flex; align-items: center; justify-content: space-between; border-top: 1px solid var(--border); flex-wrap: wrap; gap: 16px; }
+  .footer-logo { font-family: 'DM Serif Display', serif; font-size: 18px; color: var(--text-dark); }
+  .footer-links { display: flex; gap: 28px; list-style: none; }
+  .footer-links a { font-size: 14px; color: var(--text-muted); text-decoration: none; transition: color 0.2s; }
+  .footer-links a:hover { color: var(--text-dark); }
+  .footer-copy { font-size: 13px; color: var(--text-muted); font-weight: 300; }
+
+  :focus-visible { outline: 2px solid var(--orange); outline-offset: 3px; border-radius: 4px; }
+
+  @media (max-width: 900px) {
+    .hero { grid-template-columns: 1fr; gap: 48px; padding-top: 110px; min-height: 0; }
+    .body-stage svg { max-height: 52vh; }
+    .access-inner { grid-template-columns: 1fr; gap: 48px; }
+  }
+  @media (max-width: 768px) {
+    nav { padding: 16px 20px; }
+    .nav-links { display: none; }
+    footer { flex-direction: column; align-items: flex-start; padding: 32px 20px; }
+    .footer-links { flex-wrap: wrap; gap: 16px; }
+  }
+  @media (max-width: 480px) {
+    .hero h1 { letter-spacing: -1px; }
+    .btn-primary, .btn-ghost { width: 100%; justify-content: center; }
+  }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-logo" href="index.html">Aethel</a>
+  <ul class="nav-links">
+    <li><a href="index.html#features" data-i18n="nav_features">Funzionalità</a></li>
+    <li><a href="index.html#skill" data-i18n="nav_skill">Skill Tree</a></li>
+    <li><a href="index.html#trainer" data-i18n="nav_trainer">Personal trainer</a></li>
+  </ul>
+  <div class="nav-lang" id="lang-toggle" onclick="toggleDropdown(event)" aria-label="Cambia lingua">
+    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+      <circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.2"/>
+      <path d="M8 1.5C8 1.5 6 4 6 8s2 6.5 2 6.5M8 1.5C8 1.5 10 4 10 8s-2 6.5-2 6.5M1.5 8h13" stroke="currentColor" stroke-width="1.2"/>
+    </svg>
+    <span id="lang-label">IT</span>
+    <svg width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden="true">
+      <path d="M2.5 4L5 6.5 7.5 4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+    </svg>
+    <div class="lang-dropdown" id="lang-dropdown">
+      <button onclick="pickLang(event,'it')" id="btn-it" class="active">🇮🇹 Italiano</button>
+      <button onclick="pickLang(event,'en')" id="btn-en">🇬🇧 English</button>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg-orb orb1"></div>
+  <div class="hero-bg-orb orb2"></div>
+  <div class="hero-bg-orb orb3"></div>
+
+  <div class="hero-text">
+    <div class="hero-eyebrow" data-i18n="ev_eyebrow">Evento in app · 1–14 settembre</div>
+    <h1 data-i18n-html="ev_h1">La fatica non è<br>una sensazione.<br><em>È un dato.</em></h1>
+    <p class="hero-sub" data-i18n="ev_sub">Per due settimane ti guidiamo dentro il tracciamento della fatica muscolare. Scegli un allenamento, trascina le ore e guarda il tuo corpo tornare pronto.</p>
+    <div class="hero-actions">
+      <a href="https://apps.apple.com/it/app/aethel/id6780602824" class="btn-primary" target="_blank" rel="noopener">
+        <svg class="apple-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
+        </svg>
+        <span data-i18n="btn_appstore">Scarica su App Store</span>
+      </a>
+      <a href="#come" class="btn-ghost" data-i18n="ev_btn_how">Come funziona</a>
+    </div>
+    <p class="hero-note" data-i18n="ev_note">Riepilogo in home per tutti · Dettaglio completo con Premium</p>
+  </div>
+
+  <div class="body-panel">
+    <div class="body-stage" id="stage">
+      <span class="body-loading" id="body-loading" data-i18n="body_loading">Carico la mappa muscolare…</span>
+      <div class="body-tip" id="tip"></div>
+    </div>
+
+    <div class="body-controls">
+      <div class="session-pick" id="sessions">
+        <button type="button" data-s="push" class="active" data-i18n="s_push">Push</button>
+        <button type="button" data-s="legs" data-i18n="s_legs">Gambe</button>
+        <button type="button" data-s="calisthenics" data-i18n="s_cal">Calistenia</button>
+      </div>
+      <div class="ctrl-top" style="margin-top:18px">
+        <span class="ctrl-label" data-i18n="ctrl_label">Ore dall'allenamento</span>
+        <span class="ctrl-value" id="hrs">0 h</span>
+      </div>
+      <input id="range" type="range" min="0" max="120" step="2" value="0" aria-label="Ore dall'allenamento">
+      <div class="legend">
+        <span><i class="dot" style="background:#E8634A"></i><span data-i18n="lg_high">Affaticato</span></span>
+        <span><i class="dot" style="background:#F07C3A"></i><span data-i18n="lg_mid">In recupero</span></span>
+        <span><i class="dot" style="background:#E8A33D"></i><span data-i18n="lg_soon">Quasi pronto</span></span>
+        <span><i class="dot" style="background:#7DAA8E"></i><span data-i18n="lg_low">Pronto</span></span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- COME FUNZIONA -->
+<section class="section" id="come">
+  <div class="section-label" data-i18n="ev_label">Durante l'evento</div>
+  <h2 class="section-title" data-i18n-html="ev_title">Due settimane per smettere di <em>tirare a indovinare</em></h2>
+  <p class="section-body" data-i18n="ev_body">Nessuna iscrizione, nessuna classifica. Solo la funzione che rende Aethel diverso, spiegata bene, mentre ti alleni come sempre.</p>
+  <div class="cards-grid">
+    <div class="card">
+      <div class="card-icon icon-orange">🔥</div>
+      <h3 data-i18n="ev1_h">Leggi la mappa</h3>
+      <p data-i18n="ev1_p">Ogni serie viene mappata sui muscoli coinvolti. Dopo la sessione vedi subito cosa hai davvero caricato, non quello che pensavi di aver caricato.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon icon-lilac">📅</div>
+      <h3 data-i18n="ev2_h">Scegli il giorno giusto</h3>
+      <p data-i18n="ev2_p">Il recupero decade nel tempo e a velocità diverse per ogni gruppo. Quando pianifichi la prossima seduta sai quali muscoli sono pronti e quali no.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon icon-sage">❤️</div>
+      <h3 data-i18n="ev3_h">Chiudi il cerchio</h3>
+      <p data-i18n="ev3_p">Con Apple Salute i dati restano dove li cerchi. Nessun coach automatico: i numeri sono tuoi, le decisioni pure.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ACCESSO -->
+<section class="access">
+  <div class="access-inner">
+    <div>
+      <div class="section-label" data-i18n="acc_label">Chi può partecipare</div>
+      <h2 class="section-title" data-i18n-html="acc_title">Tutti vedono la fatica. <em>Premium</em> la vede tutta.</h2>
+      <p class="access-body" data-i18n="acc_body">Il riepilogo in home è incluso nel piano gratuito: apri l'app e sai come stai. Il dettaglio per singolo gruppo, lo storico e le stime di recupero fanno parte di Premium.</p>
+    </div>
+    <div class="tiers">
+      <div class="tier">
+        <div class="tier-mark mark-free">✓</div>
+        <div>
+          <h4 data-i18n="tier_free_h">Piano gratuito</h4>
+          <p data-i18n="tier_free_p">Riepilogo compatto della fatica in home, aggiornato dopo ogni allenamento registrato.</p>
+        </div>
+      </div>
+      <div class="tier">
+        <div class="tier-mark mark-prem">★</div>
+        <div>
+          <h4 data-i18n="tier_prem_h">Aethel Premium</h4>
+          <p data-i18n="tier_prem_p">Mappa completa per gruppo muscolare, stime di recupero e storico, oltre a tutto il resto del piano.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+  <div class="cta-bg"></div>
+  <h2 data-i18n-html="cta_title">Allenati sapendo <em>quando spingere</em>.</h2>
+  <p data-i18n="cta_sub">L'evento è attivo su App Store per due settimane.</p>
+  <div class="cta-actions">
+    <a href="https://apps.apple.com/it/app/aethel/id6780602824" class="btn-primary" target="_blank" rel="noopener">
+      <svg class="apple-icon" viewBox="0 0 24 24"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+      <span data-i18n="btn_appstore">Scarica su App Store</span>
+    </a>
+  </div>
+  <p style="margin-top:16px;font-size:13px;color:var(--text-muted);margin-bottom:0;" data-i18n="hero_note">Per iOS 16 e versioni successive.</p>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <span class="footer-logo">Aethel</span>
+  <ul class="footer-links">
+    <li><a href="privacy.html" data-i18n="footer_privacy">Privacy</a></li>
+    <li><a href="terms.html" data-i18n="footer_terms">Termini</a></li>
+    <li><a href="support.html" data-i18n="footer_support">Supporto</a></li>
+    <li><a href="mailto:info@aethel.app" data-i18n="footer_contact">Contatti</a></li>
+  </ul>
+  <span class="footer-copy">© 2025 Aethel.</span>
+</footer>
+
+<script>
+function toggleDropdown(e) {
+  e.stopPropagation();
+  document.getElementById('lang-dropdown').classList.toggle('open');
+}
+function pickLang(e, lang) {
+  e.stopPropagation();
+  document.getElementById('lang-dropdown').classList.remove('open');
+  setLang(lang);
+}
+document.addEventListener('click', function() {
+  var d = document.getElementById('lang-dropdown');
+  if (d) d.classList.remove('open');
+});
+
+const i18n = {
+  it: {
+    nav_features: "Funzionalità", nav_skill: "Skill Tree", nav_trainer: "Personal trainer",
+    ev_eyebrow: "Evento in app · 1–14 settembre",
+    ev_h1: "La fatica non è<br>una sensazione.<br><em>È un dato.</em>",
+    ev_sub: "Per due settimane ti guidiamo dentro il tracciamento della fatica muscolare. Scegli un allenamento, trascina le ore e guarda il tuo corpo tornare pronto.",
+    btn_appstore: "Scarica su App Store",
+    ev_btn_how: "Come funziona",
+    ev_note: "Riepilogo in home per tutti · Dettaglio completo con Premium",
+    hero_note: "Per iOS 16 e versioni successive.",
+    body_loading: "Carico la mappa muscolare…",
+    s_push: "Push", s_legs: "Gambe", s_cal: "Calistenia",
+    ctrl_label: "Ore dall'allenamento",
+    lg_high: "Affaticato", lg_mid: "In recupero", lg_soon: "Quasi pronto", lg_low: "Pronto",
+    ev_label: "Durante l'evento",
+    ev_title: "Due settimane per smettere di <em>tirare a indovinare</em>",
+    ev_body: "Nessuna iscrizione, nessuna classifica. Solo la funzione che rende Aethel diverso, spiegata bene, mentre ti alleni come sempre.",
+    ev1_h: "Leggi la mappa", ev1_p: "Ogni serie viene mappata sui muscoli coinvolti. Dopo la sessione vedi subito cosa hai davvero caricato, non quello che pensavi di aver caricato.",
+    ev2_h: "Scegli il giorno giusto", ev2_p: "Il recupero decade nel tempo e a velocità diverse per ogni gruppo. Quando pianifichi la prossima seduta sai quali muscoli sono pronti e quali no.",
+    ev3_h: "Chiudi il cerchio", ev3_p: "Con Apple Salute i dati restano dove li cerchi. Nessun coach automatico: i numeri sono tuoi, le decisioni pure.",
+    acc_label: "Chi può partecipare",
+    acc_title: "Tutti vedono la fatica. <em>Premium</em> la vede tutta.",
+    acc_body: "Il riepilogo in home è incluso nel piano gratuito: apri l'app e sai come stai. Il dettaglio per singolo gruppo, lo storico e le stime di recupero fanno parte di Premium.",
+    tier_free_h: "Piano gratuito", tier_free_p: "Riepilogo compatto della fatica in home, aggiornato dopo ogni allenamento registrato.",
+    tier_prem_h: "Aethel Premium", tier_prem_p: "Mappa completa per gruppo muscolare, stime di recupero e storico, oltre a tutto il resto del piano.",
+    cta_title: "Allenati sapendo <em>quando spingere</em>.",
+    cta_sub: "L'evento è attivo su App Store per due settimane.",
+    footer_privacy: "Privacy", footer_terms: "Termini", footer_support: "Supporto", footer_contact: "Contatti",
+    hours: "h",
+    groups: {
+      chest: "Petto", shoulders: "Spalle", biceps: "Bicipiti", triceps: "Tricipiti",
+      forearms: "Avambracci", abs: "Addominali", traps: "Trapezi", lats: "Dorsali",
+      lowerBack: "Lombari", glutes: "Glutei", quads: "Quadricipiti",
+      hamstrings: "Femorali", calves: "Polpacci", hipFlexors: "Flessori dell'anca"
+    }
+  },
+  en: {
+    nav_features: "Features", nav_skill: "Skill Tree", nav_trainer: "Personal trainers",
+    ev_eyebrow: "In-app event · 1–14 September",
+    ev_h1: "Fatigue isn't<br>a feeling.<br><em>It's data.</em>",
+    ev_sub: "For two weeks we'll walk you through muscle fatigue tracking. Pick a session, drag the hours, and watch your body come back to ready.",
+    btn_appstore: "Download on the App Store",
+    ev_btn_how: "How it works",
+    ev_note: "Home summary for everyone · Full breakdown with Premium",
+    hero_note: "For iOS 16 and later.",
+    body_loading: "Loading the muscle map…",
+    s_push: "Push", s_legs: "Legs", s_cal: "Calisthenics",
+    ctrl_label: "Hours since session",
+    lg_high: "Fatigued", lg_mid: "Recovering", lg_soon: "Almost ready", lg_low: "Ready",
+    ev_label: "During the event",
+    ev_title: "Two weeks to stop <em>guessing</em>",
+    ev_body: "No signup, no leaderboard. Just the feature that makes Aethel different, explained properly, while you train as usual.",
+    ev1_h: "Read the map", ev1_p: "Every set is mapped to the muscles it targets. After a session you see what you actually loaded, not what you assumed you loaded.",
+    ev2_h: "Pick the right day", ev2_p: "Recovery decays over time, at a different rate for each group. When you plan the next session you know which muscles are ready and which aren't.",
+    ev3_h: "Close the loop", ev3_p: "With Apple Health your data stays where you look for it. No automated coach: the numbers are yours, so are the calls.",
+    acc_label: "Who can join",
+    acc_title: "Everyone sees fatigue. <em>Premium</em> sees all of it.",
+    acc_body: "The home summary is included in the free plan: open the app and you know where you stand. The per-group breakdown, history and recovery estimates are part of Premium.",
+    tier_free_h: "Free plan", tier_free_p: "Compact fatigue summary on the home screen, updated after every logged workout.",
+    tier_prem_h: "Aethel Premium", tier_prem_p: "Full per-muscle-group map, recovery estimates and history, plus everything else in the plan.",
+    cta_title: "Train knowing <em>when to push</em>.",
+    cta_sub: "The event runs on the App Store for two weeks.",
+    footer_privacy: "Privacy", footer_terms: "Terms", footer_support: "Support", footer_contact: "Contact",
+    hours: "h",
+    groups: {
+      chest: "Chest", shoulders: "Shoulders", biceps: "Biceps", triceps: "Triceps",
+      forearms: "Forearms", abs: "Abs", traps: "Traps", lats: "Lats",
+      lowerBack: "Lower back", glutes: "Glutes", quads: "Quads",
+      hamstrings: "Hamstrings", calves: "Calves", hipFlexors: "Hip flexors"
+    }
+  }
+};
+
+let currentLang = 'it';
+
+function setLang(lang) {
+  currentLang = lang;
+  const t = i18n[lang];
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    if (t[el.dataset.i18n] !== undefined) el.textContent = t[el.dataset.i18n];
+  });
+  document.querySelectorAll('[data-i18n-html]').forEach(el => {
+    if (t[el.dataset.i18nHtml] !== undefined) el.innerHTML = t[el.dataset.i18nHtml];
+  });
+  document.getElementById('lang-label').textContent = lang.toUpperCase();
+  document.getElementById('btn-it').classList.toggle('active', lang === 'it');
+  document.getElementById('btn-en').classList.toggle('active', lang === 'en');
+  document.documentElement.lang = lang;
+  if (window.__bodyReady) paint();
+}
+
+/* ── Shading: stessa logica di BodyFigure.tsx ────────────── */
+function shade(hex, f) {
+  const h = hex.replace('#', '');
+  const r = parseInt(h.slice(0,2),16), g = parseInt(h.slice(2,4),16), b = parseInt(h.slice(4,6),16);
+  const adj = c => (f >= 0 ? c + (255 - c) * f : c * (1 + f));
+  const to  = c => Math.max(0, Math.min(255, Math.round(c))).toString(16).padStart(2,'0');
+  return '#' + to(adj(r)) + to(adj(g)) + to(adj(b));
+}
+const tones = base => ({ light: shade(base, 0.16), mid: base, dark: shade(base, -0.3) });
+
+const NEUTRAL = tones('#D9CFBE');
+const SAGE   = tones('#7DAA8E');
+const AMBER  = tones('#E8A33D');
+const ORANGE = tones('#F07C3A');
+const CORAL  = tones('#E8634A');
+
+/* Stesse soglie di restTones() */
+function restTones(score) {
+  if (score <= 15) return SAGE;
+  if (score <= 40) return AMBER;
+  if (score <= 75) return ORANGE;
+  return CORAL;
+}
+
+/* ── Sessioni demo: carico iniziale (0-100) ed emivita in ore ── */
+const HALF = {
+  chest: 48, shoulders: 40, biceps: 32, triceps: 34, forearms: 24,
+  abs: 26, traps: 36, glutes: 54, quads: 60, calves: 22, hipFlexors: 30
+};
+const SESSIONS = {
+  push:         { chest: 95, shoulders: 78, triceps: 88, abs: 30, traps: 22, forearms: 18 },
+  legs:         { quads: 96, glutes: 88, calves: 72, abs: 34, hipFlexors: 46, forearms: 12 },
+  calisthenics: { abs: 92, shoulders: 82, biceps: 74, forearms: 80, chest: 58, traps: 48, hipFlexors: 44 }
+};
+let session = 'push';
+
+const stage = document.getElementById('stage');
+const range = document.getElementById('range');
+const hrsEl = document.getElementById('hrs');
+const tip   = document.getElementById('tip');
+
+function fatigueAt(hours) {
+  const base = SESSIONS[session];
+  const map = {};
+  Object.keys(HALF).forEach(g => {
+    const start = base[g] || 0;
+    map[g] = start * Math.pow(0.5, hours / HALF[g]);
+  });
+  return map;
+}
+
+function paint() {
+  const hours = +range.value;
+  hrsEl.textContent = hours + ' ' + i18n[currentLang].hours;
+  if (!window.__bodyReady) return;
+  const map = fatigueAt(hours);
+  document.querySelectorAll('#stage .mp').forEach(p => {
+    const g = p.dataset.g;
+    const palette = g === 'neck' ? NEUTRAL : restTones(map[g] ?? 0);
+    p.setAttribute('fill', palette[p.dataset.t] || palette.mid);
+  });
+}
+
+function buildBody() {
+  const data = window.AETHEL_BODY;
+  if (!data) return;
+  const svgNS = 'http://www.w3.org/2000/svg';
+  const svg = document.createElementNS(svgNS, 'svg');
+  svg.setAttribute('viewBox', data.frontViewBox);
+  svg.setAttribute('role', 'img');
+  svg.setAttribute('aria-label', 'Mappa della fatica muscolare');
+  svg.setAttribute('height', '640');
+
+  data.muscles.forEach(m => {
+    const p = document.createElementNS(svgNS, 'path');
+    p.setAttribute('d', m.d);
+    p.setAttribute('class', 'mp');
+    p.dataset.g = m.g;
+    p.dataset.t = m.t;
+    if (m.g !== 'neck') {
+      p.style.cursor = 'default';
+      p.addEventListener('mouseenter', e => showTip(e, m.g));
+      p.addEventListener('mouseleave', hideTip);
+    }
+    svg.appendChild(p);
+  });
+
+  data.outline.forEach(o => {
+    const p = document.createElementNS(svgNS, 'path');
+    p.setAttribute('d', o.d);
+    p.setAttribute('fill', o.f === 'none' ? 'transparent' : o.f);
+    p.setAttribute('stroke', (!o.s || o.s === 'None') ? '#1A1A1A' : o.s);
+    p.setAttribute('stroke-width', '2');
+    p.setAttribute('pointer-events', 'none');
+    svg.appendChild(p);
+  });
+
+  document.getElementById('body-loading').remove();
+  stage.insertBefore(svg, tip);
+  window.__bodyReady = true;
+  paint();
+}
+
+function showTip(e, group) {
+  const map = fatigueAt(+range.value);
+  const label = i18n[currentLang].groups[group] || group;
+  const val = Math.round(map[group] ?? 0);
+  tip.innerHTML = '<b>' + label + '</b> · ' + val + '%';
+  const r = stage.getBoundingClientRect();
+  tip.style.left = (e.clientX - r.left) + 'px';
+  tip.style.top  = (e.clientY - r.top) + 'px';
+  tip.classList.add('on');
+}
+function hideTip() { tip.classList.remove('on'); }
+
+document.getElementById('sessions').addEventListener('click', e => {
+  const b = e.target.closest('button[data-s]');
+  if (!b) return;
+  session = b.dataset.s;
+  document.querySelectorAll('#sessions button').forEach(x => x.classList.toggle('active', x === b));
+  range.value = 0;
+  paint();
+});
+range.addEventListener('input', paint);
+
+setLang('it');
+
+const s = document.createElement('script');
+s.src = 'js/body-front.js';
+s.onload = buildBody;
+document.body.appendChild(s);
+</script>
+
+</body>
+</html>
