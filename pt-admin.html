@@ -131,12 +131,46 @@
 </head>
 <body>
 
-<!-- LOGIN -->
-<div id="login-view" class="login">
+<!-- CANCELLO
+     Non è una misura di sicurezza e non pretende di esserlo: serve a non
+     lasciare la pagina aperta a chi capita sull'indirizzo. Quello che
+     protegge davvero i dati è la sessione Supabase più le policy RLS —
+     senza sessione valida, superato il cancello, non si vedrebbe nulla.
+     La password non è in chiaro ma il suo SHA-256: chi apre il sorgente
+     non la legge, anche se con un dizionario la ricava. -->
+<div id="gate-view" class="login">
   <h1>Verifiche PT</h1>
-  <p>Accedi con la tua email di amministratore. Ti arriva un link di accesso, senza password.</p>
-  <input type="email" id="admin-email" placeholder="tua@email.it" autocomplete="email">
-  <button class="btn btn-dark" id="send-link">Invia link di accesso</button>
+  <p>Area riservata. L'email serve a collegarti al database: se la sessione è scaduta ti arriva un codice per riaprirla.</p>
+  <form id="gate-form">
+    <input type="email" id="gate-email" placeholder="tua@email.it" autocomplete="email" autofocus>
+    <input type="password" id="gate-pass" placeholder="Password" autocomplete="current-password">
+    <button type="submit" class="btn btn-dark" id="gate-btn">Entra</button>
+  </form>
+  <div class="msg" id="gate-msg"></div>
+</div>
+
+<!-- LOGIN -->
+<div id="login-view" class="login" style="display:none">
+  <h1>Verifiche PT</h1>
+  <p id="login-hint">Scrivi la tua email: ti arriva un codice a 6 cifre da digitare qui. Niente password.</p>
+  <form id="login-form">
+    <input type="email" id="admin-email" placeholder="tua@email.it" autocomplete="email" autofocus>
+    <button type="submit" class="btn btn-dark" id="send-link">Invia codice</button>
+  </form>
+  <!-- Secondo passo: il codice. Preferito al link perché Apple Mail e i
+       filtri antispam pre-caricano i link nelle email per analizzarli, e
+       così li consumano: il link risulta scaduto al primo clic. Un codice
+       da digitare non si può consumare a distanza. -->
+  <form id="otp-form" style="display:none">
+    <input type="text" id="otp-code" placeholder="123456" inputmode="numeric"
+           autocomplete="one-time-code" maxlength="6"
+           style="text-align:center;letter-spacing:6px;font-size:20px">
+    <button type="submit" class="btn btn-dark" id="do-verify">Entra</button>
+    <button type="button" class="btn" id="otp-back"
+            style="width:100%;margin-top:10px;background:transparent;border:none;color:var(--text-muted);font-weight:400">
+      Cambia email
+    </button>
+  </form>
   <div class="msg" id="login-msg"></div>
 </div>
 
@@ -187,7 +221,25 @@ const BUCKET = 'pt-verification-docs';
 const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 const $ = (id) => document.getElementById(id);
+
+// ─── Cancello ────────────────────────────────
+const GATE_HASH = '0d27df66fe6cfe66a491a9261e0b404db460f0b426690295f9afa4896a336708';
+const GATE_KEY = 'aethel_pt_gate';
+const GATE_EMAIL = 'aethel_pt_gate_email';
+
+async function sha256(text) {
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(text));
+  return [...new Uint8Array(buf)].map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+function openGate() {
+  $('gate-view').style.display = 'none';
+  // Superato il cancello si riprende il flusso normale: se una sessione
+  // Supabase è già attiva si entra dritti, altrimenti compare il codice.
+  boot();
+}
 let currentStatus = 'pending';
+let pendingEmail = '';
 let rows = [];
 
 function msg(el, text, kind) {
@@ -227,21 +279,56 @@ function esc(s) {
 }
 
 // ─── Auth ────────────────────────────────────
-$('send-link').addEventListener('click', async () => {
+// Accesso con la sola email (magic link). La sessione serve perché tutto
+// ciò che questa pagina legge — candidature e documenti — è protetto da
+// RLS e visibile solo a chi è in pt_admins: senza sessione il database
+// non restituisce nulla, e aprirlo all'anonimo significherebbe mettere
+// online i documenti d'identità di altre persone.
+$('login-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
   const email = $('admin-email').value.trim();
-  if (!email) return;
+  if (!email) { msg($('login-msg'), 'Scrivi la tua email.', 'err'); return; }
   $('send-link').disabled = true;
+  // shouldCreateUser false: il pannello non è un posto dove ci si
+  // registra. Se l'account non esiste, l'email non parte nemmeno.
   const { error } = await sb.auth.signInWithOtp({
     email,
-    options: { emailRedirectTo: window.location.href },
+    options: { shouldCreateUser: false },
   });
   $('send-link').disabled = false;
-  if (error) msg($('login-msg'), error.message, 'err');
-  else msg($('login-msg'), 'Link inviato. Controlla la posta e apri il messaggio su questo dispositivo.', 'ok');
+  if (error) { msg($('login-msg'), error.message, 'err'); return; }
+  pendingEmail = email;
+  $('login-form').style.display = 'none';
+  $('otp-form').style.display = 'block';
+  $('login-hint').textContent = 'Ti ho mandato un codice a ' + email + '. Arriva in un minuto.';
+  $('otp-code').focus();
+  msg($('login-msg'), 'Codice inviato.', 'ok');
+});
+
+// Verifica del codice. La sessione che ne esce è identica a quella del
+// link, e resta attiva: le volte successive la pagina si apre già dentro.
+$('otp-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const token = $('otp-code').value.replace(/\D/g, '');
+  if (token.length < 6) return;
+  $('do-verify').disabled = true;
+  const { error } = await sb.auth.verifyOtp({ email: pendingEmail, token, type: 'email' });
+  $('do-verify').disabled = false;
+  if (error) { msg($('login-msg'), 'Codice non valido o scaduto.', 'err'); return; }
+  boot();
+});
+
+$('otp-back').addEventListener('click', () => {
+  $('otp-form').style.display = 'none';
+  $('login-form').style.display = 'block';
+  $('login-hint').textContent = 'Scrivi la tua email: ti arriva un codice a 6 cifre da digitare qui. Niente password.';
+  $('login-msg').classList.remove('show');
 });
 
 $('logout').addEventListener('click', async () => {
   await sb.auth.signOut();
+  sessionStorage.removeItem(GATE_KEY);
+  sessionStorage.removeItem(GATE_EMAIL);
   location.reload();
 });
 
@@ -256,9 +343,23 @@ document.querySelectorAll('.tab').forEach(tab => {
   });
 });
 
+// Se si arriva da un vecchio link (o da uno consumato dal prefetch),
+// l'errore sta nel frammento dell'URL: senza questo la pagina resterebbe
+// muta e sembrerebbe che il login non faccia niente.
+(function showHashError() {
+  if (!location.hash.includes('error')) return;
+  const p = new URLSearchParams(location.hash.slice(1));
+  const d = p.get('error_description');
+  if (d) msg($('login-msg'), decodeURIComponent(d.replace(/\+/g, ' ')), 'err');
+  history.replaceState(null, '', location.pathname + location.search);
+})();
+
 async function boot() {
   const { data } = await sb.auth.getSession();
-  if (!data.session) return; // resta la schermata di accesso
+  if (!data.session) {
+    $('login-view').style.display = 'block'; // serve il codice via email
+    return;
+  }
 
   // Il permesso vero lo dà il database: se non sei in pt_admins, la
   // select torna zero righe. Lo si verifica esplicitamente per poter dare
@@ -276,10 +377,46 @@ async function boot() {
   load();
 }
 
-sb.auth.onAuthStateChange((event) => {
-  if (event === 'SIGNED_IN') boot();
+document.getElementById('gate-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const email = $('gate-email').value.trim();
+  if (!email) { msg($('gate-msg'), 'Scrivi la tua email.', 'err'); return; }
+
+  const h = await sha256($('gate-pass').value);
+  if (h !== GATE_HASH) {
+    msg($('gate-msg'), 'Password errata.', 'err');
+    $('gate-pass').value = '';
+    return;
+  }
+
+  // sessionStorage e non localStorage: vale per questa scheda, si
+  // richiude da sé quando chiudi il browser.
+  sessionStorage.setItem(GATE_KEY, '1');
+  sessionStorage.setItem(GATE_EMAIL, email);
+  pendingEmail = email;
+  $('gate-btn').disabled = true;
+
+  // Se la sessione Supabase è ancora buona non serve altro: si entra.
+  // Solo quando è scaduta parte il codice, e l'email l'hai già scritta
+  // qui sopra — nessun secondo modulo da compilare da capo.
+  const { data } = await sb.auth.getSession();
+  $('gate-btn').disabled = false;
+  if (data.session) { openGate(); return; }
+
+  $('gate-view').style.display = 'none';
+  $('login-view').style.display = 'block';
+  $('admin-email').value = email;
+  $('login-form').requestSubmit();
 });
-boot();
+
+sb.auth.onAuthStateChange((event) => {
+  if (event === 'SIGNED_IN' && sessionStorage.getItem(GATE_KEY)) boot();
+});
+
+if (sessionStorage.getItem(GATE_KEY)) {
+  pendingEmail = sessionStorage.getItem(GATE_EMAIL) || '';
+  openGate();
+}
 
 // ─── Dati ────────────────────────────────────
 async function load() {
