@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<title>Aethel — Verifica Personal Trainer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --cream: #F7F4EF;
+    --cream-dark: #EDE9E1;
+    --warm-white: #FDFCFA;
+    --orange: #F07C3A;
+    --coral: #E8634A;
+    --lilac: #9B8EC4;
+    --sage: #7DAA8E;
+    --text-dark: #1C1814;
+    --text-mid: #4A4540;
+    --text-muted: #8C8580;
+    --card-bg: #FDFCFA;
+    --border: rgba(70,60,50,0.10);
+    --radius-sm: 12px;
+    --radius-md: 20px;
+    --radius-lg: 32px;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    color: var(--text-dark);
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  /* NAV — solo logo e lingua: questa è una pagina a sé */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 18px 48px;
+    background: rgba(247,244,239,0.85);
+    backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-logo { font-family: 'DM Serif Display', serif; font-size: 22px; letter-spacing: -0.3px; }
+
+  .nav-lang {
+    display: flex; align-items: center; gap: 4px;
+    font-size: 14px; color: var(--text-muted); cursor: pointer;
+    padding: 6px 12px; border-radius: 99px;
+    border: 1px solid var(--border); background: transparent;
+    font-family: 'DM Sans', sans-serif; position: relative;
+    transition: background 0.2s, color 0.2s;
+  }
+  .nav-lang:hover { background: var(--cream-dark); color: var(--text-mid); }
+
+  .lang-dropdown {
+    display: none; position: absolute; top: calc(100% + 8px); right: 0;
+    background: var(--card-bg); border: 1px solid var(--border);
+    border-radius: var(--radius-sm); overflow: hidden; min-width: 130px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.08); z-index: 200;
+  }
+  .lang-dropdown.open { display: block; }
+  .lang-dropdown button {
+    display: flex; align-items: center; gap: 8px; width: 100%;
+    padding: 10px 16px; font-size: 14px; color: var(--text-mid);
+    background: none; border: none; cursor: pointer; text-align: left;
+    font-family: 'DM Sans', sans-serif; transition: background 0.15s;
+  }
+  .lang-dropdown button:hover { background: var(--cream); color: var(--text-dark); }
+  .lang-dropdown button.active { color: var(--orange); font-weight: 500; }
+
+  /* HEADER */
+  .head {
+    padding: 140px 24px 56px; text-align: center;
+    position: relative; overflow: hidden;
+  }
+  .head-orb {
+    position: absolute; border-radius: 50%; filter: blur(80px);
+    opacity: 0.30; pointer-events: none;
+  }
+  .orb1 { width: 420px; height: 420px; background: var(--lilac); top: -10%; left: -6%; }
+  .orb2 { width: 320px; height: 320px; background: var(--orange); top: 20%; right: -6%; }
+
+  .eyebrow {
+    display: inline-block; font-size: 12px; font-weight: 500;
+    letter-spacing: 2px; text-transform: uppercase; color: var(--lilac);
+    background: rgba(155,142,196,0.12);
+    padding: 6px 16px; border-radius: 99px; margin-bottom: 28px;
+  }
+  .head h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(36px, 6vw, 64px); line-height: 1.05;
+    letter-spacing: -1.5px; max-width: 700px; margin: 0 auto 20px;
+  }
+  .head h1 em { font-style: italic; color: var(--coral); }
+  .head p {
+    font-size: 17px; font-weight: 300; color: var(--text-mid);
+    max-width: 540px; margin: 0 auto; line-height: 1.75;
+  }
+
+  /* LAYOUT */
+  .wrap { max-width: 980px; margin: 0 auto; padding: 0 24px 100px; }
+  .cols { display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 40px; align-items: start; }
+  @media (max-width: 880px) { .cols { grid-template-columns: 1fr; } }
+
+  .card {
+    background: var(--card-bg); border: 1px solid var(--border);
+    border-radius: var(--radius-md); padding: 36px;
+  }
+
+  .section-label {
+    font-size: 12px; font-weight: 500; letter-spacing: 2px;
+    text-transform: uppercase; color: var(--text-muted); margin-bottom: 18px;
+  }
+
+  /* FORM */
+  .field { margin-bottom: 20px; }
+  .field label {
+    display: block; font-size: 13.5px; font-weight: 500;
+    color: var(--text-mid); margin-bottom: 7px;
+  }
+  .field .hint { font-size: 12.5px; color: var(--text-muted); font-weight: 300; margin-top: 6px; line-height: 1.5; }
+  .field input[type="text"],
+  .field input[type="email"],
+  .field input[type="date"],
+  .field input[type="tel"],
+  .field select,
+  .field textarea {
+    width: 100%; padding: 13px 15px;
+    font-family: 'DM Sans', sans-serif; font-size: 15px; color: var(--text-dark);
+    background: var(--cream); border: 1px solid var(--border);
+    border-radius: var(--radius-sm); outline: none;
+    transition: border-color 0.18s, background 0.18s;
+  }
+  .field textarea { min-height: 88px; resize: vertical; line-height: 1.6; }
+  .field input:focus, .field select:focus, .field textarea:focus {
+    border-color: rgba(240,124,58,0.55); background: var(--warm-white);
+  }
+  .field input[aria-invalid="true"], .field select[aria-invalid="true"] { border-color: var(--coral); }
+  .err { display: none; font-size: 12.5px; color: var(--coral); margin-top: 6px; }
+  .err.show { display: block; }
+
+  .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media (max-width: 560px) { .row2 { grid-template-columns: 1fr; } }
+
+  /* FILE DROP */
+  .drop {
+    border: 1.5px dashed rgba(240,124,58,0.45); border-radius: var(--radius-sm);
+    background: rgba(240,124,58,0.04); padding: 28px 20px; text-align: center;
+    cursor: pointer; transition: background 0.18s, border-color 0.18s;
+  }
+  .drop:hover, .drop.drag { background: rgba(240,124,58,0.08); border-color: var(--orange); }
+  .drop svg { width: 26px; height: 26px; margin-bottom: 10px; color: var(--orange); }
+  .drop-title { font-size: 14.5px; font-weight: 500; color: var(--text-dark); margin-bottom: 4px; }
+  .drop-sub { font-size: 12.5px; color: var(--text-muted); font-weight: 300; }
+  .drop input { display: none; }
+
+  .file-chip {
+    display: none; align-items: center; gap: 12px; margin-top: 12px;
+    padding: 12px 14px; border-radius: var(--radius-sm);
+    background: var(--cream); border: 1px solid var(--border);
+  }
+  .file-chip.show { display: flex; }
+  .file-thumb { width: 42px; height: 42px; border-radius: 8px; object-fit: cover; background: var(--cream-dark); flex-shrink: 0; }
+  .file-meta { flex: 1; min-width: 0; }
+  .file-name { font-size: 13.5px; color: var(--text-dark); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .file-size { font-size: 12px; color: var(--text-muted); }
+  .file-remove {
+    border: none; background: none; cursor: pointer; font-size: 13px;
+    color: var(--coral); font-family: 'DM Sans', sans-serif; padding: 4px 8px;
+  }
+
+  /* CONSENT */
+  .consent { display: flex; gap: 12px; align-items: flex-start; margin-top: 8px; }
+  .consent input { margin-top: 3px; width: 17px; height: 17px; accent-color: var(--orange); flex-shrink: 0; }
+  .consent label { font-size: 13.5px; color: var(--text-mid); line-height: 1.65; font-weight: 300; }
+  .consent label a { color: var(--coral); }
+
+  /* BUTTON */
+  .btn-primary {
+    display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+    width: 100%; background: var(--text-dark); color: var(--cream);
+    padding: 16px 28px; border-radius: var(--radius-sm);
+    font-size: 16px; font-weight: 500; border: none; cursor: pointer;
+    font-family: 'DM Sans', sans-serif; margin-top: 26px;
+    transition: background 0.2s, transform 0.15s, opacity 0.2s;
+  }
+  .btn-primary:hover:not(:disabled) { background: #2D2820; transform: translateY(-1px); }
+  .btn-primary:disabled { opacity: 0.55; cursor: not-allowed; }
+  .spinner {
+    width: 16px; height: 16px; border-radius: 50%;
+    border: 2px solid rgba(247,244,239,0.35); border-top-color: var(--cream);
+    animation: spin 0.7s linear infinite; display: none;
+  }
+  .btn-primary.loading .spinner { display: block; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .form-msg {
+    display: none; margin-top: 18px; padding: 14px 16px;
+    border-radius: var(--radius-sm); font-size: 14px; line-height: 1.6;
+  }
+  .form-msg.show { display: block; }
+  .form-msg.error { background: rgba(232,99,74,0.10); color: var(--coral); }
+
+  /* SUCCESS */
+  .success { display: none; text-align: center; padding: 20px 0 8px; }
+  .success.show { display: block; }
+  .success-mark {
+    width: 64px; height: 64px; border-radius: 50%;
+    background: rgba(125,170,142,0.15); color: var(--sage);
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 22px; font-size: 28px;
+  }
+  .success h2 {
+    font-family: 'DM Serif Display', serif; font-size: 30px;
+    letter-spacing: -0.8px; margin-bottom: 14px;
+  }
+  .success p { font-size: 15.5px; color: var(--text-muted); font-weight: 300; line-height: 1.8; max-width: 440px; margin: 0 auto; }
+
+  /* SIDE */
+  .side-card { background: linear-gradient(135deg, rgba(155,142,196,0.08), rgba(240,124,58,0.05)); }
+  .side-card + .side-card { margin-top: 20px; }
+  .side-card h3 { font-size: 17px; font-weight: 500; letter-spacing: -0.2px; margin-bottom: 14px; }
+  .step { display: flex; gap: 13px; align-items: flex-start; margin-bottom: 14px; }
+  .step:last-child { margin-bottom: 0; }
+  .step-num {
+    width: 25px; height: 25px; border-radius: 50%;
+    background: var(--card-bg); border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 500; color: var(--coral); flex-shrink: 0;
+  }
+  .step-text { font-size: 14px; color: var(--text-mid); font-weight: 300; line-height: 1.6; padding-top: 3px; }
+  .step-text strong { font-weight: 500; color: var(--text-dark); }
+
+  .privacy-list { list-style: none; }
+  .privacy-list li {
+    font-size: 13.5px; color: var(--text-mid); font-weight: 300;
+    line-height: 1.6; padding-left: 20px; position: relative; margin-bottom: 11px;
+  }
+  .privacy-list li::before {
+    content: ''; position: absolute; left: 0; top: 8px;
+    width: 6px; height: 6px; border-radius: 50%; background: var(--sage);
+  }
+  .privacy-list li:last-child { margin-bottom: 0; }
+
+  footer {
+    padding: 36px 48px; display: flex; align-items: center; justify-content: space-between;
+    border-top: 1px solid var(--border); flex-wrap: wrap; gap: 16px;
+  }
+  .footer-logo { font-family: 'DM Serif Display', serif; font-size: 18px; }
+  .footer-links { display: flex; gap: 26px; list-style: none; }
+  .footer-links a { font-size: 14px; color: var(--text-muted); text-decoration: none; transition: color 0.2s; }
+  .footer-links a:hover { color: var(--text-dark); }
+  .footer-copy { font-size: 13px; color: var(--text-muted); font-weight: 300; }
+
+  @media (max-width: 768px) {
+    nav { padding: 16px 20px; }
+    .head { padding: 120px 20px 44px; }
+    .card { padding: 26px 20px; }
+    footer { flex-direction: column; align-items: flex-start; padding: 28px 20px; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <span class="nav-logo">Aethel</span>
+  <div class="nav-lang" id="lang-toggle" onclick="toggleDropdown(event)" aria-label="Cambia lingua">
+    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+      <circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.2"/>
+      <path d="M8 1.5C8 1.5 6 4 6 8s2 6.5 2 6.5M8 1.5C8 1.5 10 4 10 8s-2 6.5-2 6.5M1.5 8h13" stroke="currentColor" stroke-width="1.2"/>
+    </svg>
+    <span id="lang-label">IT</span>
+    <svg width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden="true">
+      <path d="M2.5 4L5 6.5 7.5 4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+    </svg>
+    <div class="lang-dropdown" id="lang-dropdown">
+      <button onclick="pickLang(event,'it')" id="btn-it" class="active">🇮🇹 Italiano</button>
+      <button onclick="pickLang(event,'en')" id="btn-en">🇬🇧 English</button>
+    </div>
+  </div>
+</nav>
+
+<section class="head">
+  <div class="head-orb orb1"></div>
+  <div class="head-orb orb2"></div>
+  <div class="eyebrow" data-i18n="eyebrow">Verifica professionale</div>
+  <h1 data-i18n-html="h1">Candidati come <em>personal trainer</em></h1>
+  <p data-i18n="sub">La modalità Personal Trainer di Aethel è riservata ai professionisti verificati. Compila la richiesta: controlliamo i documenti a mano e ti scriviamo appena è attiva.</p>
+</section>
+
+<div class="wrap">
+  <div class="cols">
+
+    <!-- FORM -->
+    <div class="card">
+      <form id="pt-form" novalidate>
+        <div class="section-label" data-i18n="form_label">La tua richiesta</div>
+
+        <div class="field">
+          <label for="email" data-i18n="l_email">Email dell'account Aethel</label>
+          <input type="email" id="email" name="email" autocomplete="email" required>
+          <div class="hint" data-i18n="h_email">Dev'essere la stessa email con cui accedi all'app, altrimenti non riusciamo a collegare la verifica al tuo account.</div>
+          <div class="err" id="e-email"></div>
+        </div>
+
+        <div class="row2">
+          <div class="field">
+            <label for="firstName" data-i18n="l_first">Nome</label>
+            <input type="text" id="firstName" name="firstName" autocomplete="given-name" required>
+            <div class="err" id="e-firstName"></div>
+          </div>
+          <div class="field">
+            <label for="lastName" data-i18n="l_last">Cognome</label>
+            <input type="text" id="lastName" name="lastName" autocomplete="family-name" required>
+            <div class="err" id="e-lastName"></div>
+          </div>
+        </div>
+
+        <div class="row2">
+          <div class="field">
+            <label for="birthDate" data-i18n="l_birth">Data di nascita</label>
+            <input type="date" id="birthDate" name="birthDate" required>
+            <div class="err" id="e-birthDate"></div>
+          </div>
+          <div class="field">
+            <label for="fiscalCode" data-i18n="l_fiscal">Codice fiscale</label>
+            <input type="text" id="fiscalCode" name="fiscalCode" maxlength="16" autocapitalize="characters" spellcheck="false">
+            <div class="hint" data-i18n="h_fiscal">Facoltativo se risiedi fuori dall'Italia.</div>
+            <div class="err" id="e-fiscalCode"></div>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="credential" data-i18n="l_credential">Tipo di certificazione</label>
+          <select id="credential" name="credential" required>
+            <option value="" data-i18n="opt_placeholder">Seleziona…</option>
+            <option value="federation" data-i18n="opt_federation">Tesserino federazione (CONI, ASI, CSEN…)</option>
+            <option value="certification" data-i18n="opt_certification">Certificazione (NASM, ISSA, FIF…)</option>
+            <option value="degree" data-i18n="opt_degree">Laurea in scienze motorie</option>
+            <option value="vat" data-i18n="opt_vat">Partita IVA con codice ATECO sportivo</option>
+            <option value="other" data-i18n="opt_other">Altro</option>
+          </select>
+          <div class="err" id="e-credential"></div>
+        </div>
+
+        <div class="field">
+          <label for="issuer" data-i18n="l_issuer">Ente che l'ha rilasciata</label>
+          <input type="text" id="issuer" name="issuer" required>
+          <div class="err" id="e-issuer"></div>
+        </div>
+
+        <div class="field">
+          <label data-i18n="l_doc">Foto del tesserino o della certificazione</label>
+          <div class="drop" id="drop">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M12 16V4m0 0L7.5 8.5M12 4l4.5 4.5M4 17v1.5A2.5 2.5 0 0 0 6.5 21h11a2.5 2.5 0 0 0 2.5-2.5V17"
+                    stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <div class="drop-title" data-i18n="drop_title">Trascina qui il file o tocca per sceglierlo</div>
+            <div class="drop-sub" data-i18n="drop_sub">JPG, PNG o PDF · massimo 8 MB</div>
+            <input type="file" id="doc" accept="image/jpeg,image/png,image/heic,application/pdf">
+          </div>
+          <div class="file-chip" id="file-chip">
+            <img class="file-thumb" id="file-thumb" alt="">
+            <div class="file-meta">
+              <div class="file-name" id="file-name"></div>
+              <div class="file-size" id="file-size"></div>
+            </div>
+            <button type="button" class="file-remove" id="file-remove" data-i18n="file_remove">Rimuovi</button>
+          </div>
+          <div class="hint" data-i18n="h_doc">Copri pure i dati che non servono alla verifica. Ci bastano nome, ente e numero di tessera o codice della certificazione.</div>
+          <div class="err" id="e-doc"></div>
+        </div>
+
+        <div class="field">
+          <label for="notes" data-i18n="l_notes">Note (facoltativo)</label>
+          <textarea id="notes" name="notes" maxlength="600"></textarea>
+        </div>
+
+        <div class="consent">
+          <input type="checkbox" id="consent" required>
+          <label for="consent" data-i18n-html="l_consent">Autorizzo Aethel a trattare questi dati e il documento allegato al solo scopo di verificare la mia qualifica professionale. So che verranno <strong>eliminati entro 7 giorni</strong> dall'esito della richiesta.</label>
+        </div>
+        <div class="err" id="e-consent"></div>
+
+        <button type="submit" class="btn-primary" id="submit">
+          <span class="spinner"></span>
+          <span id="submit-label" data-i18n="btn_submit">Invia richiesta</span>
+        </button>
+
+        <div class="form-msg error" id="form-error"></div>
+      </form>
+
+      <div class="success" id="success">
+        <div class="success-mark">✓</div>
+        <h2 data-i18n="ok_title">Richiesta ricevuta</h2>
+        <p data-i18n="ok_body">La controlliamo a mano, di solito entro due giorni lavorativi. Ti scriviamo all'email che hai indicato: se è tutto a posto, la modalità Personal Trainer compare nel tuo profilo al riavvio dell'app.</p>
+      </div>
+    </div>
+
+    <!-- SIDE -->
+    <div>
+      <div class="card side-card">
+        <h3 data-i18n="side1_h">Come funziona</h3>
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-text" data-i18n-html="side1_s1"><strong>Invii</strong> la richiesta con i tuoi dati e il documento.</div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-text" data-i18n-html="side1_s2"><strong>Controlliamo</strong> a mano che la qualifica sia valida e intestata a te.</div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-text" data-i18n-html="side1_s3"><strong>Attiviamo</strong> la modalità sul tuo account e cancelliamo il documento.</div>
+        </div>
+      </div>
+
+      <div class="card side-card">
+        <h3 data-i18n="side2_h">Che fine fanno i tuoi dati</h3>
+        <ul class="privacy-list">
+          <li data-i18n="side2_1">Servono solo alla verifica: nessun uso commerciale, nessuna condivisione con terzi.</li>
+          <li data-i18n="side2_2">Il documento è in uno spazio privato, non raggiungibile da un link pubblico.</li>
+          <li data-i18n="side2_3">Dopo l'esito teniamo solo tipo di documento ed ente. Il file, il codice fiscale e la data di nascita vengono cancellati entro 7 giorni.</li>
+          <li data-i18n="side2_4">Puoi chiedere la cancellazione immediata scrivendo a info@aethel.app.</li>
+        </ul>
+      </div>
+
+      <div class="card side-card">
+        <h3 data-i18n="side3_h">Cosa sblocca</h3>
+        <p style="font-size:14px;color:var(--text-mid);font-weight:300;line-height:1.7;" data-i18n="side3_b">Una schermata dedicata alle schede dei clienti, separata dai tuoi allenamenti. Quello che registri per loro non conta come tua attività: niente record personali, niente fatica muscolare, niente serie interrotta.</p>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<footer>
+  <span class="footer-logo">Aethel</span>
+  <ul class="footer-links">
+    <li><a href="privacy.html" data-i18n="footer_privacy">Privacy</a></li>
+    <li><a href="terms.html" data-i18n="footer_terms">Termini</a></li>
+    <li><a href="mailto:info@aethel.app" data-i18n="footer_contact">Contatti</a></li>
+  </ul>
+  <span class="footer-copy">© 2025 Aethel.</span>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+// ─────────────────────────────────────────────
+//  Config
+//  La chiave anon è pubblica per definizione: la protezione sta nelle
+//  policy RLS (vedi pt_verification.sql), che su questa tabella e su
+//  questo bucket consentono SOLO l'inserimento. Nessuno può rileggere le
+//  candidature né scaricare i documenti dal client.
+// ─────────────────────────────────────────────
+const SUPABASE_URL = 'https://jvcukyfucvwxegwagoul.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp2Y3VreWZ1Y3Z3eGVnd2Fnb3VsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE2OTE0MzgsImV4cCI6MjA5NzI2NzQzOH0.M8xb7552R4zkAJ0OgD7yW8oaGIA-ug474K57Cjgt_OA';
+const BUCKET = 'pt-verification-docs';
+const MAX_BYTES = 8 * 1024 * 1024;
+
+const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+// ─── i18n ────────────────────────────────────
+function toggleDropdown(e) {
+  e.stopPropagation();
+  document.getElementById('lang-dropdown').classList.toggle('open');
+}
+function pickLang(e, lang) {
+  e.stopPropagation();
+  document.getElementById('lang-dropdown').classList.remove('open');
+  setLang(lang);
+}
+document.addEventListener('click', function () {
+  const d = document.getElementById('lang-dropdown');
+  if (d) d.classList.remove('open');
+});
+
+const i18n = {
+  it: {
+    eyebrow: "Verifica professionale",
+    h1: "Candidati come <em>personal trainer</em>",
+    sub: "La modalità Personal Trainer di Aethel è riservata ai professionisti verificati. Compila la richiesta: controlliamo i documenti a mano e ti scriviamo appena è attiva.",
+    form_label: "La tua richiesta",
+    l_email: "Email dell'account Aethel",
+    h_email: "Dev'essere la stessa email con cui accedi all'app, altrimenti non riusciamo a collegare la verifica al tuo account.",
+    l_first: "Nome", l_last: "Cognome", l_birth: "Data di nascita", l_fiscal: "Codice fiscale",
+    h_fiscal: "Facoltativo se risiedi fuori dall'Italia.",
+    l_credential: "Tipo di certificazione",
+    opt_placeholder: "Seleziona…",
+    opt_federation: "Tesserino federazione (CONI, ASI, CSEN…)",
+    opt_certification: "Certificazione (NASM, ISSA, FIF…)",
+    opt_degree: "Laurea in scienze motorie",
+    opt_vat: "Partita IVA con codice ATECO sportivo",
+    opt_other: "Altro",
+    l_issuer: "Ente che l'ha rilasciata",
+    l_doc: "Foto del tesserino o della certificazione",
+    drop_title: "Trascina qui il file o tocca per sceglierlo",
+    drop_sub: "JPG, PNG o PDF · massimo 8 MB",
+    file_remove: "Rimuovi",
+    h_doc: "Copri pure i dati che non servono alla verifica. Ci bastano nome, ente e numero di tessera o codice della certificazione.",
+    l_notes: "Note (facoltativo)",
+    l_consent: "Autorizzo Aethel a trattare questi dati e il documento allegato al solo scopo di verificare la mia qualifica professionale. So che verranno <strong>eliminati entro 7 giorni</strong> dall'esito della richiesta.",
+    btn_submit: "Invia richiesta",
+    btn_sending: "Invio in corso…",
+    ok_title: "Richiesta ricevuta",
+    ok_body: "La controlliamo a mano, di solito entro due giorni lavorativi. Ti scriviamo all'email che hai indicato: se è tutto a posto, la modalità Personal Trainer compare nel tuo profilo al riavvio dell'app.",
+    side1_h: "Come funziona",
+    side1_s1: "<strong>Invii</strong> la richiesta con i tuoi dati e il documento.",
+    side1_s2: "<strong>Controlliamo</strong> a mano che la qualifica sia valida e intestata a te.",
+    side1_s3: "<strong>Attiviamo</strong> la modalità sul tuo account e cancelliamo il documento.",
+    side2_h: "Che fine fanno i tuoi dati",
+    side2_1: "Servono solo alla verifica: nessun uso commerciale, nessuna condivisione con terzi.",
+    side2_2: "Il documento è in uno spazio privato, non raggiungibile da un link pubblico.",
+    side2_3: "Dopo l'esito teniamo solo tipo di documento ed ente. Il file, il codice fiscale e la data di nascita vengono cancellati entro 7 giorni.",
+    side2_4: "Puoi chiedere la cancellazione immediata scrivendo a info@aethel.app.",
+    side3_h: "Cosa sblocca",
+    side3_b: "Una schermata dedicata alle schede dei clienti, separata dai tuoi allenamenti. Quello che registri per loro non conta come tua attività: niente record personali, niente fatica muscolare, niente serie interrotta.",
+    footer_privacy: "Privacy", footer_terms: "Termini", footer_contact: "Contatti",
+    // validazione
+    v_required: "Campo obbligatorio.",
+    v_email: "Inserisci un'email valida.",
+    v_fiscal: "Il codice fiscale dev'essere di 16 caratteri.",
+    v_age: "Devi avere almeno 18 anni.",
+    v_doc: "Allega il tesserino o la certificazione.",
+    v_doc_size: "Il file supera 8 MB.",
+    v_doc_type: "Formato non supportato: usa JPG, PNG o PDF.",
+    v_consent: "Serve il consenso per procedere.",
+    e_upload: "Non siamo riusciti a caricare il file. Riprova tra poco.",
+    e_generic: "Qualcosa è andato storto. Riprova, e se persiste scrivici a info@aethel.app.",
+    e_duplicate: "Esiste già una richiesta in corso per questa email. Attendi l'esito o scrivici a info@aethel.app."
+  },
+  en: {
+    eyebrow: "Professional verification",
+    h1: "Apply as a <em>personal trainer</em>",
+    sub: "Aethel's Personal Trainer mode is for verified professionals. Send your application: we check documents by hand and write to you as soon as it's active.",
+    form_label: "Your application",
+    l_email: "Aethel account email",
+    h_email: "It must be the same email you sign in with, otherwise we can't link the verification to your account.",
+    l_first: "First name", l_last: "Last name", l_birth: "Date of birth", l_fiscal: "Tax code",
+    h_fiscal: "Optional if you live outside Italy.",
+    l_credential: "Type of credential",
+    opt_placeholder: "Select…",
+    opt_federation: "Federation card (CONI, ASI, CSEN…)",
+    opt_certification: "Certification (NASM, ISSA, FIF…)",
+    opt_degree: "Sport science degree",
+    opt_vat: "VAT number with sports activity code",
+    opt_other: "Other",
+    l_issuer: "Issuing body",
+    l_doc: "Photo of your card or certification",
+    drop_title: "Drop the file here, or tap to choose it",
+    drop_sub: "JPG, PNG or PDF · 8 MB max",
+    file_remove: "Remove",
+    h_doc: "Feel free to cover anything the check doesn't need. Name, issuing body and card or certification number are enough.",
+    l_notes: "Notes (optional)",
+    l_consent: "I allow Aethel to process this data and the attached document for the sole purpose of verifying my professional qualification. I understand it will be <strong>deleted within 7 days</strong> of the outcome.",
+    btn_submit: "Send application",
+    btn_sending: "Sending…",
+    ok_title: "Application received",
+    ok_body: "We review it by hand, usually within two working days. We'll write to the email you gave us: if everything checks out, Personal Trainer mode appears in your profile when you restart the app.",
+    side1_h: "How it works",
+    side1_s1: "<strong>You send</strong> the application with your details and document.",
+    side1_s2: "<strong>We check</strong> by hand that the qualification is valid and in your name.",
+    side1_s3: "<strong>We enable</strong> the mode on your account and delete the document.",
+    side2_h: "What happens to your data",
+    side2_1: "It's only used for verification: no commercial use, no sharing with third parties.",
+    side2_2: "The document sits in private storage, unreachable from a public link.",
+    side2_3: "After the outcome we keep only the credential type and issuing body. The file, tax code and date of birth are deleted within 7 days.",
+    side2_4: "You can ask for immediate deletion by writing to info@aethel.app.",
+    side3_h: "What it unlocks",
+    side3_b: "A dedicated screen for your clients' programs, separate from your own training. What you log for them doesn't count as your activity: no personal records, no muscle fatigue, no broken streak.",
+    footer_privacy: "Privacy", footer_terms: "Terms", footer_contact: "Contact",
+    v_required: "This field is required.",
+    v_email: "Enter a valid email address.",
+    v_fiscal: "The Italian tax code must be 16 characters.",
+    v_age: "You must be at least 18.",
+    v_doc: "Attach your card or certification.",
+    v_doc_size: "The file is larger than 8 MB.",
+    v_doc_type: "Unsupported format: use JPG, PNG or PDF.",
+    v_consent: "We need your consent to proceed.",
+    e_upload: "We couldn't upload the file. Please try again shortly.",
+    e_generic: "Something went wrong. Try again, and if it persists write to info@aethel.app.",
+    e_duplicate: "There's already a pending application for this email. Wait for the outcome or write to info@aethel.app."
+  }
+};
+
+let currentLang = 'it';
+function t(key) { return i18n[currentLang][key] ?? key; }
+
+function setLang(lang) {
+  currentLang = lang;
+  const d = i18n[lang];
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    if (d[el.dataset.i18n] !== undefined) el.textContent = d[el.dataset.i18n];
+  });
+  document.querySelectorAll('[data-i18n-html]').forEach(el => {
+    if (d[el.dataset.i18nHtml] !== undefined) el.innerHTML = d[el.dataset.i18nHtml];
+  });
+  document.getElementById('lang-label').textContent = lang.toUpperCase();
+  document.getElementById('btn-it').classList.toggle('active', lang === 'it');
+  document.getElementById('btn-en').classList.toggle('active', lang === 'en');
+  document.documentElement.lang = lang;
+}
+
+// lingua iniziale dal browser
+setLang((navigator.language || 'it').toLowerCase().startsWith('it') ? 'it' : 'en');
+
+// ─── File picker ─────────────────────────────
+const drop = document.getElementById('drop');
+const docInput = document.getElementById('doc');
+const chip = document.getElementById('file-chip');
+let pickedFile = null;
+
+drop.addEventListener('click', () => docInput.click());
+['dragenter', 'dragover'].forEach(ev =>
+  drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.add('drag'); }));
+['dragleave', 'drop'].forEach(ev =>
+  drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.remove('drag'); }));
+drop.addEventListener('drop', e => {
+  if (e.dataTransfer.files && e.dataTransfer.files[0]) takeFile(e.dataTransfer.files[0]);
+});
+docInput.addEventListener('change', () => {
+  if (docInput.files && docInput.files[0]) takeFile(docInput.files[0]);
+});
+document.getElementById('file-remove').addEventListener('click', () => {
+  pickedFile = null; docInput.value = '';
+  chip.classList.remove('show');
+});
+
+function takeFile(f) {
+  pickedFile = f;
+  document.getElementById('file-name').textContent = f.name;
+  document.getElementById('file-size').textContent = (f.size / 1024 / 1024).toFixed(1) + ' MB';
+  const thumb = document.getElementById('file-thumb');
+  if (f.type.startsWith('image/')) {
+    thumb.src = URL.createObjectURL(f);
+    thumb.style.display = 'block';
+  } else {
+    thumb.style.display = 'none';
+  }
+  chip.classList.add('show');
+  clearError('doc');
+}
+
+// ─── Validazione ─────────────────────────────
+function showError(field, msg) {
+  const el = document.getElementById('e-' + field);
+  if (el) { el.textContent = msg; el.classList.add('show'); }
+  const input = document.getElementById(field);
+  if (input) input.setAttribute('aria-invalid', 'true');
+}
+function clearError(field) {
+  const el = document.getElementById('e-' + field);
+  if (el) el.classList.remove('show');
+  const input = document.getElementById(field);
+  if (input) input.removeAttribute('aria-invalid');
+}
+function val(id) { return (document.getElementById(id).value || '').trim(); }
+
+function validate() {
+  ['email','firstName','lastName','birthDate','fiscalCode','credential','issuer','doc','consent']
+    .forEach(clearError);
+  let ok = true;
+
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(val('email'))) { showError('email', t('v_email')); ok = false; }
+  if (!val('firstName')) { showError('firstName', t('v_required')); ok = false; }
+  if (!val('lastName'))  { showError('lastName',  t('v_required')); ok = false; }
+
+  const birth = val('birthDate');
+  if (!birth) { showError('birthDate', t('v_required')); ok = false; }
+  else {
+    // Maggiore età: una qualifica professionale presuppone un adulto, e
+    // conservare il documento di un minore sarebbe un problema in più.
+    const d = new Date(birth);
+    const limit = new Date();
+    limit.setFullYear(limit.getFullYear() - 18);
+    if (d > limit) { showError('birthDate', t('v_age')); ok = false; }
+  }
+
+  const cf = val('fiscalCode').toUpperCase();
+  if (cf && cf.length !== 16) { showError('fiscalCode', t('v_fiscal')); ok = false; }
+
+  if (!val('credential')) { showError('credential', t('v_required')); ok = false; }
+  if (!val('issuer'))     { showError('issuer',     t('v_required')); ok = false; }
+
+  if (!pickedFile) { showError('doc', t('v_doc')); ok = false; }
+  else {
+    const allowed = ['image/jpeg','image/png','image/heic','application/pdf'];
+    if (!allowed.includes(pickedFile.type)) { showError('doc', t('v_doc_type')); ok = false; }
+    else if (pickedFile.size > MAX_BYTES)   { showError('doc', t('v_doc_size')); ok = false; }
+  }
+
+  if (!document.getElementById('consent').checked) { showError('consent', t('v_consent')); ok = false; }
+  return ok;
+}
+
+// ─── Invio ───────────────────────────────────
+const form = document.getElementById('pt-form');
+const submitBtn = document.getElementById('submit');
+const formError = document.getElementById('form-error');
+
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  formError.classList.remove('show');
+  if (!validate()) return;
+
+  submitBtn.disabled = true;
+  submitBtn.classList.add('loading');
+  document.getElementById('submit-label').textContent = t('btn_sending');
+
+  try {
+    // 1. Documento nello storage privato. Il percorso contiene un id
+    //    casuale: anche conoscendo l'email non si indovina il file.
+    const ext = (pickedFile.name.split('.').pop() || 'bin').toLowerCase();
+    const path = `${crypto.randomUUID()}.${ext}`;
+    const up = await sb.storage.from(BUCKET).upload(path, pickedFile, {
+      contentType: pickedFile.type,
+      upsert: false,
+    });
+    if (up.error) throw Object.assign(new Error(up.error.message), { kind: 'upload' });
+
+    // 2. Riga della candidatura. Nessun campo "stato": lo decide il
+    //    default lato database, così dal client non si può arrivare
+    //    approvati da soli.
+    const ins = await sb.from('pt_applications').insert({
+      email: val('email').toLowerCase(),
+      first_name: val('firstName'),
+      last_name: val('lastName'),
+      birth_date: val('birthDate'),
+      fiscal_code: val('fiscalCode').toUpperCase() || null,
+      credential_type: val('credential'),
+      issuer: val('issuer'),
+      notes: val('notes') || null,
+      document_path: path,
+      lang: currentLang,
+    });
+    if (ins.error) {
+      if ((ins.error.code === '23505') || /duplicate|unique/i.test(ins.error.message)) {
+        throw Object.assign(new Error(ins.error.message), { kind: 'duplicate' });
+      }
+      throw ins.error;
+    }
+
+    form.style.display = 'none';
+    document.getElementById('success').classList.add('show');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  } catch (err) {
+    console.warn('[PT application]', err);
+    formError.textContent =
+      err.kind === 'upload' ? t('e_upload') :
+      err.kind === 'duplicate' ? t('e_duplicate') :
+      t('e_generic');
+    formError.classList.add('show');
+    submitBtn.disabled = false;
+    submitBtn.classList.remove('loading');
+    document.getElementById('submit-label').textContent = t('btn_submit');
+  }
+});
+</script>
+
+</body>
+</html>
