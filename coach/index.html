@@ -27,6 +27,7 @@
   --border:rgba(255,255,255,.07); --border-med:rgba(255,255,255,.13);
   --shadow:0 1px 2px rgba(0,0,0,.3),0 6px 20px rgba(0,0,0,.25); color-scheme:dark}}
 *{box-sizing:border-box}
+[hidden]{display:none!important}
 html,body{height:100%;margin:0}
 body{background:var(--cream);color:var(--t1);font:14px/1.45 var(--sans);-webkit-font-smoothing:antialiased;overflow:hidden}
 button,input,select,textarea{font:inherit;color:inherit}
@@ -53,6 +54,21 @@ button{cursor:pointer}
 .lib-item .tx{min-width:0;flex:1}
 .lib-item .nm{font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .lib-item .meta{font-size:12px;color:var(--t3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.clients{display:flex;flex-direction:column;gap:2px;padding:0 10px 6px;max-height:42%;overflow:auto;flex:none}
+.cl{display:flex;align-items:center;gap:10px;padding:7px 10px;border-radius:var(--r-sm);border:0;background:none;text-align:left;width:100%}
+.cl:hover{background:var(--white)}
+.cl.on{background:var(--t1);color:var(--cream)}
+.cl.on .cnt{color:var(--cream);background:rgba(255,255,255,.15)}
+.av{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;font-size:11px;font-weight:700;flex:none;color:#fff}
+.cl .cn2{flex:1;min-width:0;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cnt{font-size:11px;font-weight:700;color:var(--t3);background:var(--white);border-radius:999px;padding:2px 8px;font-variant-numeric:tabular-nums}
+.add-client{display:flex;gap:6px;padding:0 16px 8px}
+.add-client .field{padding:7px 10px}
+.client-head{margin:4px 16px 8px;padding:12px;border-radius:var(--r-md);background:var(--card);border:1px solid var(--border);display:flex;flex-direction:column;gap:8px}
+.client-head input{border:0;background:none;outline:none;font:20px/1.2 var(--serif);width:100%;padding:0}
+.client-head .row{gap:6px}
+.divider{height:1px;background:var(--border);margin:6px 16px 8px}
+.client-sel{max-width:280px;appearance:auto}
 .lib-empty{color:var(--t3);font-size:13px;padding:10px}
 .side-foot{padding:12px 16px;border-top:1px solid var(--border);display:flex;gap:6px;font-size:12px;color:var(--t3);align-items:center;justify-content:space-between}
 
@@ -193,8 +209,13 @@ button{cursor:pointer}
   <aside class="side">
     <div class="brand"><img src="icon.png" alt=""><div><b>Aethel</b><small>Coach Studio</small></div></div>
     <div class="gym" id="gymBox"></div>
-    <div class="side-h"><span class="label">Schede</span><button class="btn sm primary" id="newBtn">+ Nuova</button></div>
-    <div class="side-search"><input class="field" id="libSearch" placeholder="Cerca scheda o cliente"></div>
+    <div class="side-search"><input class="field" id="libSearch" placeholder="Cerca cliente o scheda"></div>
+    <div class="side-h"><span class="label">Clienti</span><button class="btn sm ghost" id="addClientBtn">+ Cliente</button></div>
+    <div class="add-client" id="addClientRow" hidden><input class="field" id="addClientIn" placeholder="Nome e cognome" maxlength="60"><button class="btn sm primary" id="addClientOk">Aggiungi</button></div>
+    <div class="clients" id="clients"></div>
+    <div class="divider"></div>
+    <div id="clientHead"></div>
+    <div class="side-h"><span class="label" id="libLabel">Schede</span><button class="btn sm primary" id="newBtn">+ Nuova</button></div>
     <div class="lib" id="lib"></div>
     <div class="side-foot"><span>Salvate in questo browser</span>
       <div class="seg" id="langSeg"><button data-l="it">IT</button><button data-l="en">EN</button></div></div>
@@ -257,7 +278,26 @@ const EMOJIS = ['🏋️','💪','🔥','⚡','🦵','🎯','🤸','🧱','🦍'
 
 // ── Stato ──
 let state = load() || seed();
-let ui = { selected:new Set(), catFilter:'all', muscle:null, q:'', libQ:'', emojiOpen:false };
+let ui = { selected:new Set(), catFilter:'all', muscle:null, q:'', libQ:'', emojiOpen:false, clientFilter:'all' };
+migrate();
+// Clienti: entità proprie (id, nome). Le schede vecchie con `client` testuale vengono convertite.
+function migrate(){
+  state.clients = state.clients || [];
+  for (const w of state.workouts){
+    if (w.client && !w.clientId){
+      let c = state.clients.find(c=>c.name.toLowerCase()===w.client.trim().toLowerCase());
+      if (!c){ c = {id:uid('c'), name:w.client.trim(), createdAt:Date.now()}; state.clients.push(c); }
+      w.clientId = c.id;
+    }
+    delete w.client;
+  }
+}
+const clientOf = w => state.clients.find(c=>c.id===w?.clientId);
+const clientName = w => clientOf(w)?.name || '';
+const AV_COLORS = ['#F07C3A','#9B8EC4','#7BA68A','#E8715A','#2F7DC9','#E06B8A','#4F8A5B','#C9A23F'];
+const avColor = id => AV_COLORS[[...id].reduce((a,c)=>a+c.charCodeAt(0),0)%AV_COLORS.length];
+const initials = n => n.trim().split(/\s+/).slice(0,2).map(x=>x[0]?.toUpperCase()||'').join('') || '?';
+let delClientArmed = null;
 
 function uid(p){ return p + '_' + Date.now().toString(36) + Math.random().toString(36).slice(2,7); }
 function load(){ try{ const s = JSON.parse(localStorage.getItem(STORE_KEY)); return s && Array.isArray(s.workouts) ? s : null; }catch{ return null; } }
@@ -271,7 +311,7 @@ function mkEx(id, extra={}){ const e = CAT_BY_ID[id]; return { uid:uid('x'), exe
 function seed(){
   // Scheda d'esempio, modificabile o eliminabile.
   const g = uid('grp');
-  const w = { id:uid('w'), name:'Push A · Forza', emoji:'🏋️', type:'bodybuilding', client:'Esempio', updatedAt:Date.now(), codes:[],
+  const w = { id:uid('w'), name:'Push A · Forza', emoji:'🏋️', type:'bodybuilding', client:'Cliente esempio', updatedAt:Date.now(), codes:[],
     exercises:[
       mkEx('bench_press',{defaultSets:4,defaultReps:'5',defaultKg:80,notes:'Fermo di 1" al petto sull\'ultima serie.'}),
       mkEx('incline_dumbbell_press',{defaultSets:3,defaultReps:'8-10'}),
@@ -378,16 +418,51 @@ async function createCode(payload){
 // ── Render: sidebar ──
 function renderSide(){
   $('#gymBox').replaceChildren(document.createTextNode(CONFIG.gymName), h('span',{},'Partner'));
-  const q = ui.libQ.toLowerCase();
+  const q = ui.libQ.trim().toLowerCase();
+  const count = id => state.workouts.filter(w => id==='all' ? true : id==='none' ? !clientOf(w) : w.clientId===id).length;
+  if (ui.clientFilter!=='all' && ui.clientFilter!=='none' && !state.clients.find(c=>c.id===ui.clientFilter)) ui.clientFilter='all';
+
+  // elenco clienti
+  const cl = $('#clients'); cl.replaceChildren();
+  const row = (id, label, av) => h('button',{class:'cl'+(ui.clientFilter===id?' on':''), onclick:()=>{ ui.clientFilter=id; delClientArmed=null; renderSide(); }},
+    av, h('span',{class:'cn2'},label), h('span',{class:'cnt'},count(id)));
+  cl.append(row('all','Tutte le schede', h('span',{class:'av',style:'background:var(--t3)'},'∗')));
+  const clients = [...state.clients].sort((a,b)=>a.name.localeCompare(b.name,'it'))
+    .filter(c => !q || c.name.toLowerCase().includes(q) || state.workouts.some(w=>w.clientId===c.id && w.name.toLowerCase().includes(q)));
+  clients.forEach(c => cl.append(row(c.id, c.name, h('span',{class:'av',style:'background:'+avColor(c.id)},initials(c.name)))));
+  if (count('none')) cl.append(row('none','Senza cliente', h('span',{class:'av',style:'background:var(--border-med);color:var(--t2)'},'—')));
+  if (q && !clients.length) cl.append(h('div',{class:'lib-empty'},'Nessun cliente trovato.'));
+
+  // intestazione cliente selezionato
+  const head = $('#clientHead'); head.replaceChildren();
+  const sel = state.clients.find(c=>c.id===ui.clientFilter);
+  if (sel){
+    const del = h('button',{class:'btn sm ghost danger', onclick:()=>{
+      if (delClientArmed!==sel.id){ delClientArmed=sel.id; renderSide(); return; }
+      state.workouts.forEach(w=>{ if(w.clientId===sel.id) delete w.clientId; });
+      state.clients = state.clients.filter(c=>c.id!==sel.id); ui.clientFilter='all'; delClientArmed=null; save(); render(); toast('Cliente eliminato, le schede restano senza cliente');
+    }}, delClientArmed===sel.id ? 'Conferma: elimina cliente' : 'Elimina cliente');
+    head.append(h('div',{class:'client-head'},
+      h('input',{id:'clientNameIn', value:sel.name, maxlength:60, 'aria-label':'Nome cliente', oninput:e=>{ sel.name=e.target.value; save(); renderTop(); }, onchange:()=>{ if(!sel.name.trim()) sel.name='Cliente'; render(); }}),
+      h('div',{class:'row'}, h('span',{class:'cnt'}, count(sel.id)+' schede'), h('span',{style:'flex:1'}), del)));
+  }
+  $('#libLabel').textContent = sel ? 'Schede di '+sel.name.split(' ')[0] : ui.clientFilter==='none' ? 'Schede senza cliente' : 'Tutte le schede';
+
+  // schede filtrate
   const items = [...state.workouts].sort((a,b)=>b.updatedAt-a.updatedAt)
-    .filter(w => !q || (w.name+' '+(w.client||'')).toLowerCase().includes(q));
+    .filter(w => ui.clientFilter==='all' ? true : ui.clientFilter==='none' ? !clientOf(w) : w.clientId===ui.clientFilter)
+    .filter(w => !q || (w.name+' '+clientName(w)).toLowerCase().includes(q));
   const lib = $('#lib'); lib.replaceChildren();
-  if (!items.length) lib.append(h('div',{class:'lib-empty'},'Nessuna scheda trovata.'));
+  if (!items.length) lib.append(h('div',{class:'lib-empty'}, sel ? 'Nessuna scheda per '+sel.name+'. Creala con “+ Nuova”.' : 'Nessuna scheda trovata.'));
   items.forEach(w => lib.append(h('button',{class:'lib-item'+(w.id===state.currentId?' on':''), onclick:()=>{ state.currentId=w.id; ui.selected.clear(); save(); render(); }},
     h('span',{class:'em'},w.emoji),
     h('span',{class:'tx'}, h('div',{class:'nm'}, w.name||'Senza nome'),
-      h('div',{class:'meta'}, [w.client, w.exercises.length+' esercizi', ago(w.updatedAt)].filter(Boolean).join(' · '))))));
+      h('div',{class:'meta'}, [ui.clientFilter==='all' ? clientName(w) : null, w.exercises.length+' esercizi', w.codes?.length ? 'inviata' : null, ago(w.updatedAt)].filter(Boolean).join(' · '))))));
   document.querySelectorAll('#langSeg button').forEach(b=>b.classList.toggle('on', b.dataset.l===state.lang));
+}
+function addClient(name){
+  name = name.trim(); if (!name) return null;
+  const c = {id:uid('c'), name, createdAt:Date.now()}; state.clients.push(c); save(); return c;
 }
 
 // ── Render: editor ──
@@ -464,7 +539,15 @@ function renderEditor(){
     h('div',{class:'head-fields'},
       h('input',{class:'title-in', id:'titleIn', value:w.name, placeholder:'Nome della scheda', maxlength:120, oninput:e=>{ w.name=e.target.value; touch(); renderSide(); renderTop(); }}),
       h('div',{class:'row'},
-        h('input',{class:'field client-in', id:'clientIn', value:w.client||'', placeholder:'Cliente (solo per te, non viene inviato)', oninput:e=>{ w.client=e.target.value; touch(); renderSide(); renderTop(); }}),
+        h('select',{class:'field client-sel', id:'clientSel', title:'Cliente (solo per te, non viene inviato)', onchange:e=>{
+            const v = e.target.value;
+            if (v==='__new'){ ui.newClientFor = w.id; render(); return; }
+            if (v) w.clientId = v; else delete w.clientId; touch(); render(); }},
+          h('option',{value:''},'Nessun cliente'),
+          [...state.clients].sort((a,b)=>a.name.localeCompare(b.name,'it')).map(c=>{ const o=h('option',{value:c.id},c.name); if(c.id===w.clientId) o.selected=true; return o; }),
+          h('option',{value:'__new'},'+ Nuovo cliente…')),
+        ui.newClientFor===w.id && h('input',{class:'field client-in', id:'newClientIn', placeholder:'Nome nuovo cliente, poi Invio', autofocus:true,
+          onkeydown:e=>{ if(e.key==='Enter'){ const c=addClient(e.target.value); if(c){ w.clientId=c.id; } ui.newClientFor=null; touch(); render(); } if(e.key==='Escape'){ ui.newClientFor=null; render(); } }}),
         typeSeg),
       h('div',{class:'stats'},
         h('span',{},h('b',{},w.exercises.length),' esercizi'),
@@ -503,7 +586,7 @@ function renderEditor(){
 
 function renderTop(){
   const w = cur();
-  $('#crumbs').textContent = w ? [CONFIG.gymName, w.client, w.name||'Senza nome'].filter(Boolean).join('  /  ') : '';
+  $('#crumbs').textContent = w ? [CONFIG.gymName, clientName(w), w.name||'Senza nome'].filter(Boolean).join('  /  ') : '';
   const last = w?.codes?.[0];
   const chip = $('#lastCode');
   if (last){ chip.hidden=false; chip.textContent = fmtCode(last.code); chip.title = 'Ultimo codice · '+new Date(last.at).toLocaleDateString('it-IT'); }
@@ -545,7 +628,7 @@ function openCodeModal(){
   root.replaceChildren(h('div',{class:'scrim',onclick:ev=>{ if(ev.target===ev.currentTarget) close(); }}, body));
   createCode(buildPayload(w)).then(code=>{
     w.codes = [{code, at:Date.now()}, ...(w.codes||[])].slice(0,5); touch(); renderTop();
-    const msg = `Ciao${w.client?' '+w.client.split(' ')[0]:''}! Ecco la tua scheda “${w.name.trim()}” da ${CONFIG.gymName}.\nApri Aethel → Allenamenti → Importa scheda → Da codice e inserisci:\n${fmtCode(code)}\n(valido ${CONFIG.codeTtlDays} giorni)`;
+    const msg = `Ciao${clientName(w)?' '+clientName(w).split(' ')[0]:''}! Ecco la tua scheda “${w.name.trim()}” da ${CONFIG.gymName}.\nApri Aethel → Allenamenti → Importa scheda → Da codice e inserisci:\n${fmtCode(code)}\n(valido ${CONFIG.codeTtlDays} giorni)`;
     body.replaceChildren(
       h('h3',{},w.emoji+' '+w.name.trim()),
       h('p',{},'Il cliente lo inserisce in Aethel per importare la scheda. Valido '+CONFIG.codeTtlDays+' giorni, riutilizzabile.'),
@@ -567,7 +650,8 @@ let delArmed = null;
 function render(){ renderSide(); renderEditor(); renderTop(); renderCatalogue(); }
 
 // ── Eventi globali ──
-$('#newBtn').onclick = ()=>{ const w = { id:uid('w'), name:'Nuova scheda', emoji:'💪', type:'bodybuilding', client:'', updatedAt:Date.now(), codes:[], exercises:[], groups:[] };
+$('#newBtn').onclick = ()=>{ const w = { id:uid('w'), name:'Nuova scheda', emoji:'💪', type:'bodybuilding', updatedAt:Date.now(), codes:[], exercises:[], groups:[] };
+  if (state.clients.find(c=>c.id===ui.clientFilter)) w.clientId = ui.clientFilter;
   state.workouts.push(w); state.currentId=w.id; ui.selected.clear(); touch(); render(); requestAnimationFrame(()=>{ const t=$('#titleIn'); t.focus(); t.select(); }); };
 $('#dupBtn').onclick = ()=>{ const w = cur(); if(!w) return; const c = JSON.parse(JSON.stringify(w));
   const map = {}; c.groups.forEach(g=>{ map[g.id]=uid('grp'); g.id=map[g.id]; }); c.exercises.forEach(e=>{ e.uid=uid('x'); if(e.groupId) e.groupId=map[e.groupId]; });
@@ -577,6 +661,10 @@ $('#delBtn').onclick = ()=>{ const w = cur(); if(!w) return; const b = $('#delBt
   delArmed=null; b.textContent='Elimina'; state.workouts = state.workouts.filter(x=>x.id!==w.id); state.currentId = state.workouts[0]?.id; touch(); render(); toast('Scheda eliminata'); };
 $('#codeBtn').onclick = openCodeModal;
 $('#catSearch').oninput = e=>{ ui.q=e.target.value; renderCatalogue(); };
+$('#addClientBtn').onclick = ()=>{ const r=$('#addClientRow'); r.hidden=!r.hidden; if(!r.hidden) $('#addClientIn').focus(); };
+const doAddClient = ()=>{ const c = addClient($('#addClientIn').value); if(!c) return; $('#addClientIn').value=''; $('#addClientRow').hidden=true; ui.clientFilter=c.id; render(); toast('Cliente aggiunto'); };
+$('#addClientOk').onclick = doAddClient;
+$('#addClientIn').onkeydown = e=>{ if(e.key==='Enter') doAddClient(); if(e.key==='Escape') $('#addClientRow').hidden=true; };
 $('#libSearch').oninput = e=>{ ui.libQ=e.target.value; renderSide(); };
 document.querySelectorAll('#catSeg button').forEach(b=>b.onclick=()=>{ ui.catFilter=b.dataset.c; renderCatalogue(); });
 document.querySelectorAll('#langSeg button').forEach(b=>b.onclick=()=>{ state.lang=b.dataset.l; save(); render(); });
