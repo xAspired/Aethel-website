@@ -192,6 +192,91 @@ button{cursor:pointer}
 .history{text-align:left;display:flex;flex-direction:column;gap:6px;font-size:12px;color:var(--t2)}
 .history div{display:flex;justify-content:space-between}
 
+.app.no-cat{grid-template-columns:270px minmax(0,1fr)}
+.app.no-cat .cat{display:none}
+.view{display:flex;flex-direction:column;flex:1;min-height:0}
+/* sidebar nav */
+.side-scroll{flex:1;overflow:auto;display:flex;flex-direction:column;gap:4px;padding-bottom:12px}
+.nav{display:flex;flex-direction:column;gap:2px;padding:0 10px 6px}
+.nav-item{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:var(--r-sm);border:0;background:none;text-align:left;font-weight:600;width:100%;color:var(--t2)}
+.nav-item:hover{background:var(--white);color:var(--t1)}
+.nav-item.on{background:var(--card);color:var(--t1);box-shadow:var(--shadow)}
+.nav-item .ic{width:28px;text-align:center;font-size:15px}
+.new-main{margin:0 16px 10px;width:calc(100% - 32px)}
+.sec{display:flex;flex-direction:column;gap:2px;padding:0 10px}
+.sec-h{display:flex;justify-content:space-between;align-items:center;padding:10px 10px 4px}
+.add-mini{border:0;background:none;color:var(--t3);font-weight:700;font-size:16px;width:24px;height:24px;border-radius:7px}
+.add-mini:hover{background:var(--accent-light);color:var(--accent)}
+.see-all{border:0;background:none;color:var(--accent);font-weight:600;font-size:12px;text-align:left;padding:4px 10px 6px}
+.see-all:hover{text-decoration:underline}
+.fd-ic{width:28px;height:28px;border-radius:8px;display:grid;place-items:center;background:var(--lilac-light);font-size:14px;flex:none}
+.side-empty{color:var(--t3);font-size:12px;padding:2px 10px 6px}
+/* pages */
+.page{flex:1;overflow:auto;padding:34px 40px 60px}
+.page-in{max-width:1080px;margin:0 auto;display:flex;flex-direction:column;gap:30px}
+.hello{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;flex-wrap:wrap}
+.hello h1{font:44px/1.05 var(--serif);font-weight:400;margin:0;text-wrap:balance}
+.hello p{margin:6px 0 0;color:var(--t2)}
+.quick{display:flex;gap:8px;flex-wrap:wrap}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.kpi{background:var(--card);border:1px solid var(--border);border-radius:var(--r-lg);padding:16px 18px}
+.kpi b{display:block;font:34px/1 var(--serif);font-weight:400;font-variant-numeric:tabular-nums}
+.kpi span{color:var(--t3);font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase}
+.block{display:flex;flex-direction:column;gap:12px}
+.block-h{display:flex;justify-content:space-between;align-items:baseline}
+.block-h h2{font:26px var(--serif);font-weight:400;margin:0}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px}
+.tile{background:var(--card);border:1px solid var(--border);border-radius:var(--r-lg);padding:16px;text-align:left;display:flex;flex-direction:column;gap:10px;transition:transform .12s,box-shadow .12s;min-width:0}
+.tile:hover{transform:translateY(-2px);box-shadow:var(--shadow)}
+.tile .tt{display:flex;gap:12px;align-items:center;min-width:0}
+.tile .tn{font-weight:600;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tile .ts{color:var(--t3);font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tile .tx{min-width:0;flex:1}
+.av.lg{width:40px;height:40px;font-size:14px}
+.fd-ic.lg{width:40px;height:40px;font-size:20px;border-radius:12px}
+.em-lg{width:40px;height:40px;border-radius:12px;background:var(--accent-light);display:grid;place-items:center;font-size:20px;flex:none}
+.pills{display:flex;gap:6px;flex-wrap:wrap}
+.pill{font-size:11px;font-weight:600;border-radius:999px;padding:3px 9px;background:var(--cream);color:var(--t2);border:1px solid var(--border);white-space:nowrap;max-width:100%;overflow:hidden;text-overflow:ellipsis}
+.pill.sent{background:var(--sage-light);color:var(--sage);border-color:transparent}
+.pill.fd{background:var(--lilac-light);color:var(--lilac);border-color:transparent}
+.codes{background:var(--card);border:1px solid var(--border);border-radius:var(--r-lg);overflow:hidden}
+.code-row{display:grid;grid-template-columns:130px minmax(0,1fr) 150px 110px;gap:16px;align-items:center;padding:12px 18px;border-top:1px solid var(--border)}
+.code-row:first-child{border-top:0}
+.code-row .cc{font:600 15px ui-monospace,'SF Mono',Menlo,monospace;letter-spacing:.06em;color:var(--accent)}
+.code-row.exp .cc{color:var(--t3);text-decoration:line-through}
+.code-row .cw{min-width:0}
+.code-row .cw b{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.code-row .cw span,.code-row .cd{font-size:12px;color:var(--t3)}
+.code-row .cd{font-variant-numeric:tabular-nums}
+.code-row button{justify-self:end}
+.blank{border:1.5px dashed var(--border-med);border-radius:var(--r-lg);padding:26px;color:var(--t3);text-align:center}
+.lib-top{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
+.lib-top h1{font:40px var(--serif);font-weight:400;margin:0}
+.lib-tools{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.lib-tools .field{width:260px}
+.detail{display:flex;gap:16px;align-items:center;background:var(--card);border:1px solid var(--border);border-radius:var(--r-lg);padding:18px 20px;flex-wrap:wrap}
+.detail input{border:0;background:none;outline:none;font:30px/1.1 var(--serif);flex:1;min-width:200px;padding:0}
+.detail .meta{color:var(--t3);font-size:13px;width:100%}
+.back{border:0;background:none;color:var(--t2);font-weight:600;padding:0;align-self:flex-start}
+.back:hover{color:var(--accent)}
+.wtable{background:var(--card);border:1px solid var(--border);border-radius:var(--r-lg);overflow:hidden}
+.wrow{display:grid;grid-template-columns:minmax(0,2fr) minmax(0,1fr) minmax(0,1fr) 90px 110px;gap:14px;align-items:center;padding:11px 18px;border:0;border-top:1px solid var(--border);background:none;width:100%;text-align:left}
+.wrow:first-child{border-top:0}
+.wrow:hover{background:var(--cream)}
+.wrow.hd{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--t3);font-weight:600;cursor:default}
+.wrow.hd:hover{background:none}
+.wrow .wn{display:flex;gap:10px;align-items:center;font-weight:600;min-width:0}
+.wrow .wn span:last-child,.wrow .wc{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.wrow .wc{color:var(--t2);font-size:13px}
+.wrow .num{color:var(--t3);font-size:12px;font-variant-numeric:tabular-nums}
+.modal .field{text-align:left}
+.emoji-row{display:flex;gap:4px;flex-wrap:wrap;justify-content:center}
+.emoji-row button{border:1px solid transparent;background:none;font-size:20px;border-radius:9px;width:38px;height:38px}
+.emoji-row button.on{border-color:var(--accent);background:var(--accent-light)}
+.multi{text-align:left;display:flex;flex-direction:column;gap:6px;max-height:300px;overflow:auto}
+.multi div{display:flex;justify-content:space-between;gap:10px;padding:8px 12px;background:var(--cream);border-radius:var(--r-sm)}
+.multi .cc{font:600 14px ui-monospace,'SF Mono',Menlo,monospace;color:var(--accent);letter-spacing:.05em}
+.top .back{margin-right:4px}
 .narrow{display:none}
 @media (max-width:1100px){
   .app{display:none}
@@ -209,20 +294,17 @@ button{cursor:pointer}
   <aside class="side">
     <div class="brand"><img src="icon.png" alt=""><div><b>Aethel</b><small>Coach Studio</small></div></div>
     <div class="gym" id="gymBox"></div>
-    <div class="side-search"><input class="field" id="libSearch" placeholder="Cerca cliente o scheda"></div>
-    <div class="side-h"><span class="label">Clienti</span><button class="btn sm ghost" id="addClientBtn">+ Cliente</button></div>
-    <div class="add-client" id="addClientRow" hidden><input class="field" id="addClientIn" placeholder="Nome e cognome" maxlength="60"><button class="btn sm primary" id="addClientOk">Aggiungi</button></div>
-    <div class="clients" id="clients"></div>
-    <div class="divider"></div>
-    <div id="clientHead"></div>
-    <div class="side-h"><span class="label" id="libLabel">Schede</span><button class="btn sm primary" id="newBtn">+ Nuova</button></div>
-    <div class="lib" id="lib"></div>
+    <button class="btn primary new-main" id="newBtn">+ Nuova scheda</button>
+    <div class="side-scroll" id="sideNav"></div>
     <div class="side-foot"><span>Salvate in questo browser</span>
       <div class="seg" id="langSeg"><button data-l="it">IT</button><button data-l="en">EN</button></div></div>
   </aside>
 
   <main class="main">
+    <div class="page" id="pageView" hidden></div>
+    <div class="view" id="editorView">
     <div class="top">
+      <button class="back" id="backBtn">← Indietro</button>
       <div class="crumbs" id="crumbs"></div>
       <span class="saved" id="saved"></span>
       <button class="btn ghost sm" id="dupBtn">Duplica</button>
@@ -233,6 +315,7 @@ button{cursor:pointer}
       <span class="hint" id="dockHint"></span>
       <span class="code-chip" id="lastCode" hidden></span>
       <button class="btn primary" id="codeBtn">Genera codice per il cliente</button>
+    </div>
     </div>
   </main>
 
@@ -278,11 +361,12 @@ const EMOJIS = ['🏋️','💪','🔥','⚡','🦵','🎯','🤸','🧱','🦍'
 
 // ── Stato ──
 let state = load() || seed();
-let ui = { selected:new Set(), catFilter:'all', muscle:null, q:'', libQ:'', emojiOpen:false, clientFilter:'all' };
+let ui = { selected:new Set(), catFilter:'all', muscle:null, q:'', emojiOpen:false, view:'home', libTab:'clients', libSel:null, libQ:'', prevView:'home' };
 migrate();
 // Clienti: entità proprie (id, nome). Le schede vecchie con `client` testuale vengono convertite.
 function migrate(){
   state.clients = state.clients || [];
+  state.folders = state.folders || [];
   for (const w of state.workouts){
     if (w.client && !w.clientId){
       let c = state.clients.find(c=>c.name.toLowerCase()===w.client.trim().toLowerCase());
@@ -294,10 +378,12 @@ function migrate(){
 }
 const clientOf = w => state.clients.find(c=>c.id===w?.clientId);
 const clientName = w => clientOf(w)?.name || '';
+const folderOf = w => state.folders.find(f=>f.id===w?.folderId);
+const folderName = w => folderOf(w)?.name || '';
 const AV_COLORS = ['#F07C3A','#9B8EC4','#7BA68A','#E8715A','#2F7DC9','#E06B8A','#4F8A5B','#C9A23F'];
 const avColor = id => AV_COLORS[[...id].reduce((a,c)=>a+c.charCodeAt(0),0)%AV_COLORS.length];
 const initials = n => n.trim().split(/\s+/).slice(0,2).map(x=>x[0]?.toUpperCase()||'').join('') || '?';
-let delClientArmed = null;
+let delArmed2 = null; // conferma eliminazione cliente/cartella
 
 function uid(p){ return p + '_' + Date.now().toString(36) + Math.random().toString(36).slice(2,7); }
 function load(){ try{ const s = JSON.parse(localStorage.getItem(STORE_KEY)); return s && Array.isArray(s.workouts) ? s : null; }catch{ return null; } }
@@ -319,9 +405,15 @@ function seed(){
       mkEx('face_pull',{defaultSets:3,defaultReps:'15',groupId:g}),
     ],
     groups:[{id:g,type:'superset',rounds:3}] };
-  return { lang:'it', currentId:w.id, workouts:[w] };
+  // Cartella d'esempio: programma universale su più giorni, senza cliente.
+  const f = { id:uid('f'), name:'Full Body · 2 giorni', emoji:'🗓️', createdAt:Date.now()-1000 };
+  const d1 = { id:uid('w'), name:'Giorno 1 · Full Body A', emoji:'🔥', type:'hybrid', folderId:f.id, updatedAt:Date.now()-2000, codes:[], groups:[],
+    exercises:[ mkEx('squat',{defaultSets:4,defaultReps:'6-8'}), mkEx('pull_up',{defaultSets:3,defaultReps:'6-10'}), mkEx('push_up',{defaultSets:3,defaultReps:'12-15'}) ] };
+  const d2 = { id:uid('w'), name:'Giorno 2 · Full Body B', emoji:'⚡', type:'hybrid', folderId:f.id, updatedAt:Date.now()-3000, codes:[], groups:[],
+    exercises:[ mkEx('deadlift',{defaultSets:3,defaultReps:'5'}), mkEx('overhead_press',{defaultSets:3,defaultReps:'8'}), mkEx('inverted_row',{defaultSets:3,defaultReps:'10-12'}) ] };
+  return { lang:'it', currentId:null, workouts:[w,d1,d2], folders:[f] };
 }
-const cur = () => state.workouts.find(w => w.id === state.currentId) || state.workouts[0];
+const cur = () => state.workouts.find(w => w.id === state.currentId);
 function touch(){ const w = cur(); if(w){ w.updatedAt = Date.now(); } save(); }
 
 // ── Helpers DOM ──
@@ -415,54 +507,216 @@ async function createCode(payload){
   return data;
 }
 
-// ── Render: sidebar ──
+// ── Navigazione ──
+function go(view, opts={}){
+  if (view!=='editor') ui.prevView = view;
+  ui.view = view; Object.assign(ui, opts); ui.selected.clear(); ui.emojiOpen=false; delArmed2=null;
+  render(); const pv=$('#pageView'); if(pv) pv.scrollTop=0;
+}
+function openWorkout(id){ state.currentId=id; save(); go('editor'); }
+function newWorkout(extra={}){
+  const w = { id:uid('w'), name:'Nuova scheda', emoji:'💪', type:'bodybuilding', updatedAt:Date.now(), codes:[], exercises:[], groups:[], ...extra };
+  state.workouts.push(w); state.currentId=w.id; touch(); go('editor');
+  requestAnimationFrame(()=>{ const t=$('#titleIn'); if(t){ t.focus(); t.select(); } });
+  return w;
+}
+const lastActivity = (kind,id) => Math.max((state[kind==='client'?'clients':'folders'].find(x=>x.id===id)?.createdAt)||0,
+  ...state.workouts.filter(w=>(kind==='client'?w.clientId:w.folderId)===id).map(w=>w.updatedAt));
+const wsOf = (kind,id) => state.workouts.filter(w=>(kind==='client'?w.clientId:w.folderId)===id);
+const byRecent = arr => [...arr].sort((a,b)=>b.updatedAt-a.updatedAt);
+const allCodes = () => state.workouts.flatMap(w=>(w.codes||[]).map(c=>({...c,w}))).sort((a,b)=>b.at-a.at);
+const expiresAt = c => c.at + CONFIG.codeTtlDays*864e5;
+const avatar = (c,lg) => h('span',{class:'av'+(lg?' lg':''),style:'background:'+avColor(c.id)},initials(c.name));
+const fIcon = (f,lg) => h('span',{class:'fd-ic'+(lg?' lg':'')},f.emoji||'📁');
+const days = n => n===1 ? '1 scheda' : n+' schede';
+
+function addEntity(kind, name, emoji){
+  name = name.trim(); if (!name) return null;
+  const e = {id:uid(kind==='client'?'c':'f'), name, createdAt:Date.now(), ...(kind==='folder'?{emoji:emoji||'📁'}:{})};
+  state[kind==='client'?'clients':'folders'].push(e); save(); return e;
+}
+// Modale "nuovo cliente / nuova cartella"
+function promptEntity(kind, onDone){
+  const root=$('#modalRoot'); const close=()=>root.replaceChildren();
+  let em='📁';
+  const inp = h('input',{class:'field',id:'entityIn',maxlength:60,placeholder:kind==='client'?'Nome e cognome':'Es. Programma Full Body 3 giorni'});
+  const emRow = kind==='folder' && h('div',{class:'emoji-row'}, ['📁','🗓️','🏋️','🤸','🔥','🎯','🧱','⚡','🦵','💪'].map(x=>{
+    const b=h('button',{class:x===em?'on':'',onclick:()=>{ em=x; emRow.querySelectorAll('button').forEach(z=>z.classList.toggle('on',z===b)); }},x); return b; }));
+  const ok = ()=>{ const e = addEntity(kind, inp.value, em); if(!e){ inp.focus(); return; } close(); toast(kind==='client'?'Cliente aggiunto':'Cartella creata'); onDone?onDone(e):go('library',{libTab:kind==='client'?'clients':'folders',libSel:{type:kind,id:e.id}}); };
+  inp.addEventListener('keydown',e=>{ if(e.key==='Enter') ok(); });
+  root.replaceChildren(h('div',{class:'scrim',onclick:ev=>{ if(ev.target===ev.currentTarget) close(); }},
+    h('div',{class:'modal',role:'dialog','aria-modal':'true'},
+      h('h3',{},kind==='client'?'Nuovo cliente':'Nuova cartella'),
+      h('p',{},kind==='client'?'Il nome resta solo in questo browser: non viene inviato con il codice.':'Raggruppa le schede di un programma, per esempio i giorni di una scheda universale.'),
+      emRow, inp,
+      h('div',{class:'row'}, h('button',{class:'btn ghost',onclick:close},'Annulla'), h('button',{class:'btn primary',onclick:ok},kind==='client'?'Aggiungi cliente':'Crea cartella')))));
+  requestAnimationFrame(()=>inp.focus());
+}
+
+// ── Sidebar ──
+const SIDE_MAX = 5;
 function renderSide(){
   $('#gymBox').replaceChildren(document.createTextNode(CONFIG.gymName), h('span',{},'Partner'));
-  const q = ui.libQ.trim().toLowerCase();
-  const count = id => state.workouts.filter(w => id==='all' ? true : id==='none' ? !clientOf(w) : w.clientId===id).length;
-  if (ui.clientFilter!=='all' && ui.clientFilter!=='none' && !state.clients.find(c=>c.id===ui.clientFilter)) ui.clientFilter='all';
+  const nav = $('#sideNav'); nav.replaceChildren();
+  const navItem = (id,ic,label,onclick) => h('button',{class:'nav-item'+(ui.view===id&&!ui.libSel?' on':''),onclick},h('span',{class:'ic'},ic),label);
+  nav.append(h('div',{class:'nav'},
+    navItem('home','⌂','Home',()=>go('home')),
+    navItem('library','▤','Archivio',()=>go('library',{libSel:null}))));
 
-  // elenco clienti
-  const cl = $('#clients'); cl.replaceChildren();
-  const row = (id, label, av) => h('button',{class:'cl'+(ui.clientFilter===id?' on':''), onclick:()=>{ ui.clientFilter=id; delClientArmed=null; renderSide(); }},
-    av, h('span',{class:'cn2'},label), h('span',{class:'cnt'},count(id)));
-  cl.append(row('all','Tutte le schede', h('span',{class:'av',style:'background:var(--t3)'},'∗')));
-  const clients = [...state.clients].sort((a,b)=>a.name.localeCompare(b.name,'it'))
-    .filter(c => !q || c.name.toLowerCase().includes(q) || state.workouts.some(w=>w.clientId===c.id && w.name.toLowerCase().includes(q)));
-  clients.forEach(c => cl.append(row(c.id, c.name, h('span',{class:'av',style:'background:'+avColor(c.id)},initials(c.name)))));
-  if (count('none')) cl.append(row('none','Senza cliente', h('span',{class:'av',style:'background:var(--border-med);color:var(--t2)'},'—')));
-  if (q && !clients.length) cl.append(h('div',{class:'lib-empty'},'Nessun cliente trovato.'));
-
-  // intestazione cliente selezionato
-  const head = $('#clientHead'); head.replaceChildren();
-  const sel = state.clients.find(c=>c.id===ui.clientFilter);
-  if (sel){
-    const del = h('button',{class:'btn sm ghost danger', onclick:()=>{
-      if (delClientArmed!==sel.id){ delClientArmed=sel.id; renderSide(); return; }
-      state.workouts.forEach(w=>{ if(w.clientId===sel.id) delete w.clientId; });
-      state.clients = state.clients.filter(c=>c.id!==sel.id); ui.clientFilter='all'; delClientArmed=null; save(); render(); toast('Cliente eliminato, le schede restano senza cliente');
-    }}, delClientArmed===sel.id ? 'Conferma: elimina cliente' : 'Elimina cliente');
-    head.append(h('div',{class:'client-head'},
-      h('input',{id:'clientNameIn', value:sel.name, maxlength:60, 'aria-label':'Nome cliente', oninput:e=>{ sel.name=e.target.value; save(); renderTop(); }, onchange:()=>{ if(!sel.name.trim()) sel.name='Cliente'; render(); }}),
-      h('div',{class:'row'}, h('span',{class:'cnt'}, count(sel.id)+' schede'), h('span',{style:'flex:1'}), del)));
-  }
-  $('#libLabel').textContent = sel ? 'Schede di '+sel.name.split(' ')[0] : ui.clientFilter==='none' ? 'Schede senza cliente' : 'Tutte le schede';
-
-  // schede filtrate
-  const items = [...state.workouts].sort((a,b)=>b.updatedAt-a.updatedAt)
-    .filter(w => ui.clientFilter==='all' ? true : ui.clientFilter==='none' ? !clientOf(w) : w.clientId===ui.clientFilter)
-    .filter(w => !q || (w.name+' '+clientName(w)).toLowerCase().includes(q));
-  const lib = $('#lib'); lib.replaceChildren();
-  if (!items.length) lib.append(h('div',{class:'lib-empty'}, sel ? 'Nessuna scheda per '+sel.name+'. Creala con “+ Nuova”.' : 'Nessuna scheda trovata.'));
-  items.forEach(w => lib.append(h('button',{class:'lib-item'+(w.id===state.currentId?' on':''), onclick:()=>{ state.currentId=w.id; ui.selected.clear(); save(); render(); }},
-    h('span',{class:'em'},w.emoji),
-    h('span',{class:'tx'}, h('div',{class:'nm'}, w.name||'Senza nome'),
-      h('div',{class:'meta'}, [ui.clientFilter==='all' ? clientName(w) : null, w.exercises.length+' esercizi', w.codes?.length ? 'inviata' : null, ago(w.updatedAt)].filter(Boolean).join(' · '))))));
+  const section = (title, kind, items, rowFn, total, onAdd) => {
+    const sec = h('div',{class:'sec'}, h('div',{class:'sec-h'}, h('span',{class:'label'},title),
+      onAdd && h('button',{class:'add-mini',title:'Aggiungi',onclick:onAdd},'+')));
+    if (!items.length) sec.append(h('div',{class:'side-empty'}, kind==='workouts'?'Nessuna scheda.':kind==='clients'?'Nessun cliente.':'Nessuna cartella.'));
+    items.slice(0,SIDE_MAX).forEach(x=>sec.append(rowFn(x)));
+    if (total > SIDE_MAX) sec.append(h('button',{class:'see-all',onclick:()=>go('library',{libTab:kind,libSel:null})},'Vedi tutti ('+total+') →'.replace('tutti',kind==='clients'?'tutti':'tutte')));
+    return sec;
+  };
+  const isSel = (type,id) => ui.view==='library' && ui.libSel?.type===type && ui.libSel.id===id;
+  const clients = [...state.clients].sort((a,b)=>lastActivity('client',b.id)-lastActivity('client',a.id));
+  nav.append(section('Clienti','clients',clients, c=>h('button',{class:'cl'+(isSel('client',c.id)?' on':''),onclick:()=>go('library',{libTab:'clients',libSel:{type:'client',id:c.id}})},
+    avatar(c), h('span',{class:'cn2'},c.name), h('span',{class:'cnt'},wsOf('client',c.id).length)), clients.length, ()=>promptEntity('client')));
+  const folders = [...state.folders].sort((a,b)=>lastActivity('folder',b.id)-lastActivity('folder',a.id));
+  nav.append(section('Cartelle','folders',folders, f=>h('button',{class:'cl'+(isSel('folder',f.id)?' on':''),onclick:()=>go('library',{libTab:'folders',libSel:{type:'folder',id:f.id}})},
+    fIcon(f), h('span',{class:'cn2'},f.name), h('span',{class:'cnt'},wsOf('folder',f.id).length)), folders.length, ()=>promptEntity('folder')));
+  const recent = byRecent(state.workouts);
+  nav.append(section('Schede recenti','workouts',recent, w=>h('button',{class:'lib-item'+(ui.view==='editor'&&w.id===state.currentId?' on':''),onclick:()=>openWorkout(w.id)},
+    h('span',{class:'em'},w.emoji), h('span',{class:'tx'}, h('div',{class:'nm'},w.name||'Senza nome'),
+      h('div',{class:'meta'},[clientName(w)||folderName(w), ago(w.updatedAt)].filter(Boolean).join(' · ')))), recent.length));
   document.querySelectorAll('#langSeg button').forEach(b=>b.classList.toggle('on', b.dataset.l===state.lang));
 }
-function addClient(name){
-  name = name.trim(); if (!name) return null;
-  const c = {id:uid('c'), name, createdAt:Date.now()}; state.clients.push(c); save(); return c;
+
+// ── Componenti pagina ──
+function workoutTile(w){
+  const sent = w.codes?.length;
+  return h('button',{class:'tile',onclick:()=>openWorkout(w.id)},
+    h('div',{class:'tt'}, h('span',{class:'em-lg'},w.emoji), h('div',{class:'tx'}, h('div',{class:'tn'},w.name||'Senza nome'), h('div',{class:'ts'}, w.exercises.length+' esercizi · '+ago(w.updatedAt)))),
+    h('div',{class:'pills'},
+      clientOf(w) && h('span',{class:'pill'},clientName(w)),
+      folderOf(w) && h('span',{class:'pill fd'},(folderOf(w).emoji||'📁')+' '+folderName(w)),
+      sent ? h('span',{class:'pill sent'},'Inviata') : null,
+      !clientOf(w) && !folderOf(w) && !sent ? h('span',{class:'pill'},'Bozza') : null));
+}
+function entityTile(kind, e){
+  const ws = wsOf(kind,e.id); const last = lastActivity(kind,e.id);
+  return h('button',{class:'tile',onclick:()=>go('library',{libTab:kind==='client'?'clients':'folders',libSel:{type:kind,id:e.id}})},
+    h('div',{class:'tt'}, kind==='client'?avatar(e,true):fIcon(e,true),
+      h('div',{class:'tx'}, h('div',{class:'tn'},e.name), h('div',{class:'ts'}, days(ws.length)+' · '+ago(last)))),
+    ws.length ? h('div',{class:'pills'}, ws.slice(0,3).map(w=>h('span',{class:'pill'},w.emoji+' '+(w.name||'Senza nome'))), ws.length>3 && h('span',{class:'pill'},'+'+(ws.length-3))) : null);
+}
+function codeRows(list){
+  if (!list.length) return h('div',{class:'blank'},'Nessun codice generato. Apri una scheda e premi “Genera codice per il cliente”.');
+  return h('div',{class:'codes'}, list.map(c=>{
+    const exp = Date.now() > expiresAt(c);
+    return h('div',{class:'code-row'+(exp?' exp':'')},
+      h('span',{class:'cc'},fmtCode(c.code)),
+      h('div',{class:'cw'}, h('b',{},c.w.emoji+' '+(c.w.name||'Senza nome')), h('span',{},[clientName(c.w)||'Nessun cliente', folderName(c.w)].filter(Boolean).join(' · '))),
+      h('span',{class:'cd'}, exp ? 'Scaduto' : 'Scade il '+new Date(expiresAt(c)).toLocaleDateString('it-IT',{day:'numeric',month:'short'})),
+      exp ? h('button',{class:'btn sm',onclick:()=>openWorkout(c.w.id)},'Apri scheda') : h('button',{class:'btn sm',onclick:()=>copy(fmtCode(c.code))},'Copia'));
+  }));
+}
+
+// ── Home ──
+function renderHome(root){
+  const hr = new Date().getHours();
+  const greet = hr<13 ? 'Buongiorno' : hr<18 ? 'Buon pomeriggio' : 'Buonasera';
+  const codes = allCodes(); const active = codes.filter(c=>Date.now()<=expiresAt(c)).length;
+  const clients = [...state.clients].sort((a,b)=>lastActivity('client',b.id)-lastActivity('client',a.id)).slice(0,6);
+  const block = (title, more, body) => h('section',{class:'block'}, h('div',{class:'block-h'}, h('h2',{},title), more), body);
+  root.append(h('div',{class:'page-in'},
+    h('div',{class:'hello'},
+      h('div',{}, h('h1',{},greet+', '+CONFIG.gymName), h('p',{},'Crea le schede, assegnale ai clienti e mandale con un codice da importare in Aethel.')),
+      h('div',{class:'quick'},
+        h('button',{class:'btn',onclick:()=>promptEntity('client')},'+ Cliente'),
+        h('button',{class:'btn',onclick:()=>promptEntity('folder')},'+ Cartella'),
+        h('button',{class:'btn primary',onclick:()=>newWorkout()},'+ Nuova scheda'))),
+    h('div',{class:'kpis'},
+      h('div',{class:'kpi'},h('b',{},state.clients.length),h('span',{},'Clienti')),
+      h('div',{class:'kpi'},h('b',{},state.folders.length),h('span',{},'Cartelle')),
+      h('div',{class:'kpi'},h('b',{},state.workouts.length),h('span',{},'Schede')),
+      h('div',{class:'kpi'},h('b',{},active),h('span',{},'Codici attivi'))),
+    block('Clienti recenti', state.clients.length>6 && h('button',{class:'see-all',onclick:()=>go('library',{libTab:'clients',libSel:null})},'Vedi tutti →'),
+      clients.length ? h('div',{class:'grid'}, clients.map(c=>entityTile('client',c))) : h('div',{class:'blank'},'Nessun cliente. Aggiungine uno con “+ Cliente”.')),
+    block('Codici recenti', null, codeRows(codes.slice(0,6))),
+    block('Schede recenti', state.workouts.length>6 && h('button',{class:'see-all',onclick:()=>go('library',{libTab:'workouts',libSel:null})},'Vedi tutte →'),
+      state.workouts.length ? h('div',{class:'grid'}, byRecent(state.workouts).slice(0,6).map(workoutTile)) : h('div',{class:'blank'},'Nessuna scheda ancora.'))));
+}
+
+// ── Archivio ──
+function workoutTable(list){
+  if (!list.length) return h('div',{class:'blank'},'Nessuna scheda.');
+  return h('div',{class:'wtable'},
+    h('div',{class:'wrow hd'}, h('span',{},'Scheda'), h('span',{},'Cliente'), h('span',{},'Cartella'), h('span',{},'Esercizi'), h('span',{},'Modificata')),
+    list.map(w=>h('button',{class:'wrow',onclick:()=>openWorkout(w.id)},
+      h('span',{class:'wn'}, h('span',{class:'em'},w.emoji), h('span',{},w.name||'Senza nome')),
+      h('span',{class:'wc'}, clientName(w)||'—'), h('span',{class:'wc'}, folderName(w)||'—'),
+      h('span',{class:'num'}, w.exercises.length), h('span',{class:'num'}, ago(w.updatedAt)))));
+}
+function renderLibrary(root){
+  const q = ui.libQ.trim().toLowerCase();
+  const sel = ui.libSel; const page = h('div',{class:'page-in'});
+  if (sel){
+    const kind = sel.type; const coll = kind==='client'?'clients':'folders';
+    const e = state[coll].find(x=>x.id===sel.id);
+    if (!e){ ui.libSel=null; return renderLibrary(root); }
+    const ws = byRecent(wsOf(kind,e.id));
+    const del = h('button',{class:'btn sm ghost danger',onclick:()=>{
+      if (delArmed2!==e.id){ delArmed2=e.id; render(); return; }
+      ws.forEach(w=>{ delete w[kind==='client'?'clientId':'folderId']; });
+      state[coll] = state[coll].filter(x=>x.id!==e.id); delArmed2=null; save(); go('library',{libSel:null}); toast(kind==='client'?'Cliente eliminato, le schede restano':'Cartella eliminata, le schede restano');
+    }}, delArmed2===e.id ? 'Conferma eliminazione' : kind==='client'?'Elimina cliente':'Elimina cartella');
+    const ready = ws.filter(w=>w.exercises.length && w.name.trim());
+    page.append(
+      h('button',{class:'back',onclick:()=>go('library',{libSel:null})},'← Tutti '+(kind==='client'?'i clienti':'le cartelle')),
+      h('div',{class:'detail'}, kind==='client'?avatar(e,true):fIcon(e,true),
+        h('input',{id:'entityName',value:e.name,maxlength:60,'aria-label':'Nome',oninput:ev=>{ e.name=ev.target.value; save(); renderSide(); },onchange:()=>{ if(!e.name.trim()) e.name=kind==='client'?'Cliente':'Cartella'; render(); }}),
+        h('div',{class:'quick'},
+          kind!=='folder' || ready.length<2 ? null : h('button',{class:'btn',onclick:()=>openFolderCodes(e)},'Codici per tutta la cartella'),
+          h('button',{class:'btn primary',onclick:()=>newWorkout(kind==='client'?{clientId:e.id}:{folderId:e.id})},'+ Nuova scheda qui'), del),
+        h('div',{class:'meta'}, days(ws.length)+' · creato '+ago(e.createdAt||Date.now()))),
+      ws.length ? h('div',{class:'grid'}, ws.map(workoutTile)) : h('div',{class:'blank'}, kind==='client'?'Nessuna scheda per questo cliente.':'Cartella vuota. Crea qui le schede dei vari giorni.'),
+      kind!=='client' ? null : h('section',{class:'block'}, h('div',{class:'block-h'},h('h2',{},'Codici inviati')), codeRows(allCodes().filter(c=>c.w.clientId===e.id))));
+    root.append(page); return;
+  }
+  const tabs = [['clients','Clienti',state.clients.length],['folders','Cartelle',state.folders.length],['workouts','Schede',state.workouts.length]];
+  page.append(h('div',{class:'lib-top'}, h('h1',{},'Archivio'),
+    h('div',{class:'lib-tools'},
+      h('input',{class:'field',id:'libQ',placeholder:'Cerca…',value:ui.libQ,oninput:ev=>{ ui.libQ=ev.target.value; renderMain(); requestAnimationFrame(()=>{ const i=$('#libQ'); i.focus(); i.setSelectionRange(i.value.length,i.value.length); }); }}),
+      h('div',{class:'seg'}, tabs.map(([k,l,n])=>h('button',{class:ui.libTab===k?'on':'',onclick:()=>go('library',{libTab:k,libSel:null})},l+' '+n))),
+      ui.libTab==='clients' ? h('button',{class:'btn primary',onclick:()=>promptEntity('client')},'+ Cliente')
+      : ui.libTab==='folders' ? h('button',{class:'btn primary',onclick:()=>promptEntity('folder')},'+ Cartella')
+      : h('button',{class:'btn primary',onclick:()=>newWorkout()},'+ Nuova scheda'))));
+  const match = s => !q || s.toLowerCase().includes(q);
+  if (ui.libTab==='clients'){
+    const list = [...state.clients].sort((a,b)=>a.name.localeCompare(b.name,'it')).filter(c=>match(c.name));
+    page.append(list.length ? h('div',{class:'grid'}, list.map(c=>entityTile('client',c))) : h('div',{class:'blank'}, q?'Nessun cliente trovato.':'Nessun cliente.'));
+  } else if (ui.libTab==='folders'){
+    const list = [...state.folders].sort((a,b)=>a.name.localeCompare(b.name,'it')).filter(f=>match(f.name));
+    page.append(list.length ? h('div',{class:'grid'}, list.map(f=>entityTile('folder',f))) : h('div',{class:'blank'}, q?'Nessuna cartella trovata.':'Nessuna cartella. Usale per i programmi su più giorni.'));
+  } else {
+    page.append(workoutTable(byRecent(state.workouts).filter(w=>match([w.name,clientName(w),folderName(w)].join(' ')))));
+  }
+  root.append(page);
+}
+
+// Codici per tutti i giorni di una cartella (una chiamata per scheda)
+async function openFolderCodes(f){
+  const ws = wsOf('folder',f.id).filter(w=>w.exercises.length && w.name.trim()).sort((a,b)=>a.name.localeCompare(b.name,'it',{numeric:true}));
+  const root=$('#modalRoot'); const close=()=>root.replaceChildren();
+  const body = h('div',{class:'modal',role:'dialog','aria-modal':'true'}, h('h3',{},(f.emoji||'📁')+' '+f.name), h('div',{class:'spinner'}), h('p',{},'Genero '+ws.length+' codici…'));
+  root.replaceChildren(h('div',{class:'scrim',onclick:ev=>{ if(ev.target===ev.currentTarget) close(); }}, body));
+  const res = [];
+  for (const w of ws){
+    try{ const code = await createCode(buildPayload(w)); w.codes=[{code,at:Date.now()},...(w.codes||[])].slice(0,5); w.updatedAt=Date.now(); res.push({w,code}); }
+    catch(err){ res.push({w,err:err.message||String(err)}); }
+  }
+  save(); render();
+  const okRes = res.filter(r=>r.code);
+  const msg = `Ecco il programma “${f.name}” da ${CONFIG.gymName}.\nApri Aethel → Allenamenti → Importa scheda → Da codice e inserisci un codice per ogni scheda:\n`+okRes.map(r=>`• ${r.w.name.trim()}: ${fmtCode(r.code)}`).join('\n')+`\n(validi ${CONFIG.codeTtlDays} giorni)`;
+  body.replaceChildren(h('h3',{},(f.emoji||'📁')+' '+f.name),
+    h('p',{}, okRes.length+' di '+res.length+' codici generati. Il cliente importa una scheda per codice.'),
+    h('div',{class:'multi'}, res.map(r=>h('div',{}, h('span',{},r.w.emoji+' '+r.w.name), r.code?h('span',{class:'cc'},fmtCode(r.code)):h('span',{class:'err'},r.err)))),
+    okRes.length ? h('div',{class:'msg-box'},msg) : null,
+    h('div',{class:'row'}, !okRes.length ? null : h('button',{class:'btn primary',onclick:()=>copy(msg)},'Copia messaggio'), h('button',{class:'btn ghost',onclick:close},'Chiudi')));
 }
 
 // ── Render: editor ──
@@ -541,13 +795,18 @@ function renderEditor(){
       h('div',{class:'row'},
         h('select',{class:'field client-sel', id:'clientSel', title:'Cliente (solo per te, non viene inviato)', onchange:e=>{
             const v = e.target.value;
-            if (v==='__new'){ ui.newClientFor = w.id; render(); return; }
+            if (v==='__new'){ e.target.value = w.clientId||''; return promptEntity('client', c=>{ w.clientId=c.id; touch(); render(); }); }
             if (v) w.clientId = v; else delete w.clientId; touch(); render(); }},
-          h('option',{value:''},'Nessun cliente'),
+          h('option',{value:''},'Nessun cliente (universale)'),
           [...state.clients].sort((a,b)=>a.name.localeCompare(b.name,'it')).map(c=>{ const o=h('option',{value:c.id},c.name); if(c.id===w.clientId) o.selected=true; return o; }),
           h('option',{value:'__new'},'+ Nuovo cliente…')),
-        ui.newClientFor===w.id && h('input',{class:'field client-in', id:'newClientIn', placeholder:'Nome nuovo cliente, poi Invio', autofocus:true,
-          onkeydown:e=>{ if(e.key==='Enter'){ const c=addClient(e.target.value); if(c){ w.clientId=c.id; } ui.newClientFor=null; touch(); render(); } if(e.key==='Escape'){ ui.newClientFor=null; render(); } }}),
+        h('select',{class:'field client-sel', id:'folderSel', title:'Cartella', onchange:e=>{
+            const v = e.target.value;
+            if (v==='__new'){ e.target.value = w.folderId||''; return promptEntity('folder', f=>{ w.folderId=f.id; touch(); render(); }); }
+            if (v) w.folderId = v; else delete w.folderId; touch(); render(); }},
+          h('option',{value:''},'Nessuna cartella'),
+          [...state.folders].sort((a,b)=>a.name.localeCompare(b.name,'it')).map(f=>{ const o=h('option',{value:f.id},(f.emoji||'📁')+' '+f.name); if(f.id===w.folderId) o.selected=true; return o; }),
+          h('option',{value:'__new'},'+ Nuova cartella…')),
         typeSeg),
       h('div',{class:'stats'},
         h('span',{},h('b',{},w.exercises.length),' esercizi'),
@@ -586,7 +845,7 @@ function renderEditor(){
 
 function renderTop(){
   const w = cur();
-  $('#crumbs').textContent = w ? [CONFIG.gymName, clientName(w), w.name||'Senza nome'].filter(Boolean).join('  /  ') : '';
+  $('#crumbs').textContent = w ? [clientName(w)||folderName(w)||'Universale', w.name||'Senza nome'].filter(Boolean).join('  /  ') : '';
   const last = w?.codes?.[0];
   const chip = $('#lastCode');
   if (last){ chip.hidden=false; chip.textContent = fmtCode(last.code); chip.title = 'Ultimo codice · '+new Date(last.at).toLocaleDateString('it-IT'); }
@@ -647,25 +906,27 @@ function openCodeModal(){
 }
 let delArmed = null;
 
-function render(){ renderSide(); renderEditor(); renderTop(); renderCatalogue(); }
+function renderMain(){
+  const page = $('#pageView'); const ed = ui.view==='editor' && cur();
+  if (ui.view==='editor' && !cur()) ui.view='home';
+  $('#app').classList.toggle('no-cat', !ed);
+  page.hidden = !!ed; $('#editorView').hidden = !ed;
+  if (ed){ renderEditor(); renderTop(); renderCatalogue(); }
+  else { const sc = page.scrollTop; page.replaceChildren(); ui.view==='library' ? renderLibrary(page) : renderHome(page); page.scrollTop = sc; }
+}
+function render(){ renderSide(); renderMain(); }
 
 // ── Eventi globali ──
-$('#newBtn').onclick = ()=>{ const w = { id:uid('w'), name:'Nuova scheda', emoji:'💪', type:'bodybuilding', updatedAt:Date.now(), codes:[], exercises:[], groups:[] };
-  if (state.clients.find(c=>c.id===ui.clientFilter)) w.clientId = ui.clientFilter;
-  state.workouts.push(w); state.currentId=w.id; ui.selected.clear(); touch(); render(); requestAnimationFrame(()=>{ const t=$('#titleIn'); t.focus(); t.select(); }); };
+$('#newBtn').onclick = ()=>newWorkout();
+$('#backBtn').onclick = ()=>go(ui.prevView||'home');
 $('#dupBtn').onclick = ()=>{ const w = cur(); if(!w) return; const c = JSON.parse(JSON.stringify(w));
   const map = {}; c.groups.forEach(g=>{ map[g.id]=uid('grp'); g.id=map[g.id]; }); c.exercises.forEach(e=>{ e.uid=uid('x'); if(e.groupId) e.groupId=map[e.groupId]; });
   Object.assign(c,{id:uid('w'),name:w.name+' (copia)',codes:[],updatedAt:Date.now()}); state.workouts.push(c); state.currentId=c.id; touch(); render(); toast('Scheda duplicata'); };
 $('#delBtn').onclick = ()=>{ const w = cur(); if(!w) return; const b = $('#delBtn');
   if (delArmed !== w.id){ delArmed = w.id; b.textContent='Conferma eliminazione'; setTimeout(()=>{ delArmed=null; b.textContent='Elimina'; },3000); return; }
-  delArmed=null; b.textContent='Elimina'; state.workouts = state.workouts.filter(x=>x.id!==w.id); state.currentId = state.workouts[0]?.id; touch(); render(); toast('Scheda eliminata'); };
+  delArmed=null; b.textContent='Elimina'; state.workouts = state.workouts.filter(x=>x.id!==w.id); state.currentId = null; save(); go(ui.prevView||'home'); toast('Scheda eliminata'); };
 $('#codeBtn').onclick = openCodeModal;
 $('#catSearch').oninput = e=>{ ui.q=e.target.value; renderCatalogue(); };
-$('#addClientBtn').onclick = ()=>{ const r=$('#addClientRow'); r.hidden=!r.hidden; if(!r.hidden) $('#addClientIn').focus(); };
-const doAddClient = ()=>{ const c = addClient($('#addClientIn').value); if(!c) return; $('#addClientIn').value=''; $('#addClientRow').hidden=true; ui.clientFilter=c.id; render(); toast('Cliente aggiunto'); };
-$('#addClientOk').onclick = doAddClient;
-$('#addClientIn').onkeydown = e=>{ if(e.key==='Enter') doAddClient(); if(e.key==='Escape') $('#addClientRow').hidden=true; };
-$('#libSearch').oninput = e=>{ ui.libQ=e.target.value; renderSide(); };
 document.querySelectorAll('#catSeg button').forEach(b=>b.onclick=()=>{ ui.catFilter=b.dataset.c; renderCatalogue(); });
 document.querySelectorAll('#langSeg button').forEach(b=>b.onclick=()=>{ state.lang=b.dataset.l; save(); render(); });
 document.addEventListener('click',ev=>{ if(ui.emojiOpen && !ev.target.closest('.emoji-pick')){ ui.emojiOpen=false; render(); } });
