@@ -277,6 +277,19 @@ button{cursor:pointer}
 .multi div{display:flex;justify-content:space-between;gap:10px;padding:8px 12px;background:var(--cream);border-radius:var(--r-sm)}
 .multi .cc{font:600 14px ui-monospace,'SF Mono',Menlo,monospace;color:var(--accent);letter-spacing:.05em}
 .top .back{margin-right:4px}
+.client-note{width:100%;border:1px solid var(--border);background:var(--cream);border-radius:var(--r-sm);padding:10px 12px;resize:vertical;min-height:72px;outline:none;font-size:14px;line-height:1.5}
+.client-note:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-light)}
+.note-label{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--t3);font-weight:600;width:100%}
+.note-banner{display:flex;gap:12px;align-items:flex-start;background:var(--accent-light);border-radius:var(--r-md);padding:12px 14px;font-size:13px;color:var(--t1)}
+.note-banner b{display:block;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);margin-bottom:2px}
+.note-banner div{white-space:pre-wrap;min-width:0}
+.side-foot{flex-wrap:wrap}
+.backup-row{display:flex;gap:6px;width:100%}
+.backup-row .btn{flex:1;padding:6px 8px;font-size:12px}
+.warn{display:flex;gap:14px;align-items:center;justify-content:space-between;flex-wrap:wrap;background:var(--coral-light);border-radius:var(--r-lg);padding:14px 18px;color:var(--t1)}
+.warn p{margin:0;font-size:13px;color:var(--t2)}
+.warn b{display:block;font-size:14px;color:var(--t1)}
+.hold-tag{font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--lilac);background:var(--lilac-light);padding:2px 7px;border-radius:6px}
 .narrow{display:none}
 @media (max-width:1100px){
   .app{display:none}
@@ -296,7 +309,10 @@ button{cursor:pointer}
     <div class="gym" id="gymBox"></div>
     <button class="btn primary new-main" id="newBtn">+ Nuova scheda</button>
     <div class="side-scroll" id="sideNav"></div>
-    <div class="side-foot"><span>Salvate in questo browser</span>
+    <div class="side-foot">
+      <div class="backup-row"><button class="btn" id="exportBtn" title="Scarica un file con clienti, cartelle e schede">Esporta backup</button><button class="btn" id="importBtn" title="Ripristina da un file di backup">Importa</button></div>
+      <input type="file" id="importFile" accept="application/json,.json" hidden>
+      <span id="backupInfo">Salvate in questo browser</span>
       <div class="seg" id="langSeg"><button data-l="it">IT</button><button data-l="en">EN</button></div></div>
   </aside>
 
@@ -351,6 +367,9 @@ const STORE_KEY = 'aethel-coach-studio-v1';
 
 const CAT = window.AETHEL_CATALOGUE || [];
 const CAT_BY_ID = Object.fromEntries(CAT.map(e => [e.id, e]));
+// Tenute isometriche: stessa lista di isHoldExercise nell'app. Le reps diventano "30s".
+const isHold = id => !!CAT_BY_ID[id]?.hold;
+const holdSecs = r => parseInt(String(r||'').replace(/[^0-9]/g,'')) || 30;
 const MUSCLES = {
   it:{chest:'Petto',back:'Dorsali',shoulders:'Spalle',biceps:'Bicipiti',triceps:'Tricipiti',forearms:'Avambracci',abs:'Addome',obliques:'Obliqui',traps:'Trapezi',lats:'Dorsali',lowerBack:'Lombari',glutes:'Glutei',quads:'Quadricipiti',hamstrings:'Femorali',calves:'Polpacci',hipFlexors:'Flessori anca'},
   en:{chest:'Chest',back:'Back',shoulders:'Shoulders',biceps:'Biceps',triceps:'Triceps',forearms:'Forearms',abs:'Abs',obliques:'Obliques',traps:'Traps',lats:'Lats',lowerBack:'Lower back',glutes:'Glutes',quads:'Quads',hamstrings:'Hamstrings',calves:'Calves',hipFlexors:'Hip flexors'},
@@ -393,7 +412,7 @@ function save(){
   const el = $('#saved'); el.textContent = 'Salvato'; clearTimeout(saveT); saveT = setTimeout(()=>el.textContent='',1400);
 }
 function exName(id){ const e = CAT_BY_ID[id]; return e ? (e[state.lang] || e.it) : id; }
-function mkEx(id, extra={}){ const e = CAT_BY_ID[id]; return { uid:uid('x'), exerciseId:id, emoji:e?.emoji||'💪', defaultSets:3, defaultReps:'8-12', ...extra }; }
+function mkEx(id, extra={}){ const e = CAT_BY_ID[id]; return { uid:uid('x'), exerciseId:id, emoji:e?.emoji||'💪', defaultSets:3, defaultReps:isHold(id)?'30s':'8-12', ...extra }; }
 function seed(){
   // Scheda d'esempio, modificabile o eliminabile.
   const g = uid('grp');
@@ -485,7 +504,7 @@ function buildPayload(w){
         exerciseId: e.exerciseId, name: exName(e.exerciseId), emoji: e.emoji,
         defaultSets: Math.max(1, Math.round(+e.defaultSets||1)),
         defaultReps: String(e.defaultReps||'').trim() || '8-12',
-        ...(+e.defaultKg > 0 ? { defaultKg: +e.defaultKg } : {}),
+        ...(+e.defaultKg > 0 && !isHold(e.exerciseId) ? { defaultKg: +e.defaultKg } : {}),
         ...(e.notes && e.notes.trim() ? { notes: e.notes.trim() } : {}),
         ...(e.groupId ? { groupId: e.groupId } : {}),
       })),
@@ -600,7 +619,7 @@ function entityTile(kind, e){
   const ws = wsOf(kind,e.id); const last = lastActivity(kind,e.id);
   return h('button',{class:'tile',onclick:()=>go('library',{libTab:kind==='client'?'clients':'folders',libSel:{type:kind,id:e.id}})},
     h('div',{class:'tt'}, kind==='client'?avatar(e,true):fIcon(e,true),
-      h('div',{class:'tx'}, h('div',{class:'tn'},e.name), h('div',{class:'ts'}, days(ws.length)+' · '+ago(last)))),
+      h('div',{class:'tx'}, h('div',{class:'tn'},e.name), h('div',{class:'ts'}, e.note?.trim() ? e.note.trim().split('\n')[0] : days(ws.length)+' · '+ago(last)))),
     ws.length ? h('div',{class:'pills'}, ws.slice(0,3).map(w=>h('span',{class:'pill'},w.emoji+' '+(w.name||'Senza nome'))), ws.length>3 && h('span',{class:'pill'},'+'+(ws.length-3))) : null);
 }
 function codeRows(list){
@@ -613,6 +632,43 @@ function codeRows(list){
       h('span',{class:'cd'}, exp ? 'Scaduto' : 'Scade il '+new Date(expiresAt(c)).toLocaleDateString('it-IT',{day:'numeric',month:'short'})),
       exp ? h('button',{class:'btn sm',onclick:()=>openWorkout(c.w.id)},'Apri scheda') : h('button',{class:'btn sm',onclick:()=>copy(fmtCode(c.code))},'Copia'));
   }));
+}
+
+// ── Backup ──
+// Tutto vive nel localStorage di questo browser: il backup è un file JSON
+// da scaricare e reimportare (anche su un altro computer).
+function backupWarning(){
+  const has = state.workouts.length || state.clients.length;
+  const stale = !state.lastBackup || Date.now()-state.lastBackup > 7*864e5;
+  if (!has || !stale) return null;
+  return h('div',{class:'warn'},
+    h('div',{}, h('b',{}, state.lastBackup ? 'Ultimo backup '+ago(state.lastBackup) : 'Nessun backup ancora'),
+      h('p',{},'Clienti e schede sono salvati solo in questo browser. Se cancelli i dati di navigazione li perdi: scarica un backup ogni tanto.')),
+    h('button',{class:'btn primary',onclick:exportBackup},'Esporta backup'));
+}
+function exportBackup(){
+  state.lastBackup = Date.now(); save();
+  const data = JSON.stringify({ _aethelCoach:1, exportedAt:new Date().toISOString(), gym:CONFIG.gymName, state }, null, 2);
+  const url = URL.createObjectURL(new Blob([data],{type:'application/json'}));
+  const a = h('a',{href:url, download:'aethel-coach-backup-'+new Date().toISOString().slice(0,10)+'.json'});
+  document.body.append(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(url),1000);
+  render(); toast('Backup scaricato');
+}
+function importBackup(file){
+  const r = new FileReader();
+  r.onload = ()=>{
+    try{
+      const d = JSON.parse(r.result); const inc = d?.state;
+      if (!d?._aethelCoach || !inc || !Array.isArray(inc.workouts)) throw new Error();
+      // Unione per id: quello che c'è nel file aggiorna/aggiunge, niente viene cancellato.
+      const merge = (key) => { const map = new Map((state[key]||[]).map(x=>[x.id,x])); (inc[key]||[]).forEach(x=>{ const old=map.get(x.id); if(!old || (x.updatedAt||0)>=(old.updatedAt||0)) map.set(x.id,x); }); state[key]=[...map.values()]; };
+      merge('workouts'); merge('clients'); merge('folders');
+      state.lastBackup = Math.max(state.lastBackup||0, inc.lastBackup||0) || Date.now();
+      save(); go('home');
+      toast('Backup importato: '+inc.workouts.length+' schede, '+(inc.clients||[]).length+' clienti');
+    }catch{ toast('File non valido: usa un backup esportato da Coach Studio'); }
+  };
+  r.readAsText(file);
 }
 
 // ── Home ──
@@ -629,6 +685,7 @@ function renderHome(root){
         h('button',{class:'btn',onclick:()=>promptEntity('client')},'+ Cliente'),
         h('button',{class:'btn',onclick:()=>promptEntity('folder')},'+ Cartella'),
         h('button',{class:'btn primary',onclick:()=>newWorkout()},'+ Nuova scheda'))),
+    backupWarning(),
     h('div',{class:'kpis'},
       h('div',{class:'kpi'},h('b',{},state.clients.length),h('span',{},'Clienti')),
       h('div',{class:'kpi'},h('b',{},state.folders.length),h('span',{},'Cartelle')),
@@ -672,7 +729,11 @@ function renderLibrary(root){
         h('div',{class:'quick'},
           kind!=='folder' || ready.length<2 ? null : h('button',{class:'btn',onclick:()=>openFolderCodes(e)},'Codici per tutta la cartella'),
           h('button',{class:'btn primary',onclick:()=>newWorkout(kind==='client'?{clientId:e.id}:{folderId:e.id})},'+ Nuova scheda qui'), del),
-        h('div',{class:'meta'}, days(ws.length)+' · creato '+ago(e.createdAt||Date.now()))),
+        h('div',{class:'meta'}, days(ws.length)+' · creato '+ago(e.createdAt||Date.now())),
+        kind==='client' && h('span',{class:'note-label'},'Descrizione · obiettivi, infortuni, disponibilità'),
+        kind==='client' && h('textarea',{class:'client-note',id:'clientNote',maxlength:2000,value:e.note||'',
+          placeholder:'Es. Obiettivo ipertrofia, 3 allenamenti a settimana. Fastidio alla spalla destra: niente military press.',
+          oninput:ev=>{ e.note=ev.target.value; save(); }})),
       ws.length ? h('div',{class:'grid'}, ws.map(workoutTile)) : h('div',{class:'blank'}, kind==='client'?'Nessuna scheda per questo cliente.':'Cartella vuota. Crea qui le schede dei vari giorni.'),
       kind!=='client' ? null : h('section',{class:'block'}, h('div',{class:'block-h'},h('h2',{},'Codici inviati')), codeRows(allCodes().filter(c=>c.w.clientId===e.id))));
     root.append(page); return;
@@ -741,15 +802,18 @@ function exCard(w, e, memberLabel, group){
         onchange:ev=>{ ev.target.checked?ui.selected.add(e.uid):ui.selected.delete(e.uid); render(); }})),
     cat?.img ? h('img',{class:'thumb', src:'img/'+e.exerciseId+'.webp', alt:'', loading:'lazy'}) : h('div',{class:'thumb'}),
     h('div',{class:'ex-body'},
-      h('div',{class:'ex-name'}, memberLabel && h('span',{class:'member-tag'},memberLabel), exName(e.exerciseId),
+      h('div',{class:'ex-name'}, memberLabel && h('span',{class:'member-tag'},memberLabel), exName(e.exerciseId), isHold(e.exerciseId) && h('span',{class:'hold-tag'},'Tenuta'),
         h('span',{class:'mus'}, (cat?.m||[]).map(m=>MUSCLES[state.lang][m]||m).join(' · '))),
       h('div',{class:'params'},
         group?.type==='superset'
           ? paramField('Serie', e.defaultSets, ()=>{}, {locked:true, title:'Nei superset le serie seguono i giri del blocco'})
           : group?.type==='emom' ? null
           : paramField('Serie', e.defaultSets, v=>{ e.defaultSets = Math.max(1, Math.min(20, parseInt(v)||1)); touch(); }, {num:true,min:1,max:20}),
-        paramField(group?.type==='emom'?'Reps / sec':'Reps', e.defaultReps, v=>{ e.defaultReps = v.slice(0,40); touch(); }, {wide:true}),
-        paramField('Kg', e.defaultKg ?? '', v=>{ const n = parseFloat(String(v).replace(',','.')); e.defaultKg = n>0 ? Math.round(n*4)/4 : undefined; touch(); }, {num:true,step:2.5,min:0})),
+        isHold(e.exerciseId)
+          ? paramField('Secondi', holdSecs(e.defaultReps), v=>{ e.defaultReps = Math.max(1, Math.min(600, parseInt(v)||1))+'s'; touch(); }, {num:true,step:5,min:5,max:600})
+          : paramField(group?.type==='emom'?'Reps / sec':'Reps', e.defaultReps, v=>{ e.defaultReps = v.slice(0,40); touch(); }, {wide:true}),
+        isHold(e.exerciseId) ? null
+          : paramField('Kg', e.defaultKg ?? '', v=>{ const n = parseFloat(String(v).replace(',','.')); e.defaultKg = n>0 ? Math.round(n*4)/4 : undefined; touch(); }, {num:true,step:2.5,min:0})),
       notes),
     h('div',{class:'ex-actions'},
       h('button',{class:'icon-btn',title:'Su',onclick:()=>move(w,i,-1)},'↑'),
@@ -814,6 +878,8 @@ function renderEditor(){
         emomMin>0 && h('span',{},h('b',{},Math.round(emomMin)),' min di EMOM'),
         w.groups.length>0 && h('span',{},h('b',{},w.groups.length),' blocchi')))));
 
+  const cl = clientOf(w);
+  if (cl?.note?.trim()) root.append(h('div',{class:'note-banner'}, h('div',{}, h('b',{},'Note su '+cl.name), cl.note.trim())));
   if (ui.selected.size){
     root.append(h('div',{class:'selbar'}, h('span',{},ui.selected.size+' selezionati'),
       h('button',{class:'btn sm primary',onclick:()=>createGroup('superset')},'Crea superset'),
@@ -873,7 +939,7 @@ function renderCatalogue(){
 }
 function addExercise(id){
   const w = cur(); if (!w) return;
-  w.exercises.push(mkEx(id, CAT_BY_ID[id]?.cat==='calisthenics' ? {defaultReps:'6-10'} : {}));
+  w.exercises.push(mkEx(id, isHold(id) ? {} : CAT_BY_ID[id]?.cat==='calisthenics' ? {defaultReps:'6-10'} : {}));
   touch(); render();
   requestAnimationFrame(()=>{ const ed = document.querySelector('.editor'); ed.scrollTo({top:ed.scrollHeight,behavior:'smooth'}); });
 }
@@ -914,10 +980,16 @@ function renderMain(){
   if (ed){ renderEditor(); renderTop(); renderCatalogue(); }
   else { const sc = page.scrollTop; page.replaceChildren(); ui.view==='library' ? renderLibrary(page) : renderHome(page); page.scrollTop = sc; }
 }
-function render(){ renderSide(); renderMain(); }
+function render(){ renderSide(); renderMain();
+  $('#backupInfo').textContent = state.lastBackup ? 'Ultimo backup '+ago(state.lastBackup) : 'Salvate solo in questo browser'; }
 
 // ── Eventi globali ──
 $('#newBtn').onclick = ()=>newWorkout();
+$('#exportBtn').onclick = exportBackup;
+$('#importBtn').onclick = ()=>$('#importFile').click();
+$('#importFile').onchange = e=>{ const f=e.target.files?.[0]; if(f) importBackup(f); e.target.value=''; };
+// Chiede al browser di non cancellare questi dati in automatico quando lo spazio scarseggia.
+try{ navigator.storage?.persist?.(); }catch{}
 $('#backBtn').onclick = ()=>go(ui.prevView||'home');
 $('#dupBtn').onclick = ()=>{ const w = cur(); if(!w) return; const c = JSON.parse(JSON.stringify(w));
   const map = {}; c.groups.forEach(g=>{ map[g.id]=uid('grp'); g.id=map[g.id]; }); c.exercises.forEach(e=>{ e.uid=uid('x'); if(e.groupId) e.groupId=map[e.groupId]; });
