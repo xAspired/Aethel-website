@@ -1,0 +1,589 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Aethel Coach Studio</title>
+<link rel="icon" href="icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&family=DM+Serif+Display&display=swap">
+<style>
+/* Layout: tre colonne desktop — libreria schede | editor scheda | catalogo esercizi. Token = tema "Standard" dell'app. */
+:root{
+  --cream:#FAF8F4; --card:#FFFEFB; --white:#FFFFFF;
+  --accent:#F07C3A; --accent-light:#FEF0E7; --accent-mid:#FBDCC8;
+  --lilac:#9B8EC4; --lilac-light:#F0EDF9; --sage:#7BA68A; --sage-light:#EBF3EE; --coral:#E8715A; --coral-light:#FDECEA;
+  --t1:#1A1714; --t2:#6B6560; --t3:#A8A29C;
+  --border:rgba(26,23,20,.08); --border-med:rgba(26,23,20,.14);
+  --shadow:0 1px 2px rgba(26,23,20,.04),0 6px 20px rgba(26,23,20,.05);
+  --serif:'DM Serif Display',Georgia,serif; --sans:'DM Sans',-apple-system,'Segoe UI',sans-serif;
+  --r-sm:10px; --r-md:14px; --r-lg:20px;
+}
+@media (prefers-color-scheme:dark){:root{
+  --cream:#17141A; --card:#211D25; --white:#2A2530;
+  --accent:#F28A4C; --accent-light:#3A2618; --accent-mid:#5A3720;
+  --lilac:#A99BDA; --lilac-light:#2D2840; --sage:#8DBB9C; --sage-light:#1E2E24; --coral:#EE8670; --coral-light:#3A2220;
+  --t1:#F3EFEA; --t2:#B8B0A8; --t3:#7C746D;
+  --border:rgba(255,255,255,.07); --border-med:rgba(255,255,255,.13);
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 6px 20px rgba(0,0,0,.25); color-scheme:dark}}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{background:var(--cream);color:var(--t1);font:14px/1.45 var(--sans);-webkit-font-smoothing:antialiased;overflow:hidden}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.app{display:grid;grid-template-columns:270px minmax(0,1fr) 400px;height:100vh}
+
+/* ── Sidebar ── */
+.side{border-right:1px solid var(--border);display:flex;flex-direction:column;min-height:0;background:var(--cream)}
+.brand{display:flex;align-items:center;gap:10px;padding:22px 20px 16px}
+.brand img{width:36px;height:36px;border-radius:9px}
+.brand b{font:22px/1 var(--serif);font-weight:400;display:block}
+.brand small{color:var(--t3);font-size:11px;letter-spacing:.08em;text-transform:uppercase}
+.gym{margin:0 16px 14px;padding:10px 12px;border-radius:var(--r-md);background:var(--accent-light);color:var(--accent);font-weight:600;font-size:12px;display:flex;justify-content:space-between;align-items:center}
+.gym span{color:var(--t2);font-weight:500}
+.side-h{display:flex;justify-content:space-between;align-items:center;padding:6px 20px 8px}
+.label{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--t3);font-weight:600}
+.side-search{margin:0 16px 8px}
+.lib{flex:1;overflow:auto;padding:0 10px 16px;display:flex;flex-direction:column;gap:2px}
+.lib-item{display:flex;gap:10px;align-items:center;padding:9px 10px;border-radius:var(--r-sm);border:0;background:none;text-align:left;width:100%}
+.lib-item:hover{background:var(--white)}
+.lib-item.on{background:var(--card);box-shadow:var(--shadow)}
+.lib-item .em{width:32px;height:32px;border-radius:9px;background:var(--accent-light);display:grid;place-items:center;font-size:16px;flex:none}
+.lib-item .tx{min-width:0;flex:1}
+.lib-item .nm{font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lib-item .meta{font-size:12px;color:var(--t3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lib-empty{color:var(--t3);font-size:13px;padding:10px}
+.side-foot{padding:12px 16px;border-top:1px solid var(--border);display:flex;gap:6px;font-size:12px;color:var(--t3);align-items:center;justify-content:space-between}
+
+/* ── Controls ── */
+.btn{border:0;border-radius:999px;padding:9px 16px;font-weight:600;background:var(--white);border:1px solid var(--border-med);transition:transform .08s,background .15s}
+.btn:active{transform:scale(.97)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.btn.primary:hover{filter:brightness(1.05)}
+.btn.primary:disabled{opacity:.45;cursor:not-allowed}
+.btn.ghost{background:none;border-color:transparent;color:var(--t2)}
+.btn.ghost:hover{background:var(--white)}
+.btn.sm{padding:6px 12px;font-size:12px}
+.btn.danger{color:var(--coral)}
+.icon-btn{width:30px;height:30px;border-radius:9px;border:0;background:none;color:var(--t3);display:grid;place-items:center;font-size:15px}
+.icon-btn:hover{background:var(--accent-light);color:var(--accent)}
+.field{width:100%;border:1px solid var(--border-med);background:var(--white);border-radius:var(--r-sm);padding:9px 12px;outline:none}
+.field:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-light)}
+.seg{display:inline-flex;background:var(--white);border:1px solid var(--border);border-radius:999px;padding:3px;gap:2px}
+.seg button{border:0;background:none;padding:6px 12px;border-radius:999px;font-size:12px;font-weight:600;color:var(--t2)}
+.seg button.on{background:var(--accent);color:#fff}
+
+/* ── Editor ── */
+.main{display:flex;flex-direction:column;min-height:0;min-width:0}
+.top{display:flex;align-items:center;gap:10px;padding:16px 28px;border-bottom:1px solid var(--border)}
+.top .crumbs{flex:1;color:var(--t3);font-size:13px;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.top .saved{font-size:12px;color:var(--sage);font-weight:600}
+.editor{flex:1;overflow:auto;padding:26px 28px 120px}
+.wrap{max-width:820px;margin:0 auto;display:flex;flex-direction:column;gap:22px}
+.head{display:flex;gap:16px;align-items:flex-start}
+.emoji-pick{width:64px;height:64px;border-radius:18px;background:var(--accent-light);border:0;font-size:30px;flex:none;position:relative}
+.head-fields{flex:1;display:flex;flex-direction:column;gap:10px;min-width:0}
+.title-in{border:0;background:none;outline:none;font:34px/1.1 var(--serif);padding:2px 0;width:100%;border-bottom:1px dashed transparent}
+.title-in:focus{border-bottom-color:var(--accent-mid)}
+.title-in::placeholder{color:var(--t3)}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.client-in{max-width:280px}
+.stats{display:flex;gap:18px;color:var(--t2);font-size:13px}
+.stats b{color:var(--t1);font-variant-numeric:tabular-nums}
+.emoji-pop{position:absolute;top:70px;left:0;z-index:20;background:var(--card);border:1px solid var(--border-med);border-radius:var(--r-md);box-shadow:var(--shadow);padding:8px;display:grid;grid-template-columns:repeat(6,36px);gap:4px}
+.emoji-pop button{border:0;background:none;font-size:20px;border-radius:8px;height:36px}
+.emoji-pop button:hover{background:var(--accent-light)}
+
+.selbar{position:sticky;top:-26px;z-index:5;display:flex;align-items:center;gap:8px;padding:10px 14px;background:var(--t1);color:var(--cream);border-radius:var(--r-md);box-shadow:var(--shadow)}
+.selbar .btn{background:transparent;border-color:rgba(255,255,255,.25);color:inherit}
+.selbar .btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.selbar span{flex:1;font-weight:600}
+
+.list{display:flex;flex-direction:column;gap:10px}
+.ex{background:var(--card);border:1px solid var(--border);border-radius:var(--r-lg);box-shadow:var(--shadow);display:grid;grid-template-columns:auto 84px minmax(0,1fr) auto;gap:14px;padding:12px 14px 12px 8px;align-items:start;transition:box-shadow .15s,border-color .15s}
+.ex.drag-over{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-light)}
+.ex.dragging{opacity:.4}
+.ex.sel{border-color:var(--lilac);box-shadow:0 0 0 3px var(--lilac-light)}
+.grip{display:flex;flex-direction:column;align-items:center;gap:6px;padding-top:4px}
+.grip .handle{cursor:grab;color:var(--t3);font-size:14px;letter-spacing:-2px;user-select:none;padding:2px}
+.grip input{accent-color:var(--lilac);width:16px;height:16px;margin:0}
+.thumb{width:84px;height:56px;border-radius:10px;object-fit:cover;background:var(--accent-light)}
+.ex-body{display:flex;flex-direction:column;gap:8px;min-width:0}
+.ex-name{font-weight:600;font-size:15px;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.ex-name .mus{font-weight:500;font-size:12px;color:var(--t3)}
+.params{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.pf{display:flex;align-items:center;background:var(--cream);border:1px solid var(--border);border-radius:999px;padding:2px 4px 2px 12px;gap:6px}
+.pf label{font-size:11px;color:var(--t3);font-weight:600;letter-spacing:.05em;text-transform:uppercase}
+.pf input{width:56px;border:0;background:none;outline:none;font-weight:600;text-align:center;font-variant-numeric:tabular-nums;padding:5px 0}
+.pf input.wide{width:72px}
+.step{width:24px;height:24px;border-radius:50%;border:0;background:var(--white);color:var(--t2);font-weight:700;line-height:1}
+.step:hover{background:var(--accent);color:#fff}
+.pf.locked{opacity:.55}
+.notes{border:0;background:none;resize:none;outline:none;font-size:13px;color:var(--t2);padding:2px 0;min-height:22px;width:100%;border-bottom:1px dashed var(--border-med)}
+.notes:focus{border-bottom-color:var(--accent);color:var(--t1)}
+.ex-actions{display:flex;flex-direction:column;gap:2px}
+
+.group{border-radius:24px;padding:12px;display:flex;flex-direction:column;gap:10px;background:var(--lilac-light);border:1px solid color-mix(in srgb,var(--lilac) 30%,transparent)}
+.group.emom{background:var(--sage-light);border-color:color-mix(in srgb,var(--sage) 35%,transparent)}
+.group-h{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:2px 6px}
+.badge{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:4px 10px;border-radius:999px;background:var(--lilac);color:#fff}
+.emom .badge{background:var(--sage)}
+.group-h .pf{background:var(--card)}
+.group-h .sp{flex:1}
+.member-tag{font-size:11px;font-weight:700;color:var(--lilac);background:var(--lilac-light);padding:2px 7px;border-radius:6px}
+.emom .member-tag{color:var(--sage);background:var(--sage-light)}
+
+.empty{border:1.5px dashed var(--border-med);border-radius:var(--r-lg);padding:46px 24px;text-align:center;color:var(--t2)}
+.empty h3{font:24px var(--serif);font-weight:400;margin:0 0 6px;color:var(--t1)}
+
+.dock{position:sticky;bottom:0;padding:14px 28px;border-top:1px solid var(--border);background:color-mix(in srgb,var(--cream) 92%,transparent);backdrop-filter:blur(10px);display:flex;align-items:center;gap:12px}
+.dock .hint{flex:1;color:var(--t3);font-size:12px}
+.code-chip{font:600 13px/1 ui-monospace,'SF Mono',Menlo,monospace;background:var(--white);border:1px solid var(--border-med);border-radius:999px;padding:8px 12px;letter-spacing:.06em}
+
+/* ── Catalogue ── */
+.cat{border-left:1px solid var(--border);display:flex;flex-direction:column;min-height:0;background:var(--card)}
+.cat-h{flex:none;padding:18px 18px 10px;display:flex;flex-direction:column;gap:10px}
+.cat-h .seg{align-self:flex-start}
+.cat-h h2{font:22px var(--serif);font-weight:400;margin:0;display:flex;justify-content:space-between;align-items:baseline}
+.cat-h h2 small{font:500 12px var(--sans);color:var(--t3)}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{border:1px solid var(--border-med);background:var(--white);border-radius:999px;padding:4px 10px;font-size:12px;font-weight:500;color:var(--t2)}
+.chip.on{background:var(--t1);border-color:var(--t1);color:var(--cream)}
+.cat-list{flex:1;min-height:0;overflow:auto;padding:4px 12px 20px;display:grid;grid-template-columns:1fr 1fr;grid-auto-rows:max-content;gap:10px;align-content:start}
+.card{flex:none;min-height:max-content;border:1px solid var(--border);background:var(--white);border-radius:var(--r-md);padding:0;overflow:hidden;text-align:left;display:flex;flex-direction:column;position:relative;transition:transform .12s,box-shadow .12s}
+.card:hover{transform:translateY(-2px);box-shadow:var(--shadow)}
+.card img{width:100%;aspect-ratio:16/10;object-fit:cover;background:var(--accent-light);display:block}
+.card .ci{padding:8px 10px 10px}
+.card .cn{font-weight:600;font-size:13px;line-height:1.25}
+.card .cm{font-size:11px;color:var(--t3);margin-top:2px}
+.card .plus{position:absolute;top:8px;right:8px;width:26px;height:26px;border-radius:50%;background:var(--accent);color:#fff;display:grid;place-items:center;font-weight:700;opacity:0;transition:opacity .12s}
+.card:hover .plus{opacity:1}
+.card .count{position:absolute;top:8px;left:8px;background:var(--t1);color:var(--cream);font-size:11px;font-weight:700;border-radius:999px;padding:2px 8px}
+
+/* ── Modal / toast ── */
+.scrim{position:fixed;inset:0;background:rgba(20,16,12,.38);display:grid;place-items:center;z-index:50;backdrop-filter:blur(3px)}
+.modal{background:var(--card);border-radius:28px;padding:30px;width:min(460px,92vw);box-shadow:0 30px 80px rgba(0,0,0,.25);display:flex;flex-direction:column;gap:16px;text-align:center}
+.modal h3{font:28px var(--serif);font-weight:400;margin:0}
+.modal p{margin:0;color:var(--t2)}
+.big-code{font:600 40px/1 ui-monospace,'SF Mono',Menlo,monospace;letter-spacing:.12em;color:var(--accent);background:var(--accent-light);border-radius:18px;padding:22px 10px;user-select:all}
+.modal .row{justify-content:center}
+.msg-box{text-align:left;font-size:13px;background:var(--cream);border:1px solid var(--border);border-radius:var(--r-sm);padding:10px 12px;color:var(--t2);white-space:pre-wrap}
+.spinner{width:34px;height:34px;border:3px solid var(--accent-mid);border-top-color:var(--accent);border-radius:50%;margin:16px auto;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--t1);color:var(--cream);padding:10px 18px;border-radius:999px;font-weight:600;z-index:60;box-shadow:var(--shadow)}
+.err{color:var(--coral);font-weight:600}
+.history{text-align:left;display:flex;flex-direction:column;gap:6px;font-size:12px;color:var(--t2)}
+.history div{display:flex;justify-content:space-between}
+
+.narrow{display:none}
+@media (max-width:1100px){
+  .app{display:none}
+  .narrow{display:grid;place-items:center;height:100vh;text-align:center;padding:24px;gap:10px}
+  .narrow h1{font:30px var(--serif);font-weight:400;margin:0}
+  .narrow p{color:var(--t2);max-width:36ch}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<div class="narrow"><div><img src="icon.png" alt="" width="64" height="64" style="border-radius:16px"><h1>Coach Studio</h1><p>Lo studio per creare le schede è pensato per lo schermo del computer. Aprilo da desktop o allarga la finestra.</p></div></div>
+
+<div class="app" id="app">
+  <aside class="side">
+    <div class="brand"><img src="icon.png" alt=""><div><b>Aethel</b><small>Coach Studio</small></div></div>
+    <div class="gym" id="gymBox"></div>
+    <div class="side-h"><span class="label">Schede</span><button class="btn sm primary" id="newBtn">+ Nuova</button></div>
+    <div class="side-search"><input class="field" id="libSearch" placeholder="Cerca scheda o cliente"></div>
+    <div class="lib" id="lib"></div>
+    <div class="side-foot"><span>Salvate in questo browser</span>
+      <div class="seg" id="langSeg"><button data-l="it">IT</button><button data-l="en">EN</button></div></div>
+  </aside>
+
+  <main class="main">
+    <div class="top">
+      <div class="crumbs" id="crumbs"></div>
+      <span class="saved" id="saved"></span>
+      <button class="btn ghost sm" id="dupBtn">Duplica</button>
+      <button class="btn ghost sm danger" id="delBtn">Elimina</button>
+    </div>
+    <div class="editor"><div class="wrap" id="editor"></div></div>
+    <div class="dock">
+      <span class="hint" id="dockHint"></span>
+      <span class="code-chip" id="lastCode" hidden></span>
+      <button class="btn primary" id="codeBtn">Genera codice per il cliente</button>
+    </div>
+  </main>
+
+  <aside class="cat">
+    <div class="cat-h">
+      <h2>Esercizi <small id="catCount"></small></h2>
+      <input class="field" id="catSearch" placeholder="Cerca esercizio…">
+      <div class="seg" id="catSeg"><button data-c="all" class="on">Tutti</button><button data-c="bodybuilding">Pesi</button><button data-c="calisthenics">Calisthenics</button></div>
+      <div class="chips" id="muscleChips"></div>
+    </div>
+    <div class="cat-list" id="catList"></div>
+  </aside>
+</div>
+
+<div id="modalRoot"></div>
+<div id="toastRoot"></div>
+
+<script src="catalogue.js"></script>
+<script>
+// ───────────────────────────────────────────────
+//  CONFIG — palestra e backend.
+//  Nessun server: il sito chiama direttamente l'RPC Supabase
+//  create_workout_code (aperta ad anon), la stessa usata dall'app.
+// ───────────────────────────────────────────────
+const CONFIG = {
+  gymName: 'Caligram Gym',
+  supabaseUrl: 'https://jvcukyfucvwxegwagoul.supabase.co',
+  supabaseAnonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp2Y3VreWZ1Y3Z3eGVnd2Fnb3VsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE2OTE0MzgsImV4cCI6MjA5NzI2NzQzOH0.M8xb7552R4zkAJ0OgD7yW8oaGIA-ug474K57Cjgt_OA',
+  codeTtlDays: 30,
+};
+const SHARE_FORMAT = '2.0';
+const STORE_KEY = 'aethel-coach-studio-v1';
+
+const CAT = window.AETHEL_CATALOGUE || [];
+const CAT_BY_ID = Object.fromEntries(CAT.map(e => [e.id, e]));
+const MUSCLES = {
+  it:{chest:'Petto',back:'Dorsali',shoulders:'Spalle',biceps:'Bicipiti',triceps:'Tricipiti',forearms:'Avambracci',abs:'Addome',obliques:'Obliqui',traps:'Trapezi',lats:'Dorsali',lowerBack:'Lombari',glutes:'Glutei',quads:'Quadricipiti',hamstrings:'Femorali',calves:'Polpacci',hipFlexors:'Flessori anca'},
+  en:{chest:'Chest',back:'Back',shoulders:'Shoulders',biceps:'Biceps',triceps:'Triceps',forearms:'Forearms',abs:'Abs',obliques:'Obliques',traps:'Traps',lats:'Lats',lowerBack:'Lower back',glutes:'Glutes',quads:'Quads',hamstrings:'Hamstrings',calves:'Calves',hipFlexors:'Hip flexors'},
+};
+const MUSCLE_ORDER = ['chest','shoulders','lats','traps','biceps','triceps','forearms','abs','lowerBack','glutes','quads','hamstrings','calves','hipFlexors'];
+const TYPES = [['bodybuilding','Pesi'],['calisthenics','Calisthenics'],['hybrid','Ibrido'],['recovery','Recupero']];
+const EMOJIS = ['🏋️','💪','🔥','⚡','🦵','🎯','🤸','🧱','🦍','🏆','🚀','🧘','🥇','🦅','⛰️','🌀','💥','❤️'];
+
+// ── Stato ──
+let state = load() || seed();
+let ui = { selected:new Set(), catFilter:'all', muscle:null, q:'', libQ:'', emojiOpen:false };
+
+function uid(p){ return p + '_' + Date.now().toString(36) + Math.random().toString(36).slice(2,7); }
+function load(){ try{ const s = JSON.parse(localStorage.getItem(STORE_KEY)); return s && Array.isArray(s.workouts) ? s : null; }catch{ return null; } }
+let saveT;
+function save(){
+  try{ localStorage.setItem(STORE_KEY, JSON.stringify(state)); }catch{}
+  const el = $('#saved'); el.textContent = 'Salvato'; clearTimeout(saveT); saveT = setTimeout(()=>el.textContent='',1400);
+}
+function exName(id){ const e = CAT_BY_ID[id]; return e ? (e[state.lang] || e.it) : id; }
+function mkEx(id, extra={}){ const e = CAT_BY_ID[id]; return { uid:uid('x'), exerciseId:id, emoji:e?.emoji||'💪', defaultSets:3, defaultReps:'8-12', ...extra }; }
+function seed(){
+  // Scheda d'esempio, modificabile o eliminabile.
+  const g = uid('grp');
+  const w = { id:uid('w'), name:'Push A · Forza', emoji:'🏋️', type:'bodybuilding', client:'Esempio', updatedAt:Date.now(), codes:[],
+    exercises:[
+      mkEx('bench_press',{defaultSets:4,defaultReps:'5',defaultKg:80,notes:'Fermo di 1" al petto sull\'ultima serie.'}),
+      mkEx('incline_dumbbell_press',{defaultSets:3,defaultReps:'8-10'}),
+      mkEx('lateral_raise',{defaultSets:3,defaultReps:'12-15',groupId:g}),
+      mkEx('face_pull',{defaultSets:3,defaultReps:'15',groupId:g}),
+    ],
+    groups:[{id:g,type:'superset',rounds:3}] };
+  return { lang:'it', currentId:w.id, workouts:[w] };
+}
+const cur = () => state.workouts.find(w => w.id === state.currentId) || state.workouts[0];
+function touch(){ const w = cur(); if(w){ w.updatedAt = Date.now(); } save(); }
+
+// ── Helpers DOM ──
+const $ = s => document.querySelector(s);
+function h(tag, attrs={}, ...kids){
+  const el = document.createElement(tag);
+  for (const [k,v] of Object.entries(attrs||{})){
+    if (v == null || v === false) continue;
+    if (k.startsWith('on')) el.addEventListener(k.slice(2).toLowerCase(), v);
+    else if (k === 'class') el.className = v;
+    else if (k === 'value') el.value = v;
+    else if (k === 'checked') el.checked = v;
+    else el.setAttribute(k, v === true ? '' : v);
+  }
+  for (const k of kids.flat()) if (k != null && k !== false) el.append(k.nodeType ? k : document.createTextNode(k));
+  return el;
+}
+function toast(t){ const r = $('#toastRoot'); r.innerHTML=''; const el = h('div',{class:'toast'},t); r.append(el); setTimeout(()=>el.remove(),2000); }
+async function copy(text){ try{ await navigator.clipboard.writeText(text); toast('Copiato'); }catch{ toast('Seleziona e copia manualmente'); } }
+const fmtCode = c => c && c.length === 8 ? c.slice(0,4)+'-'+c.slice(4) : c;
+const ago = ts => { const d = (Date.now()-ts)/6e4; if(d<1) return 'ora'; if(d<60) return Math.round(d)+' min fa'; if(d<1440) return Math.round(d/60)+' h fa'; return new Date(ts).toLocaleDateString('it-IT',{day:'numeric',month:'short'}); };
+
+// ── Gruppi: membri sempre contigui, come in createGroup dell'app ──
+function normalizeGroups(w){
+  const ids = new Set(w.exercises.map(e=>e.groupId).filter(Boolean));
+  w.groups = (w.groups||[]).filter(g => ids.has(g.id));
+  const valid = new Set(w.groups.map(g=>g.id));
+  w.exercises.forEach(e => { if (e.groupId && !valid.has(e.groupId)) delete e.groupId; });
+  // superset con un solo membro → sciolto
+  for (const g of [...w.groups]) {
+    const n = w.exercises.filter(e=>e.groupId===g.id).length;
+    if (g.type==='superset' && n<2) dissolve(w,g.id);
+  }
+  // compatta: porta i membri accanto al primo
+  const out = []; const done = new Set();
+  for (const e of w.exercises){
+    if (!e.groupId){ out.push(e); continue; }
+    if (done.has(e.groupId)) continue;
+    done.add(e.groupId); out.push(...w.exercises.filter(x=>x.groupId===e.groupId));
+  }
+  w.exercises = out;
+  // superset: serie di ogni membro = giri
+  for (const g of w.groups) if (g.type==='superset') w.exercises.forEach(e=>{ if(e.groupId===g.id) e.defaultSets = g.rounds; });
+}
+function dissolve(w,gid){ w.groups = w.groups.filter(g=>g.id!==gid); w.exercises.forEach(e=>{ if(e.groupId===gid) delete e.groupId; }); }
+function createGroup(type){
+  const w = cur(); const picked = w.exercises.filter(e=>ui.selected.has(e.uid) && !e.groupId);
+  if (type==='superset' && picked.length<2) return toast('Seleziona almeno 2 esercizi liberi');
+  if (!picked.length) return toast('Seleziona almeno 1 esercizio libero');
+  const gid = uid('grp');
+  const firstIdx = w.exercises.indexOf(picked[0]);
+  const rest = w.exercises.filter(e=>!picked.includes(e));
+  const insertAt = w.exercises.slice(0,firstIdx).filter(e=>!picked.includes(e)).length;
+  picked.forEach(e=>e.groupId=gid);
+  w.exercises = [...rest.slice(0,insertAt), ...picked, ...rest.slice(insertAt)];
+  w.groups.push(type==='superset'
+    ? { id:gid, type, rounds: Math.max(...picked.map(e=>e.defaultSets||3)) }
+    : { id:gid, type, emomIntervalSeconds:60, emomTotalIntervals:10, repsTarget:10 });
+  ui.selected.clear(); normalizeGroups(w); touch(); render();
+}
+
+// ── Payload: identico a buildSharePayload dell'app (formato 2.0) ──
+function buildPayload(w){
+  return {
+    _aethel: SHARE_FORMAT, kind:'workout', exportedAt:new Date().toISOString(),
+    workout:{
+      name: w.name.trim(), emoji: w.emoji, type: w.type,
+      exercises: w.exercises.map(e => ({
+        exerciseId: e.exerciseId, name: exName(e.exerciseId), emoji: e.emoji,
+        defaultSets: Math.max(1, Math.round(+e.defaultSets||1)),
+        defaultReps: String(e.defaultReps||'').trim() || '8-12',
+        ...(+e.defaultKg > 0 ? { defaultKg: +e.defaultKg } : {}),
+        ...(e.notes && e.notes.trim() ? { notes: e.notes.trim() } : {}),
+        ...(e.groupId ? { groupId: e.groupId } : {}),
+      })),
+      ...(w.groups.length ? { groups: w.groups.map(g => g.type==='superset'
+          ? { id:g.id, type:g.type, rounds:g.rounds }
+          : { id:g.id, type:g.type, emomIntervalSeconds:g.emomIntervalSeconds, emomTotalIntervals:g.emomTotalIntervals, ...(g.repsTarget>0?{repsTarget:g.repsTarget}:{}) }) } : {}),
+    },
+  };
+}
+async function createCode(payload){
+  const res = await fetch(CONFIG.supabaseUrl + '/rest/v1/rpc/create_workout_code', {
+    method:'POST',
+    headers:{ 'Content-Type':'application/json', apikey:CONFIG.supabaseAnonKey, Authorization:'Bearer '+CONFIG.supabaseAnonKey },
+    body: JSON.stringify({ p_payload:payload, p_ttl_days:CONFIG.codeTtlDays, p_reusable:true }),
+  });
+  const data = await res.json().catch(()=>null);
+  if (!res.ok) throw new Error(data?.message || ('Errore ' + res.status));
+  if (typeof data !== 'string') throw new Error('Risposta non valida dal server');
+  return data;
+}
+
+// ── Render: sidebar ──
+function renderSide(){
+  $('#gymBox').replaceChildren(document.createTextNode(CONFIG.gymName), h('span',{},'Partner'));
+  const q = ui.libQ.toLowerCase();
+  const items = [...state.workouts].sort((a,b)=>b.updatedAt-a.updatedAt)
+    .filter(w => !q || (w.name+' '+(w.client||'')).toLowerCase().includes(q));
+  const lib = $('#lib'); lib.replaceChildren();
+  if (!items.length) lib.append(h('div',{class:'lib-empty'},'Nessuna scheda trovata.'));
+  items.forEach(w => lib.append(h('button',{class:'lib-item'+(w.id===state.currentId?' on':''), onclick:()=>{ state.currentId=w.id; ui.selected.clear(); save(); render(); }},
+    h('span',{class:'em'},w.emoji),
+    h('span',{class:'tx'}, h('div',{class:'nm'}, w.name||'Senza nome'),
+      h('div',{class:'meta'}, [w.client, w.exercises.length+' esercizi', ago(w.updatedAt)].filter(Boolean).join(' · '))))));
+  document.querySelectorAll('#langSeg button').forEach(b=>b.classList.toggle('on', b.dataset.l===state.lang));
+}
+
+// ── Render: editor ──
+function paramField(label, value, onChange, opts={}){
+  const inp = h('input',{value, class:opts.wide?'wide':'', inputmode:opts.num?'numeric':'text', 'aria-label':label, disabled:opts.locked,
+    oninput:e=>onChange(e.target.value), onchange:()=>render()});
+  const kids = [h('label',{},label)];
+  if (opts.num && !opts.locked) kids.push(h('button',{class:'step',onclick:()=>{onChange(String(Math.max(opts.min??0,(+inp.value||0)-(opts.step||1)))); render();}},'−'));
+  kids.push(inp);
+  if (opts.num && !opts.locked) kids.push(h('button',{class:'step',onclick:()=>{onChange(String(Math.min(opts.max??999,(+inp.value||0)+(opts.step||1)))); render();}},'+'));
+  return h('div',{class:'pf'+(opts.locked?' locked':''), title:opts.title||''}, ...kids);
+}
+function exCard(w, e, memberLabel, group){
+  const cat = CAT_BY_ID[e.exerciseId]; const i = w.exercises.indexOf(e);
+  const notes = h('textarea',{class:'notes', rows:1, placeholder:'Nota per il cliente (tecnica, tempo, recupero…)', value:e.notes||'',
+    oninput:ev=>{ e.notes = ev.target.value; autoGrow(ev.target); touch(); }});
+  requestAnimationFrame(()=>autoGrow(notes));
+  const card = h('div',{class:'ex'+(ui.selected.has(e.uid)?' sel':''), draggable:'true', 'data-uid':e.uid},
+    h('div',{class:'grip'},
+      h('span',{class:'handle',title:'Trascina per riordinare'},'⋮⋮'),
+      !e.groupId && h('input',{type:'checkbox', checked:ui.selected.has(e.uid), title:'Seleziona per superset/EMOM',
+        onchange:ev=>{ ev.target.checked?ui.selected.add(e.uid):ui.selected.delete(e.uid); render(); }})),
+    cat?.img ? h('img',{class:'thumb', src:'img/'+e.exerciseId+'.webp', alt:'', loading:'lazy'}) : h('div',{class:'thumb'}),
+    h('div',{class:'ex-body'},
+      h('div',{class:'ex-name'}, memberLabel && h('span',{class:'member-tag'},memberLabel), exName(e.exerciseId),
+        h('span',{class:'mus'}, (cat?.m||[]).map(m=>MUSCLES[state.lang][m]||m).join(' · '))),
+      h('div',{class:'params'},
+        group?.type==='superset'
+          ? paramField('Serie', e.defaultSets, ()=>{}, {locked:true, title:'Nei superset le serie seguono i giri del blocco'})
+          : group?.type==='emom' ? null
+          : paramField('Serie', e.defaultSets, v=>{ e.defaultSets = Math.max(1, Math.min(20, parseInt(v)||1)); touch(); }, {num:true,min:1,max:20}),
+        paramField(group?.type==='emom'?'Reps / sec':'Reps', e.defaultReps, v=>{ e.defaultReps = v.slice(0,40); touch(); }, {wide:true}),
+        paramField('Kg', e.defaultKg ?? '', v=>{ const n = parseFloat(String(v).replace(',','.')); e.defaultKg = n>0 ? Math.round(n*4)/4 : undefined; touch(); }, {num:true,step:2.5,min:0})),
+      notes),
+    h('div',{class:'ex-actions'},
+      h('button',{class:'icon-btn',title:'Su',onclick:()=>move(w,i,-1)},'↑'),
+      h('button',{class:'icon-btn',title:'Giù',onclick:()=>move(w,i,1)},'↓'),
+      h('button',{class:'icon-btn',title:'Rimuovi',onclick:()=>{ w.exercises.splice(i,1); ui.selected.delete(e.uid); normalizeGroups(w); touch(); render(); }},'✕')));
+  // drag & drop
+  card.addEventListener('dragstart',ev=>{ ev.dataTransfer.setData('text/plain',e.uid); card.classList.add('dragging'); });
+  card.addEventListener('dragend',()=>card.classList.remove('dragging'));
+  card.addEventListener('dragover',ev=>{ ev.preventDefault(); card.classList.add('drag-over'); });
+  card.addEventListener('dragleave',()=>card.classList.remove('drag-over'));
+  card.addEventListener('drop',ev=>{
+    ev.preventDefault(); card.classList.remove('drag-over');
+    const from = w.exercises.findIndex(x=>x.uid===ev.dataTransfer.getData('text/plain'));
+    const to = w.exercises.indexOf(e);
+    if (from<0 || from===to) return;
+    const [m] = w.exercises.splice(from,1);
+    // entra nel blocco di destinazione (o ne esce) in base a dove viene lasciato
+    if (e.groupId) m.groupId = e.groupId; else delete m.groupId;
+    w.exercises.splice(to,0,m); normalizeGroups(w); touch(); render();
+  });
+  return card;
+}
+function move(w,i,d){
+  const j = i+d; if (j<0||j>=w.exercises.length) return;
+  const a = w.exercises[i], b = w.exercises[j];
+  if (a.groupId !== b.groupId) return toast('Trascina l\'esercizio per spostarlo dentro o fuori da un blocco');
+  [w.exercises[i],w.exercises[j]] = [b,a]; touch(); render();
+}
+function autoGrow(t){ t.style.height='auto'; t.style.height=t.scrollHeight+'px'; }
+
+function renderEditor(){
+  const w = cur(); const root = $('#editor'); root.replaceChildren();
+  if (!w){ root.append(h('div',{class:'empty'},h('h3',{},'Nessuna scheda'),h('p',{},'Crea la prima scheda con “+ Nuova”.'))); return; }
+  const totalSets = w.exercises.reduce((s,e)=>{ const g = w.groups.find(g=>g.id===e.groupId); return s + (g?.type==='emom' ? 0 : (+e.defaultSets||0)); },0);
+  const emomMin = w.groups.filter(g=>g.type==='emom').reduce((s,g)=>s+g.emomIntervalSeconds*g.emomTotalIntervals/60,0);
+
+  const emojiBtn = h('button',{class:'emoji-pick', title:'Cambia icona', onclick:()=>{ ui.emojiOpen=!ui.emojiOpen; render(); }}, w.emoji,
+    ui.emojiOpen && h('div',{class:'emoji-pop', onclick:ev=>ev.stopPropagation()}, EMOJIS.map(em=>h('button',{onclick:()=>{ w.emoji=em; ui.emojiOpen=false; touch(); render(); }},em))));
+  const typeSeg = h('div',{class:'seg'}, TYPES.map(([v,l])=>h('button',{class:w.type===v?'on':'', onclick:()=>{ w.type=v; touch(); render(); }},l)));
+  root.append(h('div',{class:'head'}, emojiBtn,
+    h('div',{class:'head-fields'},
+      h('input',{class:'title-in', id:'titleIn', value:w.name, placeholder:'Nome della scheda', maxlength:120, oninput:e=>{ w.name=e.target.value; touch(); renderSide(); renderTop(); }}),
+      h('div',{class:'row'},
+        h('input',{class:'field client-in', id:'clientIn', value:w.client||'', placeholder:'Cliente (solo per te, non viene inviato)', oninput:e=>{ w.client=e.target.value; touch(); renderSide(); renderTop(); }}),
+        typeSeg),
+      h('div',{class:'stats'},
+        h('span',{},h('b',{},w.exercises.length),' esercizi'),
+        h('span',{},h('b',{},totalSets),' serie'),
+        emomMin>0 && h('span',{},h('b',{},Math.round(emomMin)),' min di EMOM'),
+        w.groups.length>0 && h('span',{},h('b',{},w.groups.length),' blocchi')))));
+
+  if (ui.selected.size){
+    root.append(h('div',{class:'selbar'}, h('span',{},ui.selected.size+' selezionati'),
+      h('button',{class:'btn sm primary',onclick:()=>createGroup('superset')},'Crea superset'),
+      h('button',{class:'btn sm',onclick:()=>createGroup('emom')},'Crea EMOM'),
+      h('button',{class:'btn sm',onclick:()=>{ ui.selected.clear(); render(); }},'Annulla')));
+  }
+
+  const list = h('div',{class:'list'});
+  if (!w.exercises.length) list.append(h('div',{class:'empty'},h('h3',{},'Aggiungi il primo esercizio'),h('p',{},'Sceglilo dal catalogo a destra: un clic e entra nella scheda.')));
+  const seen = new Set();
+  for (const e of w.exercises){
+    if (!e.groupId){ list.append(exCard(w,e)); continue; }
+    if (seen.has(e.groupId)) continue; seen.add(e.groupId);
+    const g = w.groups.find(x=>x.id===e.groupId); const members = w.exercises.filter(x=>x.groupId===g.id);
+    const letter = String.fromCharCode(65 + [...seen].length - 1);
+    const head = g.type==='superset'
+      ? [h('span',{class:'badge'}, members.length>2?'Giant set':'Superset'),
+         paramField('Giri', g.rounds, v=>{ g.rounds=Math.max(1,Math.min(20,parseInt(v)||1)); normalizeGroups(w); touch(); }, {num:true,min:1,max:20})]
+      : [h('span',{class:'badge'}, g.emomIntervalSeconds===60?'EMOM':'E'+(g.emomIntervalSeconds%60===0?g.emomIntervalSeconds/60+'MOM':g.emomIntervalSeconds+'s')),
+         paramField('Ogni sec', g.emomIntervalSeconds, v=>{ g.emomIntervalSeconds=Math.max(15,Math.min(600,parseInt(v)||60)); touch(); }, {num:true,step:15,min:15,max:600}),
+         paramField('Intervalli', g.emomTotalIntervals, v=>{ g.emomTotalIntervals=Math.max(1,Math.min(60,parseInt(v)||1)); touch(); }, {num:true,min:1,max:60}),
+         paramField('Reps', g.repsTarget??'', v=>{ const n=parseInt(v); g.repsTarget = n>0?n:undefined; touch(); }, {num:true,min:0})];
+    list.append(h('div',{class:'group '+g.type},
+      h('div',{class:'group-h'}, ...head, h('span',{class:'sp'}), h('button',{class:'btn sm ghost',onclick:()=>{ dissolve(w,g.id); touch(); render(); }},'Sciogli blocco')),
+      members.map((m,k)=>exCard(w,m,letter+(k+1),g))));
+  }
+  root.append(list);
+}
+
+function renderTop(){
+  const w = cur();
+  $('#crumbs').textContent = w ? [CONFIG.gymName, w.client, w.name||'Senza nome'].filter(Boolean).join('  /  ') : '';
+  const last = w?.codes?.[0];
+  const chip = $('#lastCode');
+  if (last){ chip.hidden=false; chip.textContent = fmtCode(last.code); chip.title = 'Ultimo codice · '+new Date(last.at).toLocaleDateString('it-IT'); }
+  else chip.hidden = true;
+  $('#dockHint').textContent = w && w.exercises.length ? 'Il cliente inserisce il codice in Aethel → Allenamenti → Importa scheda → Da codice.' : 'Aggiungi almeno un esercizio per generare il codice.';
+  $('#codeBtn').disabled = !w || !w.exercises.length || !w.name.trim();
+}
+
+// ── Render: catalogo ──
+function renderCatalogue(){
+  const chips = $('#muscleChips'); chips.replaceChildren(
+    ...MUSCLE_ORDER.map(m=>h('button',{class:'chip'+(ui.muscle===m?' on':''), onclick:()=>{ ui.muscle = ui.muscle===m?null:m; renderCatalogue(); }}, MUSCLES[state.lang][m])));
+  document.querySelectorAll('#catSeg button').forEach(b=>b.classList.toggle('on', b.dataset.c===ui.catFilter));
+  const q = ui.q.trim().toLowerCase();
+  const w = cur(); const counts = {}; (w?.exercises||[]).forEach(e=>counts[e.exerciseId]=(counts[e.exerciseId]||0)+1);
+  const items = CAT.filter(e => (ui.catFilter==='all'||e.cat===ui.catFilter) && (!ui.muscle||e.m.includes(ui.muscle)) && (!q || (e.it+' '+e.en+' '+e.id).toLowerCase().includes(q)));
+  $('#catCount').textContent = items.length + ' / ' + CAT.length;
+  const list = $('#catList'); list.replaceChildren();
+  if (!items.length) list.append(h('div',{class:'lib-empty',style:'grid-column:1/-1'},'Nessun esercizio corrisponde ai filtri.'));
+  items.forEach(e => list.append(h('button',{class:'card', title:'Aggiungi alla scheda', onclick:()=>addExercise(e.id)},
+    e.img ? h('img',{src:'img/'+e.id+'.webp', alt:'', loading:'lazy'}) : h('img',{alt:''}),
+    counts[e.id] && h('span',{class:'count'},'×'+counts[e.id]),
+    h('span',{class:'plus'},'+'),
+    h('div',{class:'ci'}, h('div',{class:'cn'}, e[state.lang]), h('div',{class:'cm'}, e.m.map(m=>MUSCLES[state.lang][m]).join(' · '))))));
+}
+function addExercise(id){
+  const w = cur(); if (!w) return;
+  w.exercises.push(mkEx(id, CAT_BY_ID[id]?.cat==='calisthenics' ? {defaultReps:'6-10'} : {}));
+  touch(); render();
+  requestAnimationFrame(()=>{ const ed = document.querySelector('.editor'); ed.scrollTo({top:ed.scrollHeight,behavior:'smooth'}); });
+}
+
+// ── Modale codice ──
+function openCodeModal(){
+  const w = cur(); if (!w) return;
+  const root = $('#modalRoot');
+  const close = ()=>root.replaceChildren();
+  const body = h('div',{class:'modal',role:'dialog','aria-modal':'true'}, h('h3',{},'Codice per il cliente'), h('div',{class:'spinner'}), h('p',{},'Sto generando il codice…'));
+  root.replaceChildren(h('div',{class:'scrim',onclick:ev=>{ if(ev.target===ev.currentTarget) close(); }}, body));
+  createCode(buildPayload(w)).then(code=>{
+    w.codes = [{code, at:Date.now()}, ...(w.codes||[])].slice(0,5); touch(); renderTop();
+    const msg = `Ciao${w.client?' '+w.client.split(' ')[0]:''}! Ecco la tua scheda “${w.name.trim()}” da ${CONFIG.gymName}.\nApri Aethel → Allenamenti → Importa scheda → Da codice e inserisci:\n${fmtCode(code)}\n(valido ${CONFIG.codeTtlDays} giorni)`;
+    body.replaceChildren(
+      h('h3',{},w.emoji+' '+w.name.trim()),
+      h('p',{},'Il cliente lo inserisce in Aethel per importare la scheda. Valido '+CONFIG.codeTtlDays+' giorni, riutilizzabile.'),
+      h('div',{class:'big-code'},fmtCode(code)),
+      h('div',{class:'msg-box'},msg),
+      h('div',{class:'row'},
+        h('button',{class:'btn',onclick:()=>copy(fmtCode(code))},'Copia codice'),
+        h('button',{class:'btn primary',onclick:()=>copy(msg)},'Copia messaggio'),
+        h('button',{class:'btn ghost',onclick:close},'Chiudi')));
+  }).catch(err=>{
+    body.replaceChildren(h('h3',{},'Codice non generato'),
+      h('p',{class:'err'},err.message||String(err)),
+      h('p',{},'Controlla la connessione e riprova. La scheda resta salvata.'),
+      h('div',{class:'row'}, h('button',{class:'btn primary',onclick:openCodeModal},'Riprova'), h('button',{class:'btn ghost',onclick:close},'Chiudi')));
+  });
+}
+let delArmed = null;
+
+function render(){ renderSide(); renderEditor(); renderTop(); renderCatalogue(); }
+
+// ── Eventi globali ──
+$('#newBtn').onclick = ()=>{ const w = { id:uid('w'), name:'Nuova scheda', emoji:'💪', type:'bodybuilding', client:'', updatedAt:Date.now(), codes:[], exercises:[], groups:[] };
+  state.workouts.push(w); state.currentId=w.id; ui.selected.clear(); touch(); render(); requestAnimationFrame(()=>{ const t=$('#titleIn'); t.focus(); t.select(); }); };
+$('#dupBtn').onclick = ()=>{ const w = cur(); if(!w) return; const c = JSON.parse(JSON.stringify(w));
+  const map = {}; c.groups.forEach(g=>{ map[g.id]=uid('grp'); g.id=map[g.id]; }); c.exercises.forEach(e=>{ e.uid=uid('x'); if(e.groupId) e.groupId=map[e.groupId]; });
+  Object.assign(c,{id:uid('w'),name:w.name+' (copia)',codes:[],updatedAt:Date.now()}); state.workouts.push(c); state.currentId=c.id; touch(); render(); toast('Scheda duplicata'); };
+$('#delBtn').onclick = ()=>{ const w = cur(); if(!w) return; const b = $('#delBtn');
+  if (delArmed !== w.id){ delArmed = w.id; b.textContent='Conferma eliminazione'; setTimeout(()=>{ delArmed=null; b.textContent='Elimina'; },3000); return; }
+  delArmed=null; b.textContent='Elimina'; state.workouts = state.workouts.filter(x=>x.id!==w.id); state.currentId = state.workouts[0]?.id; touch(); render(); toast('Scheda eliminata'); };
+$('#codeBtn').onclick = openCodeModal;
+$('#catSearch').oninput = e=>{ ui.q=e.target.value; renderCatalogue(); };
+$('#libSearch').oninput = e=>{ ui.libQ=e.target.value; renderSide(); };
+document.querySelectorAll('#catSeg button').forEach(b=>b.onclick=()=>{ ui.catFilter=b.dataset.c; renderCatalogue(); });
+document.querySelectorAll('#langSeg button').forEach(b=>b.onclick=()=>{ state.lang=b.dataset.l; save(); render(); });
+document.addEventListener('click',ev=>{ if(ui.emojiOpen && !ev.target.closest('.emoji-pick')){ ui.emojiOpen=false; render(); } });
+document.addEventListener('keydown',ev=>{ if(ev.key==='Escape'){ $('#modalRoot').replaceChildren(); if(ui.emojiOpen){ ui.emojiOpen=false; render(); } } });
+// cattura le modifiche ai campi senza perdere il focus: render completo solo su change
+render();
+</script>
+</body>
+</html>
