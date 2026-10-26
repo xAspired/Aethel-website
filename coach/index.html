@@ -290,6 +290,27 @@ button{cursor:pointer}
 .warn p{margin:0;font-size:13px;color:var(--t2)}
 .warn b{display:block;font-size:14px;color:var(--t1)}
 .hold-tag{font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--lilac);background:var(--lilac-light);padding:2px 7px;border-radius:6px}
+.st{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:700;border-radius:999px;padding:3px 9px;white-space:nowrap;color:var(--stc);background:color-mix(in srgb,var(--stc) 14%,transparent)}
+.st::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--stc)}
+.st-dot{width:8px;height:8px;border-radius:50%;background:var(--stc);flex:none}
+.st-pick{display:flex;gap:6px;flex-wrap:wrap;width:100%}
+.st-pick button{border:1px solid var(--border-med);background:var(--white);border-radius:999px;padding:5px 11px;font-size:12px;font-weight:600;color:var(--t2);display:inline-flex;gap:6px;align-items:center}
+.st-pick button::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--stc)}
+.st-pick button.on{border-color:var(--stc);color:var(--stc);background:color-mix(in srgb,var(--stc) 12%,transparent)}
+.code-in{border:1px solid var(--border-med);background:var(--white);border-radius:999px;padding:6px 12px;font:600 13px ui-monospace,'SF Mono',Menlo,monospace;width:170px;outline:none}
+.code-in:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-light)}
+.detail input.code-in{font:600 13px/1.2 ui-monospace,'SF Mono',Menlo,monospace;flex:none;min-width:0;width:170px;padding:6px 12px;border:1px solid var(--border-med);background:var(--white)}
+.code-lbl{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--t3);font-weight:600}
+.filters{display:flex;gap:6px;flex-wrap:wrap}
+.hist{background:var(--card);border:1px solid var(--border);border-radius:var(--r-lg);overflow:hidden}
+.hday{padding:10px 18px;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--t3);font-weight:700;background:var(--cream);border-top:1px solid var(--border)}
+.hday:first-child{border-top:0}
+.hrow{display:grid;grid-template-columns:52px 30px minmax(0,1fr) auto;gap:12px;align-items:center;padding:10px 18px;border-top:1px solid var(--border)}
+.hrow time{font-size:12px;color:var(--t3);font-variant-numeric:tabular-nums}
+.hic{width:30px;height:30px;border-radius:9px;display:grid;place-items:center;font-size:13px;color:var(--stc);background:color-mix(in srgb,var(--stc) 14%,transparent)}
+.htx{min-width:0}
+.htx b{font-weight:600}
+.htx span{display:block;font-size:12px;color:var(--t3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .narrow{display:none}
 @media (max-width:1100px){
   .app{display:none}
@@ -380,12 +401,14 @@ const EMOJIS = ['🏋️','💪','🔥','⚡','🦵','🎯','🤸','🧱','🦍'
 
 // ── Stato ──
 let state = load() || seed();
-let ui = { selected:new Set(), catFilter:'all', muscle:null, q:'', emojiOpen:false, view:'home', libTab:'clients', libSel:null, libQ:'', prevView:'home' };
+let ui = { histType:'all', stFilter:'all', selected:new Set(), catFilter:'all', muscle:null, q:'', emojiOpen:false, view:'home', libTab:'clients', libSel:null, libQ:'', prevView:'home' };
 migrate();
 // Clienti: entità proprie (id, nome). Le schede vecchie con `client` testuale vengono convertite.
 function migrate(){
   state.clients = state.clients || [];
   state.folders = state.folders || [];
+  state.history = state.history || [];
+  for (const c of state.clients) if (!c.status) c.status = state.workouts.some(w=>w.clientId===c.id && w.codes?.length) ? 'sent' : 'todo';
   for (const w of state.workouts){
     if (w.client && !w.clientId){
       let c = state.clients.find(c=>c.name.toLowerCase()===w.client.trim().toLowerCase());
@@ -403,6 +426,36 @@ const AV_COLORS = ['#F07C3A','#9B8EC4','#7BA68A','#E8715A','#2F7DC9','#E06B8A','
 const avColor = id => AV_COLORS[[...id].reduce((a,c)=>a+c.charCodeAt(0),0)%AV_COLORS.length];
 const initials = n => n.trim().split(/\s+/).slice(0,2).map(x=>x[0]?.toUpperCase()||'').join('') || '?';
 let delArmed2 = null; // conferma eliminazione cliente/cartella
+
+// Etichette di stato del cliente
+const STATUS = {
+  todo:  { l:'Da creare',     c:'#A8A29C' },
+  edit:  { l:'Da modificare', c:'#E8715A' },
+  ready: { l:'Pronta',        c:'#9B8EC4' },
+  sent:  { l:'Inviata',       c:'#5A8A6A' },
+  pause: { l:'In pausa',      c:'#C9A23F' },
+};
+const stOf = c => STATUS[c?.status] || STATUS.todo;
+const statusPill = c => h('span',{class:'st',style:'--stc:'+stOf(c).c},stOf(c).l);
+function setStatus(c, st, auto){
+  if (!c || c.status===st) return;
+  c.status = st; log('status', (auto?'Stato automatico: ':'')+c.name+' → '+STATUS[st].l, {clientId:c.id});
+}
+
+// Storico: eventi con i nomi "fotografati", così restano leggibili anche dopo un'eliminazione.
+const HTYPES = {
+  code:   { l:'Codici',    ic:'⌗', c:'#F07C3A' },
+  pdf:    { l:'PDF',       ic:'⎙', c:'#2F7DC9' },
+  edit:   { l:'Modifiche', ic:'✎', c:'#9B8EC4' },
+  create: { l:'Creazioni', ic:'+', c:'#5A8A6A' },
+  delete: { l:'Eliminazioni', ic:'✕', c:'#E8715A' },
+  status: { l:'Etichette', ic:'●', c:'#C9A23F' },
+  backup: { l:'Backup',    ic:'⇅', c:'#6B6560' },
+};
+function log(type, text, refs={}){
+  state.history.unshift({ id:uid('h'), at:Date.now(), type, text, ...refs });
+  if (state.history.length > 1500) state.history.length = 1500;
+}
 
 function uid(p){ return p + '_' + Date.now().toString(36) + Math.random().toString(36).slice(2,7); }
 function load(){ try{ const s = JSON.parse(localStorage.getItem(STORE_KEY)); return s && Array.isArray(s.workouts) ? s : null; }catch{ return null; } }
@@ -433,7 +486,17 @@ function seed(){
   return { lang:'it', currentId:null, workouts:[w,d1,d2], folders:[f] };
 }
 const cur = () => state.workouts.find(w => w.id === state.currentId);
-function touch(){ const w = cur(); if(w){ w.updatedAt = Date.now(); } save(); }
+function touch(){
+  const w = cur();
+  if (w){
+    w.updatedAt = Date.now();
+    // Le modifiche alla stessa scheda entro 30 minuti diventano una sola voce di storico.
+    const last = state.history.find(x=>x.workoutId===w.id);
+    if (last && Date.now()-last.at < 30*6e4 && (last.type==='edit' || last.type==='create')){ if (last.type==='edit'){ last.at=Date.now(); last.text='Modificata «'+(w.name||'Senza nome')+'»'; } }
+    else log('edit','Modificata «'+(w.name||'Senza nome')+'»',{workoutId:w.id, clientId:w.clientId});
+  }
+  save();
+}
 
 // ── Helpers DOM ──
 const $ = s => document.querySelector(s);
@@ -535,7 +598,9 @@ function go(view, opts={}){
 function openWorkout(id){ state.currentId=id; save(); go('editor'); }
 function newWorkout(extra={}){
   const w = { id:uid('w'), name:'Nuova scheda', emoji:'💪', type:'bodybuilding', updatedAt:Date.now(), codes:[], exercises:[], groups:[], ...extra };
-  state.workouts.push(w); state.currentId=w.id; touch(); go('editor');
+  state.workouts.push(w); state.currentId=w.id;
+  log('create','Nuova scheda'+(extra.clientId?' per '+(state.clients.find(c=>c.id===extra.clientId)?.name||''):'')+(extra.folderId?' in '+(state.folders.find(f=>f.id===extra.folderId)?.name||''):''),{workoutId:w.id, clientId:extra.clientId});
+  touch(); go('editor');
   requestAnimationFrame(()=>{ const t=$('#titleIn'); if(t){ t.focus(); t.select(); } });
   return w;
 }
@@ -551,8 +616,10 @@ const days = n => n===1 ? '1 scheda' : n+' schede';
 
 function addEntity(kind, name, emoji){
   name = name.trim(); if (!name) return null;
-  const e = {id:uid(kind==='client'?'c':'f'), name, createdAt:Date.now(), ...(kind==='folder'?{emoji:emoji||'📁'}:{})};
-  state[kind==='client'?'clients':'folders'].push(e); save(); return e;
+  const e = {id:uid(kind==='client'?'c':'f'), name, createdAt:Date.now(), ...(kind==='folder'?{emoji:emoji||'📁'}:{status:'todo'})};
+  state[kind==='client'?'clients':'folders'].push(e);
+  log('create', kind==='client'?'Nuovo cliente: '+name:'Nuova cartella: '+name, kind==='client'?{clientId:e.id}:{folderId:e.id});
+  save(); return e;
 }
 // Modale "nuovo cliente / nuova cartella"
 function promptEntity(kind, onDone){
@@ -580,7 +647,8 @@ function renderSide(){
   const navItem = (id,ic,label,onclick) => h('button',{class:'nav-item'+(ui.view===id&&!ui.libSel?' on':''),onclick},h('span',{class:'ic'},ic),label);
   nav.append(h('div',{class:'nav'},
     navItem('home','⌂','Home',()=>go('home')),
-    navItem('library','▤','Archivio',()=>go('library',{libSel:null}))));
+    navItem('library','▤','Archivio',()=>go('library',{libSel:null})),
+    navItem('history','◷','Storico',()=>go('history'))));
 
   const section = (title, kind, items, rowFn, total, onAdd) => {
     const sec = h('div',{class:'sec'}, h('div',{class:'sec-h'}, h('span',{class:'label'},title),
@@ -593,7 +661,7 @@ function renderSide(){
   const isSel = (type,id) => ui.view==='library' && ui.libSel?.type===type && ui.libSel.id===id;
   const clients = [...state.clients].sort((a,b)=>lastActivity('client',b.id)-lastActivity('client',a.id));
   nav.append(section('Clienti','clients',clients, c=>h('button',{class:'cl'+(isSel('client',c.id)?' on':''),onclick:()=>go('library',{libTab:'clients',libSel:{type:'client',id:c.id}})},
-    avatar(c), h('span',{class:'cn2'},c.name), h('span',{class:'cnt'},wsOf('client',c.id).length)), clients.length, ()=>promptEntity('client')));
+    avatar(c), h('span',{class:'cn2'},c.name), h('span',{class:'st-dot',style:'--stc:'+stOf(c).c,title:stOf(c).l}), h('span',{class:'cnt'},wsOf('client',c.id).length)), clients.length, ()=>promptEntity('client')));
   const folders = [...state.folders].sort((a,b)=>lastActivity('folder',b.id)-lastActivity('folder',a.id));
   nav.append(section('Cartelle','folders',folders, f=>h('button',{class:'cl'+(isSel('folder',f.id)?' on':''),onclick:()=>go('library',{libTab:'folders',libSel:{type:'folder',id:f.id}})},
     fIcon(f), h('span',{class:'cn2'},f.name), h('span',{class:'cnt'},wsOf('folder',f.id).length)), folders.length, ()=>promptEntity('folder')));
@@ -619,7 +687,8 @@ function entityTile(kind, e){
   const ws = wsOf(kind,e.id); const last = lastActivity(kind,e.id);
   return h('button',{class:'tile',onclick:()=>go('library',{libTab:kind==='client'?'clients':'folders',libSel:{type:kind,id:e.id}})},
     h('div',{class:'tt'}, kind==='client'?avatar(e,true):fIcon(e,true),
-      h('div',{class:'tx'}, h('div',{class:'tn'},e.name), h('div',{class:'ts'}, e.note?.trim() ? e.note.trim().split('\n')[0] : days(ws.length)+' · '+ago(last)))),
+      h('div',{class:'tx'}, h('div',{class:'tn'},e.name), h('div',{class:'ts'}, [e.code?.trim() ? '#'+e.code.trim() : null, e.note?.trim() ? e.note.trim().split('\n')[0] : days(ws.length)+' · '+ago(last)].filter(Boolean).join(' · ')))),
+    kind==='client' ? h('div',{class:'pills'}, statusPill(e)) : null,
     ws.length ? h('div',{class:'pills'}, ws.slice(0,3).map(w=>h('span',{class:'pill'},w.emoji+' '+(w.name||'Senza nome'))), ws.length>3 && h('span',{class:'pill'},'+'+(ws.length-3))) : null);
 }
 function codeRows(list){
@@ -647,7 +716,7 @@ function backupWarning(){
     h('button',{class:'btn primary',onclick:exportBackup},'Esporta backup'));
 }
 function exportBackup(){
-  state.lastBackup = Date.now(); save();
+  state.lastBackup = Date.now(); log('backup','Backup esportato'); save();
   const data = JSON.stringify({ _aethelCoach:1, exportedAt:new Date().toISOString(), gym:CONFIG.gymName, state }, null, 2);
   const url = URL.createObjectURL(new Blob([data],{type:'application/json'}));
   const a = h('a',{href:url, download:'aethel-coach-backup-'+new Date().toISOString().slice(0,10)+'.json'});
@@ -662,7 +731,8 @@ function importBackup(file){
       if (!d?._aethelCoach || !inc || !Array.isArray(inc.workouts)) throw new Error();
       // Unione per id: quello che c'è nel file aggiorna/aggiunge, niente viene cancellato.
       const merge = (key) => { const map = new Map((state[key]||[]).map(x=>[x.id,x])); (inc[key]||[]).forEach(x=>{ const old=map.get(x.id); if(!old || (x.updatedAt||0)>=(old.updatedAt||0)) map.set(x.id,x); }); state[key]=[...map.values()]; };
-      merge('workouts'); merge('clients'); merge('folders');
+      merge('workouts'); merge('clients'); merge('folders'); merge('history');
+      state.history.sort((a,b)=>b.at-a.at); log('backup','Backup importato ('+inc.workouts.length+' schede)');
       state.lastBackup = Math.max(state.lastBackup||0, inc.lastBackup||0) || Date.now();
       save(); go('home');
       toast('Backup importato: '+inc.workouts.length+' schede, '+(inc.clients||[]).length+' clienti');
@@ -719,7 +789,8 @@ function renderLibrary(root){
     const del = h('button',{class:'btn sm ghost danger',onclick:()=>{
       if (delArmed2!==e.id){ delArmed2=e.id; render(); return; }
       ws.forEach(w=>{ delete w[kind==='client'?'clientId':'folderId']; });
-      state[coll] = state[coll].filter(x=>x.id!==e.id); delArmed2=null; save(); go('library',{libSel:null}); toast(kind==='client'?'Cliente eliminato, le schede restano':'Cartella eliminata, le schede restano');
+      state[coll] = state[coll].filter(x=>x.id!==e.id); delArmed2=null;
+      log('delete', (kind==='client'?'Eliminato cliente ':'Eliminata cartella ')+e.name, {}); save(); go('library',{libSel:null}); toast(kind==='client'?'Cliente eliminato, le schede restano':'Cartella eliminata, le schede restano');
     }}, delArmed2===e.id ? 'Conferma eliminazione' : kind==='client'?'Elimina cliente':'Elimina cartella');
     const ready = ws.filter(w=>w.exercises.length && w.name.trim());
     page.append(
@@ -728,14 +799,22 @@ function renderLibrary(root){
         h('input',{id:'entityName',value:e.name,maxlength:60,'aria-label':'Nome',oninput:ev=>{ e.name=ev.target.value; save(); renderSide(); },onchange:()=>{ if(!e.name.trim()) e.name=kind==='client'?'Cliente':'Cartella'; render(); }}),
         h('div',{class:'quick'},
           kind!=='folder' || ready.length<2 ? null : h('button',{class:'btn',onclick:()=>openFolderCodes(e)},'Codici per tutta la cartella'),
+          kind!=='client' ? null : h('button',{class:'btn',disabled:!ready.length,title:ready.length?'Un unico PDF con tutte le schede del cliente':'Nessuna scheda con esercizi',onclick:ev=>exportClientPdf(e, ev.currentTarget)},'Esporta PDF'),
           h('button',{class:'btn primary',onclick:()=>newWorkout(kind==='client'?{clientId:e.id}:{folderId:e.id})},'+ Nuova scheda qui'), del),
         h('div',{class:'meta'}, days(ws.length)+' · creato '+ago(e.createdAt||Date.now())),
+        kind==='client' && h('div',{class:'row',style:'width:100%'},
+          h('span',{class:'code-lbl'},'Codice cliente'),
+          h('input',{class:'code-in',id:'clientCode',maxlength:30,value:e.code||'',placeholder:'Es. tessera 0142',oninput:ev=>{ e.code=ev.target.value; save(); }})),
+        kind==='client' && h('span',{class:'note-label'},'Stato'),
+        kind==='client' && h('div',{class:'st-pick'}, Object.entries(STATUS).map(([k,v])=>h('button',{class:e.status===k?'on':'',style:'--stc:'+v.c,onclick:()=>{ setStatus(e,k); save(); render(); }},v.l))),
         kind==='client' && h('span',{class:'note-label'},'Descrizione · obiettivi, infortuni, disponibilità'),
         kind==='client' && h('textarea',{class:'client-note',id:'clientNote',maxlength:2000,value:e.note||'',
           placeholder:'Es. Obiettivo ipertrofia, 3 allenamenti a settimana. Fastidio alla spalla destra: niente military press.',
           oninput:ev=>{ e.note=ev.target.value; save(); }})),
       ws.length ? h('div',{class:'grid'}, ws.map(workoutTile)) : h('div',{class:'blank'}, kind==='client'?'Nessuna scheda per questo cliente.':'Cartella vuota. Crea qui le schede dei vari giorni.'),
-      kind!=='client' ? null : h('section',{class:'block'}, h('div',{class:'block-h'},h('h2',{},'Codici inviati')), codeRows(allCodes().filter(c=>c.w.clientId===e.id))));
+      kind!=='client' ? null : h('section',{class:'block'}, h('div',{class:'block-h'},h('h2',{},'Codici inviati')), codeRows(allCodes().filter(c=>c.w.clientId===e.id))),
+      kind!=='client' ? null : h('section',{class:'block'}, h('div',{class:'block-h'},h('h2',{},'Attività'), h('button',{class:'see-all',onclick:()=>go('history',{libQ:''})},'Tutto lo storico →')),
+        historyList(state.history.filter(x=>x.clientId===e.id).slice(0,10))));
     root.append(page); return;
   }
   const tabs = [['clients','Clienti',state.clients.length],['folders','Cartelle',state.folders.length],['workouts','Schede',state.workouts.length]];
@@ -748,7 +827,10 @@ function renderLibrary(root){
       : h('button',{class:'btn primary',onclick:()=>newWorkout()},'+ Nuova scheda'))));
   const match = s => !q || s.toLowerCase().includes(q);
   if (ui.libTab==='clients'){
-    const list = [...state.clients].sort((a,b)=>a.name.localeCompare(b.name,'it')).filter(c=>match(c.name));
+    const list = [...state.clients].sort((a,b)=>a.name.localeCompare(b.name,'it')).filter(c=>match(c.name+' '+(c.code||''))).filter(c=>ui.stFilter==='all'||c.status===ui.stFilter);
+    page.append(h('div',{class:'filters'},
+      h('button',{class:'chip'+(ui.stFilter==='all'?' on':''),onclick:()=>{ ui.stFilter='all'; render(); }},'Tutti '+state.clients.length),
+      Object.entries(STATUS).map(([k,v])=>{ const n=state.clients.filter(c=>c.status===k).length; return n ? h('button',{class:'chip'+(ui.stFilter===k?' on':''),onclick:()=>{ ui.stFilter=k; render(); }},v.l+' '+n) : null; })));
     page.append(list.length ? h('div',{class:'grid'}, list.map(c=>entityTile('client',c))) : h('div',{class:'blank'}, q?'Nessun cliente trovato.':'Nessun cliente.'));
   } else if (ui.libTab==='folders'){
     const list = [...state.folders].sort((a,b)=>a.name.localeCompare(b.name,'it')).filter(f=>match(f.name));
@@ -759,6 +841,157 @@ function renderLibrary(root){
   root.append(page);
 }
 
+// ── Storico ──
+function dayLabel(ts){
+  const d = new Date(ts); const t = new Date(); const y = new Date(Date.now()-864e5);
+  if (d.toDateString()===t.toDateString()) return 'Oggi';
+  if (d.toDateString()===y.toDateString()) return 'Ieri';
+  return d.toLocaleDateString('it-IT',{weekday:'long',day:'numeric',month:'long',year:d.getFullYear()===t.getFullYear()?undefined:'numeric'});
+}
+function historyList(items){
+  if (!items.length) return h('div',{class:'blank'},'Nessuna attività registrata.');
+  const box = h('div',{class:'hist'}); let day = null;
+  for (const x of items){
+    const dl = dayLabel(x.at); if (dl!==day){ day=dl; box.append(h('div',{class:'hday'},dl)); }
+    const t = HTYPES[x.type] || HTYPES.edit;
+    const w = x.workoutId && state.workouts.find(w=>w.id===x.workoutId);
+    const c = x.clientId && state.clients.find(c=>c.id===x.clientId);
+    box.append(h('div',{class:'hrow'},
+      h('time',{},new Date(x.at).toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit'})),
+      h('span',{class:'hic',style:'--stc:'+t.c},t.ic),
+      h('div',{class:'htx'}, h('b',{},x.text), (c||x.code) && h('span',{},[c?.name, x.code && Date.now()<=x.at+CONFIG.codeTtlDays*864e5 ? 'valido fino al '+new Date(x.at+CONFIG.codeTtlDays*864e5).toLocaleDateString('it-IT') : x.code ? 'scaduto' : null].filter(Boolean).join(' · '))),
+      w ? h('button',{class:'btn sm ghost',onclick:()=>openWorkout(w.id)},'Apri scheda')
+        : c && x.type!=='delete' ? h('button',{class:'btn sm ghost',onclick:()=>go('library',{libTab:'clients',libSel:{type:'client',id:c.id}})},'Apri cliente') : h('span',{})));
+  }
+  return box;
+}
+function renderHistory(root){
+  const q = ui.libQ.trim().toLowerCase();
+  const items = state.history.filter(x=>(ui.histType==='all'||x.type===ui.histType) && (!q || (x.text+' '+(state.clients.find(c=>c.id===x.clientId)?.name||'')).toLowerCase().includes(q)));
+  root.append(h('div',{class:'page-in'},
+    h('div',{class:'lib-top'}, h('h1',{},'Storico'),
+      h('div',{class:'lib-tools'}, h('input',{class:'field',id:'histQ',placeholder:'Cerca nello storico…',value:ui.libQ,oninput:ev=>{ ui.libQ=ev.target.value; renderMain(); requestAnimationFrame(()=>{ const i=$('#histQ'); i.focus(); i.setSelectionRange(i.value.length,i.value.length); }); }}))),
+    h('div',{class:'filters'},
+      h('button',{class:'chip'+(ui.histType==='all'?' on':''),onclick:()=>{ ui.histType='all'; render(); }},'Tutto'),
+      Object.entries(HTYPES).map(([k,v])=>state.history.some(x=>x.type===k) ? h('button',{class:'chip'+(ui.histType===k?' on':''),onclick:()=>{ ui.histType=k; render(); }},v.l) : null)),
+    historyList(items.slice(0,300)),
+    items.length>300 ? h('p',{style:'color:var(--t3);font-size:12px;margin:0'},'Mostrate le 300 attività più recenti su '+items.length+'. Usa la ricerca per trovare le altre.') : null));
+}
+
+// ── PDF cliente ──
+// jsPDF + autotable sono in vendor/ e si caricano solo al primo export.
+function loadScript(src){ return new Promise((ok,ko)=>{ if(document.querySelector('script[src="'+src+'"]')) return ok(); const s=document.createElement('script'); s.src=src; s.onload=ok; s.onerror=()=>ko(new Error('Impossibile caricare '+src)); document.head.append(s); }); }
+function imgData(src, bg){
+  return new Promise(ok=>{ const im=new Image(); im.onload=()=>{ const c=document.createElement('canvas'); c.width=im.naturalWidth; c.height=im.naturalHeight; const x=c.getContext('2d'); if(bg){ x.fillStyle=bg; x.fillRect(0,0,c.width,c.height); } x.drawImage(im,0,0);
+    try{ ok({data:c.toDataURL('image/jpeg',.85), w:im.naturalWidth, h:im.naturalHeight}); }catch{ ok(null); } }; im.onerror=()=>ok(null); im.src=src; });
+}
+// Helvetica standard copre solo Latin-1: via emoji e simboli fuori set.
+const T = s => String(s??'').replace(/[‘’]/g,"'").replace(/[“”«»]/g,'"').replace(/[–—]/g,'-').replace(/…/g,'...').replace(/→/g,'->').replace(/[^\x20-\x7E\xA0-\xFF\n]/g,'').replace(/[ \t]+/g,' ').trim();
+async function exportClientPdf(client, btn){
+  const ws = wsOf('client',client.id).filter(w=>w.exercises.length).sort((a,b)=>(a.name||'').localeCompare(b.name||'','it',{numeric:true}));
+  if (!ws.length) return toast('Nessuna scheda con esercizi');
+  const label = btn?.textContent; if (btn){ btn.disabled=true; btn.textContent='Preparo il PDF…'; }
+  try{
+    await loadScript('vendor/jspdf.umd.min.js'); await loadScript('vendor/jspdf.plugin.autotable.min.js');
+    const { jsPDF } = window.jspdf;
+    const [cali, aeth] = await Promise.all([imgData('caligram-logo.png','#000'), imgData('aethel-logo.png','#fff')]);
+    const ids = [...new Set(ws.flatMap(w=>w.exercises.map(e=>e.exerciseId)))].filter(id=>CAT_BY_ID[id]?.img);
+    const thumbs = Object.fromEntries(await Promise.all(ids.map(async id=>[id, await imgData('img/'+id+'.webp','#fff')])));
+
+    const doc = new jsPDF({unit:'mm', format:'a4'}); const W = 210, M = 14;
+    const INK=[26,23,20], T2=[107,101,96], T3=[168,162,156], ACC=[240,124,58], ACCL=[254,240,231], LIL=[155,142,196], LILL=[240,237,249], SAGE=[90,138,106], SAGEL=[235,243,238], CREAM=[250,248,244];
+    const today = new Date().toLocaleDateString('it-IT',{day:'numeric',month:'long',year:'numeric'});
+
+    // Copertina: banda nera con i due loghi
+    doc.setFillColor(0,0,0); doc.rect(0,0,W,36,'F');
+    if (cali) doc.addImage(cali.data,'JPEG',M,8,20*cali.w/cali.h,20);
+    const xX = M + (cali ? 20*cali.w/cali.h : 50) + 6;
+    doc.setTextColor(255,255,255); doc.setFont('helvetica','normal'); doc.setFontSize(16); doc.text('x', xX, 21);
+    if (aeth) doc.addImage(aeth.data,'JPEG',xX+7,10,16,16);
+    doc.setFont('helvetica','bold'); doc.setFontSize(15); doc.text('Aethel', xX+26, 20.5);
+    doc.setFont('helvetica','normal'); doc.setFontSize(8); doc.setTextColor(...T3); doc.text('WORKOUT TRACKER', xX+26, 25);
+    doc.setTextColor(255,255,255); doc.setFont('helvetica','bold'); doc.setFontSize(13); doc.text(T(client.name), W-M, 17, {align:'right'});
+    doc.setFont('helvetica','normal'); doc.setFontSize(9); doc.setTextColor(...T3);
+    doc.text([client.code?.trim() ? 'Codice cliente '+T(client.code) : null, today].filter(Boolean), W-M, 23, {align:'right'});
+
+    doc.setTextColor(...INK); doc.setFont('helvetica','bold'); doc.setFontSize(22); doc.text('Programma di allenamento', M, 52);
+    doc.setFont('helvetica','normal'); doc.setFontSize(10); doc.setTextColor(...T2);
+    doc.text(T(CONFIG.gymName)+'  ·  '+ws.length+(ws.length===1?' scheda':' schede')+'  ·  '+ws.reduce((n,w)=>n+w.exercises.length,0)+' esercizi', M, 59);
+    let y = 70;
+
+    const typeL = Object.fromEntries(TYPES);
+    for (const w of ws){
+      if (y > 235){ doc.addPage(); y = 22; }
+      const code = (w.codes||[]).find(c=>Date.now()<=expiresAt(c));
+      doc.setFillColor(...ACCL); doc.roundedRect(M, y, W-2*M, 15, 3, 3, 'F');
+      doc.setTextColor(...INK); doc.setFont('helvetica','bold'); doc.setFontSize(13); doc.text(T(w.name)||'Scheda', M+5, y+6.5);
+      doc.setFont('helvetica','normal'); doc.setFontSize(8.5); doc.setTextColor(...T2);
+      doc.text([typeL[w.type], w.exercises.length+' esercizi', folderName(w)?T(folderName(w)):null].filter(Boolean).join('  ·  '), M+5, y+11.5);
+      if (code){ doc.setFont('helvetica','bold'); doc.setFontSize(10); doc.setTextColor(...ACC); doc.text('Codice Aethel  '+fmtCode(code.code), W-M-5, y+9.2, {align:'right'}); }
+      y += 18;
+
+      const body = []; const seen = new Set();
+      w.exercises.forEach(e=>{
+        const g = e.groupId && w.groups.find(g=>g.id===e.groupId);
+        if (g && !seen.has(g.id)){
+          seen.add(g.id);
+          const members = w.exercises.filter(x=>x.groupId===g.id).length;
+          const txt = g.type==='superset'
+            ? (members>2?'GIANT SET':'SUPERSET')+'  ·  '+g.rounds+' giri, senza pausa tra gli esercizi'
+            : 'EMOM  ·  ogni '+g.emomIntervalSeconds+'s per '+g.emomTotalIntervals+' intervalli'+(g.repsTarget?'  ·  '+g.repsTarget+' reps':'');
+          const sup = g.type==='superset';
+          body.push([{content:txt, colSpan:6, styles:{fillColor:sup?LILL:SAGEL, textColor:sup?LIL:SAGE, fontStyle:'bold', fontSize:8, cellPadding:{top:2,bottom:2,left:4,right:4}}}]);
+        }
+        const letter = g ? String.fromCharCode(65+[...seen].indexOf(g.id))+(w.exercises.filter(x=>x.groupId===g.id).indexOf(e)+1)+'  ' : '';
+        const cat = CAT_BY_ID[e.exerciseId]; const hold = isHold(e.exerciseId);
+        body.push([
+          {content:'', id:e.exerciseId},
+          T(letter+exName(e.exerciseId))+'\n'+T((cat?.m||[]).map(m=>MUSCLES[state.lang][m]).join(', ')),
+          g?.type==='emom' ? '-' : String(e.defaultSets),
+          hold ? holdSecs(e.defaultReps)+' sec' : T(e.defaultReps),
+          !hold && +e.defaultKg>0 ? String(e.defaultKg) : '-',
+          T(e.notes||''),
+        ]);
+      });
+      doc.autoTable({
+        startY:y, margin:{left:M,right:M,top:20,bottom:18}, body,
+        head:[['','Esercizio','Serie','Reps','Kg','Note']],
+        theme:'plain',
+        styles:{font:'helvetica', fontSize:9, textColor:INK, cellPadding:{top:2.4,bottom:2.4,left:2.5,right:2.5}, valign:'middle', lineColor:[232,228,222], lineWidth:{bottom:.2}},
+        headStyles:{fillColor:INK, textColor:[255,255,255], fontStyle:'bold', fontSize:8},
+        columnStyles:{0:{cellWidth:24, minCellHeight:15}, 1:{cellWidth:56, fontStyle:'bold'}, 2:{cellWidth:14, halign:'center'}, 3:{cellWidth:18, halign:'center'}, 4:{cellWidth:14, halign:'center'}, 5:{textColor:T2, fontSize:8.5}},
+        didParseCell:d=>{ if(d.section==='body' && d.column.index===1 && typeof d.cell.raw==='string'){ d.cell.styles.fontStyle='bold'; } },
+        didDrawCell:d=>{
+          if (d.section!=='body' || d.column.index!==0) return;
+          const t = thumbs[d.cell.raw?.id]; if (!t) return;
+          const ih = Math.min(d.cell.height-3, 13), iw = ih*t.w/t.h;
+          doc.addImage(t.data,'JPEG', d.cell.x+(d.cell.width-iw)/2, d.cell.y+(d.cell.height-ih)/2, iw, ih);
+        },
+      });
+      y = doc.lastAutoTable.finalY + 12;
+    }
+
+    // Pagine successive: intestazione sottile + piè di pagina su tutte
+    const n = doc.getNumberOfPages();
+    for (let i=1;i<=n;i++){
+      doc.setPage(i);
+      if (i>1){
+        doc.setFont('helvetica','bold'); doc.setFontSize(8); doc.setTextColor(...T2);
+        doc.text(T(CONFIG.gymName)+' x Aethel', M, 11); doc.text(T(client.name), W-M, 11, {align:'right'});
+        doc.setDrawColor(232,228,222); doc.setLineWidth(.3); doc.line(M,13.5,W-M,13.5);
+      }
+      doc.setFont('helvetica','normal'); doc.setFontSize(7.5); doc.setTextColor(...T3);
+      doc.text('Importa le schede nell\'app Aethel: Allenamenti -> Importa scheda -> Da codice', M, 289);
+      doc.text('Pagina '+i+' di '+n, W-M, 289, {align:'right'});
+    }
+    const fname = 'Scheda_'+T(client.name).replace(/[^A-Za-z0-9]+/g,'_').replace(/^_|_$/g,'')+'_'+new Date().toISOString().slice(0,10)+'.pdf';
+    doc.save(fname);
+    log('pdf','PDF esportato: '+ws.length+(ws.length===1?' scheda':' schede'),{clientId:client.id}); save();
+    toast('PDF scaricato');
+  }catch(err){ toast('PDF non creato: '+(err.message||err)); }
+  finally{ if (btn){ btn.disabled=false; btn.textContent=label; } render(); }
+}
+
 // Codici per tutti i giorni di una cartella (una chiamata per scheda)
 async function openFolderCodes(f){
   const ws = wsOf('folder',f.id).filter(w=>w.exercises.length && w.name.trim()).sort((a,b)=>a.name.localeCompare(b.name,'it',{numeric:true}));
@@ -767,7 +1000,8 @@ async function openFolderCodes(f){
   root.replaceChildren(h('div',{class:'scrim',onclick:ev=>{ if(ev.target===ev.currentTarget) close(); }}, body));
   const res = [];
   for (const w of ws){
-    try{ const code = await createCode(buildPayload(w)); w.codes=[{code,at:Date.now()},...(w.codes||[])].slice(0,5); w.updatedAt=Date.now(); res.push({w,code}); }
+    try{ const code = await createCode(buildPayload(w)); w.codes=[{code,at:Date.now()},...(w.codes||[])].slice(0,5); w.updatedAt=Date.now(); res.push({w,code});
+      log('code','Codice '+fmtCode(code)+' per «'+w.name.trim()+'»',{workoutId:w.id, clientId:w.clientId, code}); setStatus(clientOf(w),'sent',true); }
     catch(err){ res.push({w,err:err.message||String(err)}); }
   }
   save(); render();
@@ -952,7 +1186,9 @@ function openCodeModal(){
   const body = h('div',{class:'modal',role:'dialog','aria-modal':'true'}, h('h3',{},'Codice per il cliente'), h('div',{class:'spinner'}), h('p',{},'Sto generando il codice…'));
   root.replaceChildren(h('div',{class:'scrim',onclick:ev=>{ if(ev.target===ev.currentTarget) close(); }}, body));
   createCode(buildPayload(w)).then(code=>{
-    w.codes = [{code, at:Date.now()}, ...(w.codes||[])].slice(0,5); touch(); renderTop();
+    w.codes = [{code, at:Date.now()}, ...(w.codes||[])].slice(0,5);
+    log('code','Codice '+fmtCode(code)+' per «'+w.name.trim()+'»'+(clientName(w)?' · '+clientName(w):''),{workoutId:w.id, clientId:w.clientId, code});
+    setStatus(clientOf(w),'sent',true); w.updatedAt=Date.now(); save(); renderSide(); renderTop();
     const msg = `Ciao${clientName(w)?' '+clientName(w).split(' ')[0]:''}! Ecco la tua scheda “${w.name.trim()}” da ${CONFIG.gymName}.\nApri Aethel → Allenamenti → Importa scheda → Da codice e inserisci:\n${fmtCode(code)}\n(valido ${CONFIG.codeTtlDays} giorni)`;
     body.replaceChildren(
       h('h3',{},w.emoji+' '+w.name.trim()),
@@ -978,7 +1214,7 @@ function renderMain(){
   $('#app').classList.toggle('no-cat', !ed);
   page.hidden = !!ed; $('#editorView').hidden = !ed;
   if (ed){ renderEditor(); renderTop(); renderCatalogue(); }
-  else { const sc = page.scrollTop; page.replaceChildren(); ui.view==='library' ? renderLibrary(page) : renderHome(page); page.scrollTop = sc; }
+  else { const sc = page.scrollTop; page.replaceChildren(); ui.view==='library' ? renderLibrary(page) : ui.view==='history' ? renderHistory(page) : renderHome(page); page.scrollTop = sc; }
 }
 function render(){ renderSide(); renderMain();
   $('#backupInfo').textContent = state.lastBackup ? 'Ultimo backup '+ago(state.lastBackup) : 'Salvate solo in questo browser'; }
@@ -996,7 +1232,7 @@ $('#dupBtn').onclick = ()=>{ const w = cur(); if(!w) return; const c = JSON.pars
   Object.assign(c,{id:uid('w'),name:w.name+' (copia)',codes:[],updatedAt:Date.now()}); state.workouts.push(c); state.currentId=c.id; touch(); render(); toast('Scheda duplicata'); };
 $('#delBtn').onclick = ()=>{ const w = cur(); if(!w) return; const b = $('#delBtn');
   if (delArmed !== w.id){ delArmed = w.id; b.textContent='Conferma eliminazione'; setTimeout(()=>{ delArmed=null; b.textContent='Elimina'; },3000); return; }
-  delArmed=null; b.textContent='Elimina'; state.workouts = state.workouts.filter(x=>x.id!==w.id); state.currentId = null; save(); go(ui.prevView||'home'); toast('Scheda eliminata'); };
+  delArmed=null; b.textContent='Elimina'; state.workouts = state.workouts.filter(x=>x.id!==w.id); state.currentId = null; log('delete','Eliminata scheda «'+(w.name||'Senza nome')+'»',{clientId:w.clientId}); save(); go(ui.prevView||'home'); toast('Scheda eliminata'); };
 $('#codeBtn').onclick = openCodeModal;
 $('#catSearch').oninput = e=>{ ui.q=e.target.value; renderCatalogue(); };
 document.querySelectorAll('#catSeg button').forEach(b=>b.onclick=()=>{ ui.catFilter=b.dataset.c; renderCatalogue(); });
