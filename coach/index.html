@@ -634,7 +634,12 @@ const lastActivity = (kind,id) => Math.max((state[kind==='client'?'clients':'fol
   ...state.workouts.filter(w=>(kind==='client'?w.clientId:w.folderId)===id).map(w=>w.updatedAt));
 const wsOf = (kind,id) => state.workouts.filter(w=>(kind==='client'?w.clientId:w.folderId)===id);
 const byRecent = arr => [...arr].sort((a,b)=>b.updatedAt-a.updatedAt);
-const allCodes = () => state.workouts.flatMap(w=>(w.codes||[]).map(c=>({...c,w}))).sort((a,b)=>b.at-a.at);
+// Codici "pacchetto" del cliente (tutte le schede in un codice) stanno su client.codes;
+// per gli elenchi diventano una pseudo-scheda senza id.
+const allCodes = () => [
+  ...state.workouts.flatMap(w=>(w.codes||[]).map(c=>({...c,w}))),
+  ...state.clients.flatMap(cl=>(cl.codes||[]).map(c=>({...c, w:{id:null, emoji:'📦', name:'Tutte le schede ('+c.count+')', clientId:cl.id}}))),
+].sort((a,b)=>b.at-a.at);
 const expiresAt = c => c.at + CONFIG.codeTtlDays*864e5;
 const avatar = (c,lg) => h('span',{class:'av'+(lg?' lg':''),style:'background:'+avColor(c.id)},initials(c.name));
 const fIcon = (f,lg) => h('span',{class:'fd-ic'+(lg?' lg':'')},f.emoji||'📁');
@@ -725,7 +730,7 @@ function codeRows(list){
       h('span',{class:'cc'},fmtCode(c.code)),
       h('div',{class:'cw'}, h('b',{},c.w.emoji+' '+(c.w.name||'Senza nome')), h('span',{},[clientName(c.w)||'Nessun cliente', folderName(c.w)].filter(Boolean).join(' · '))),
       h('span',{class:'cd'}, exp ? 'Scaduto' : 'Scade il '+new Date(expiresAt(c)).toLocaleDateString('it-IT',{day:'numeric',month:'short'})),
-      exp ? h('button',{class:'btn sm',onclick:()=>openWorkout(c.w.id)},'Apri scheda') : h('button',{class:'btn sm',onclick:()=>copy(fmtCode(c.code))},'Copia'));
+      exp ? h('button',{class:'btn sm',onclick:()=>c.w.id ? openWorkout(c.w.id) : go('library',{libTab:'clients',libSel:{type:'client',id:c.w.clientId}})},c.w.id?'Apri scheda':'Apri cliente') : h('button',{class:'btn sm',onclick:()=>copy(fmtCode(c.code))},'Copia'));
   }));
 }
 
@@ -825,7 +830,8 @@ function renderLibrary(root){
         h('input',{id:'entityName',value:e.name,maxlength:60,'aria-label':'Nome',oninput:ev=>{ e.name=ev.target.value; save(); renderSide(); },onchange:()=>{ if(!e.name.trim()) e.name=kind==='client'?'Cliente':'Cartella'; render(); }}),
         h('div',{class:'quick'},
           kind!=='folder' || ready.length<2 ? null : h('button',{class:'btn',onclick:()=>openFolderCodes(e)},'Codici per tutta la cartella'),
-          kind!=='client' ? null : h('button',{class:'btn',disabled:!ready.length,title:ready.length?'Un unico PDF con tutte le schede del cliente':'Nessuna scheda con esercizi',onclick:ev=>exportClientPdf(e, ev.currentTarget)},'Esporta PDF'),
+          kind!=='client' || ready.length<2 ? null : h('button',{class:'btn',title:'Un solo codice: il cliente importa tutte le schede in una volta',onclick:()=>openClientBundleCode(e)},'Codice unico ('+ready.length+' schede)'),
+          kind!=='client' ? null : h('button',{class:'btn',disabled:ready.length<PDF_MIN,title:ready.length>=PDF_MIN?'Un unico PDF con tutte le schede del cliente':'Servono almeno '+PDF_MIN+' schede con esercizi (ora '+ready.length+')',onclick:ev=>exportClientPdf(e, ev.currentTarget)},'Esporta PDF'),
           h('button',{class:'btn primary',onclick:()=>newWorkout(kind==='client'?{clientId:e.id}:{folderId:e.id})},'+ Nuova scheda qui'), del),
         h('div',{class:'meta'}, days(ws.length)+' · creato '+ago(e.createdAt||Date.now())),
         kind==='client' && h('div',{class:'row',style:'width:100%'},
@@ -913,9 +919,10 @@ function imgData(src, bg){
 }
 // Helvetica standard copre solo Latin-1: via emoji e simboli fuori set.
 const T = s => String(s??'').replace(/[‘’]/g,"'").replace(/[“”«»]/g,'"').replace(/[–—]/g,'-').replace(/…/g,'...').replace(/→/g,'->').replace(/[^\x20-\x7E\xA0-\xFF\n]/g,'').replace(/[ \t]+/g,' ').trim();
+const PDF_MIN = 4; // il PDF si sblocca da 4 schede con esercizi in su
 async function exportClientPdf(client, btn){
   const ws = wsOf('client',client.id).filter(w=>w.exercises.length).sort((a,b)=>(a.name||'').localeCompare(b.name||'','it',{numeric:true}));
-  if (!ws.length) return toast('Nessuna scheda con esercizi');
+  if (ws.length < PDF_MIN) return toast('Servono almeno '+PDF_MIN+' schede con esercizi');
   const label = btn?.textContent; if (btn){ btn.disabled=true; btn.textContent='Preparo il PDF…'; }
   try{
     await loadScript('vendor/jspdf.umd.min.js'); await loadScript('vendor/jspdf.plugin.autotable.min.js');
@@ -944,6 +951,14 @@ async function exportClientPdf(client, btn){
     doc.setFont('helvetica','normal'); doc.setFontSize(10); doc.setTextColor(...T2);
     doc.text(T(CONFIG.gymName)+'  ·  '+ws.length+(ws.length===1?' scheda':' schede')+'  ·  '+ws.reduce((n,w)=>n+w.exercises.length,0)+' esercizi', M, 59);
     let y = 70;
+    const bundle = (client.codes||[]).find(c=>Date.now()<=expiresAt(c));
+    if (bundle){
+      doc.setFillColor(...ACC); doc.roundedRect(M, 64, W-2*M, 13, 3, 3, 'F');
+      doc.setTextColor(255,255,255); doc.setFont('helvetica','bold'); doc.setFontSize(10);
+      doc.text('Importa tutte le schede in Aethel con un solo codice', M+5, 72);
+      doc.setFontSize(13); doc.text(fmtCode(bundle.code), W-M-5, 72.5, {align:'right'});
+      y = 86;
+    }
 
     const typeL = Object.fromEntries(TYPES);
     for (const w of ws){
@@ -1019,6 +1034,36 @@ async function exportClientPdf(client, btn){
     toast('PDF scaricato');
   }catch(err){ toast('PDF non creato: '+(err.message||err)); }
   finally{ if (btn){ btn.disabled=false; btn.textContent=label; } render(); }
+}
+
+// ── Codice unico per tutte le schede del cliente ──
+// Payload kind:'bundle' → l'app (dalla versione che lo supporta) importa tutte
+// le schede in una nuova cartella. Le versioni precedenti rispondono "codice non valido".
+function buildBundlePayload(ws){
+  return { _aethel:SHARE_FORMAT, kind:'bundle', exportedAt:new Date().toISOString(),
+    name:'Programma '+CONFIG.gymName, emoji:'🏋️', workouts: ws.map(w=>buildPayload(w).workout) };
+}
+async function openClientBundleCode(client){
+  const ws = wsOf('client',client.id).filter(w=>w.exercises.length && w.name.trim()).sort((a,b)=>a.name.localeCompare(b.name,'it',{numeric:true}));
+  const root=$('#modalRoot'); const close=()=>root.replaceChildren();
+  const body = h('div',{class:'modal',role:'dialog','aria-modal':'true'}, h('h3',{},'Codice unico'), h('div',{class:'spinner'}), h('p',{},'Preparo un codice con '+ws.length+' schede…'));
+  root.replaceChildren(h('div',{class:'scrim',onclick:ev=>{ if(ev.target===ev.currentTarget) close(); }}, body));
+  try{
+    const code = await createCode(buildBundlePayload(ws));
+    client.codes = [{code, at:Date.now(), count:ws.length}, ...(client.codes||[])].slice(0,5);
+    log('code','Codice unico '+fmtCode(code)+' · '+ws.length+' schede per '+client.name,{clientId:client.id, code});
+    setStatus(client,'sent',true); save(); render();
+    const msg = `Ciao ${client.name.split(' ')[0]}! Ecco il tuo programma da ${CONFIG.gymName}: ${ws.length} schede in un solo codice.\nApri Aethel → Allenamenti → Importa scheda → Da codice e inserisci:\n${fmtCode(code)}\n(valido ${CONFIG.codeTtlDays} giorni, serve l'ultima versione di Aethel)`;
+    body.replaceChildren(h('h3',{},client.name),
+      h('p',{},'Con questo codice il cliente importa tutte le schede in una volta, raccolte in una cartella.'),
+      h('div',{class:'big-code'},fmtCode(code)),
+      h('div',{class:'multi'}, ws.map(w=>h('div',{}, h('span',{},w.emoji+' '+w.name), h('span',{style:'color:var(--t3)'},w.exercises.length+' esercizi')))),
+      h('div',{class:'msg-box'},msg),
+      h('div',{class:'row'}, h('button',{class:'btn',onclick:()=>copy(fmtCode(code))},'Copia codice'), h('button',{class:'btn primary',onclick:()=>copy(msg)},'Copia messaggio'), h('button',{class:'btn ghost',onclick:close},'Chiudi')));
+  }catch(err){
+    body.replaceChildren(h('h3',{},'Codice non generato'), h('p',{class:'err'},err.message||String(err)),
+      h('div',{class:'row'}, h('button',{class:'btn primary',onclick:()=>openClientBundleCode(client)},'Riprova'), h('button',{class:'btn ghost',onclick:close},'Chiudi')));
+  }
 }
 
 // Codici per tutti i giorni di una cartella (una chiamata per scheda)
