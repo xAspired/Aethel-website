@@ -318,6 +318,9 @@ button{cursor:pointer}
 .vid input{flex:1;border:0;background:none;outline:none;font-size:13px;color:var(--t2);min-width:0;padding:2px 0}
 .vid a{font-size:12px;font-weight:600;color:var(--accent);text-decoration:none;white-space:nowrap}
 .vid .bad{font-size:12px;color:var(--coral);font-weight:600;white-space:nowrap}
+.cvid{border:0;background:none;padding:2px 0;margin-top:2px;font-size:11px;font-weight:600;color:var(--t3);text-align:left}
+.cvid.on{color:#E62117}
+.cvid:hover{text-decoration:underline}
 .narrow{display:none}
 @media (max-width:1100px){
   .app{display:none}
@@ -407,12 +410,13 @@ const TYPES = [['bodybuilding','Pesi'],['calisthenics','Calisthenics'],['hybrid'
 const EMOJIS = ['🏋️','💪','🔥','⚡','🦵','🎯','🤸','🧱','🦍','🏆','🚀','🧘','🥇','🦅','⛰️','🌀','💥','❤️'];
 
 // ── Stato ──
-let state = load() || seed();
+var state = load() || seed();
 let ui = { histType:'all', stFilter:'all', selected:new Set(), catFilter:'all', muscle:null, q:'', emojiOpen:false, view:'home', libTab:'clients', libSel:null, libQ:'', prevView:'home' };
 migrate();
 // Clienti: entità proprie (id, nome). Le schede vecchie con `client` testuale vengono convertite.
 function migrate(){
   state.clients = state.clients || [];
+  state.exerciseDefaults = state.exerciseDefaults || {}; // exerciseId -> link video tutorial di default
   state.folders = state.folders || [];
   state.history = state.history || [];
   for (const c of state.clients) if (!c.status) c.status = state.workouts.some(w=>w.clientId===c.id && w.codes?.length) ? 'sent' : 'todo';
@@ -472,7 +476,7 @@ function save(){
   const el = $('#saved'); el.textContent = 'Salvato'; clearTimeout(saveT); saveT = setTimeout(()=>el.textContent='',1400);
 }
 function exName(id){ const e = CAT_BY_ID[id]; return e ? (e[state.lang] || e.it) : id; }
-function mkEx(id, extra={}){ const e = CAT_BY_ID[id]; return { uid:uid('x'), exerciseId:id, emoji:e?.emoji||'💪', defaultSets:3, defaultReps:isHold(id)?'30s':'8-12', ...extra }; }
+function mkEx(id, extra={}){ const e = CAT_BY_ID[id]; const dv = state && state.exerciseDefaults ? state.exerciseDefaults[id] : null; return { uid:uid('x'), exerciseId:id, emoji:e?.emoji||'💪', defaultSets:3, defaultReps:isHold(id)?'30s':'8-12', ...(dv?{videoUrl:dv}:{}), ...extra }; }
 function seed(){
   // Scheda d'esempio, modificabile o eliminabile.
   const g = uid('grp');
@@ -763,6 +767,7 @@ function importBackup(file){
       // Unione per id: quello che c'è nel file aggiorna/aggiunge, niente viene cancellato.
       const merge = (key) => { const map = new Map((state[key]||[]).map(x=>[x.id,x])); (inc[key]||[]).forEach(x=>{ const old=map.get(x.id); if(!old || (x.updatedAt||0)>=(old.updatedAt||0)) map.set(x.id,x); }); state[key]=[...map.values()]; };
       merge('workouts'); merge('clients'); merge('folders'); merge('history');
+      Object.assign(state.exerciseDefaults, inc.exerciseDefaults||{});
       state.history.sort((a,b)=>b.at-a.at); log('backup','Backup importato ('+inc.workouts.length+' schede)');
       state.lastBackup = Math.max(state.lastBackup||0, inc.lastBackup||0) || Date.now();
       save(); go('home');
@@ -1254,13 +1259,37 @@ function renderCatalogue(){
     e.img ? h('img',{src:'img/'+e.id+'.webp', alt:'', loading:'lazy'}) : h('img',{alt:''}),
     counts[e.id] && h('span',{class:'count'},'×'+counts[e.id]),
     h('span',{class:'plus'},'+'),
-    h('div',{class:'ci'}, h('div',{class:'cn'}, e[state.lang]), h('div',{class:'cm'}, e.m.map(m=>MUSCLES[state.lang][m]).join(' · '))))));
+    h('div',{class:'ci'}, h('div',{class:'cn'}, e[state.lang]), h('div',{class:'cm'}, e.m.map(m=>MUSCLES[state.lang][m]).join(' · ')),
+      h('button',{class:'cvid'+(state.exerciseDefaults[e.id]?' on':''), onclick:ev=>{ ev.stopPropagation(); setDefaultVideo(e.id, e[state.lang]); }}, state.exerciseDefaults[e.id]?'▶ Video impostato':'▶ Imposta video')))));
 }
 function addExercise(id){
   const w = cur(); if (!w) return;
   w.exercises.push(mkEx(id, isHold(id) ? {} : CAT_BY_ID[id]?.cat==='calisthenics' ? {defaultReps:'6-10'} : {}));
   touch(); render();
   requestAnimationFrame(()=>{ const ed = document.querySelector('.editor'); ed.scrollTo({top:ed.scrollHeight,behavior:'smooth'}); });
+}
+
+function setDefaultVideo(id, label){
+  const cur = state.exerciseDefaults[id] || '';
+  const root=$('#modalRoot'); const close=()=>root.replaceChildren();
+  const inp = h('input',{class:'field',id:'defVidIn',value:cur,placeholder:'Link YouTube del tutorial'});
+  const err = h('p',{class:'err',hidden:true});
+  const commit = ()=>{
+    const v = inp.value.trim();
+    if (!v){ delete state.exerciseDefaults[id]; persistAndClose(); return; }
+    const n = normalizeYouTube(v);
+    if (!n){ err.hidden=false; err.textContent='Link YouTube non valido'; return; }
+    state.exerciseDefaults[id] = n; persistAndClose();
+  };
+  const persistAndClose = ()=>{ save(); close(); renderCatalogue(); toast('Video di default aggiornato'); };
+  inp.addEventListener('keydown',e=>{ if(e.key==='Enter') commit(); });
+  root.replaceChildren(h('div',{class:'scrim',onclick:ev=>{ if(ev.target===ev.currentTarget) close(); }},
+    h('div',{class:'modal',role:'dialog','aria-modal':'true'},
+      h('h3',{},label),
+      h('p',{},'Ogni volta che aggiungi questo esercizio a una scheda, il link viene precompilato. Modificabile per singolo esercizio nella scheda.'),
+      inp, err,
+      h('div',{class:'row'}, cur && h('button',{class:'btn ghost danger',onclick:()=>{ delete state.exerciseDefaults[id]; persistAndClose(); }},'Rimuovi'), h('button',{class:'btn primary',onclick:commit},'Salva')))));
+  requestAnimationFrame(()=>inp.focus());
 }
 
 // ── Modale codice ──
